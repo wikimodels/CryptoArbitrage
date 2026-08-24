@@ -38,6 +38,13 @@ CREATE TABLE IF NOT EXISTS emulator_trades (
     realized_pnl_usdt REAL, holding_seconds REAL,
     orphan_leg INTEGER, status TEXT, strategy TEXT
 );
+
+CREATE TABLE IF NOT EXISTS scalp_stats (
+    symbol TEXT PRIMARY KEY,
+    spikes INTEGER, converged INTEGER,
+    capture_sum REAL, width_sum REAL, width_n INTEGER,
+    updated_ts REAL
+);
 """
 
 _STOP = object()
@@ -59,6 +66,7 @@ class Storage:
         self._conn.commit()
         self._q: "queue.Queue" = queue.Queue(maxsize=100_000)
         self._last_retention = 0.0
+        self._last_scalp_flush = False
         self._thread = threading.Thread(target=self._writer, name="storage-writer", daemon=True)
         self._thread.start()
 
@@ -83,6 +91,30 @@ class Storage:
             int(t.get("orphan_leg", False)), t.get("status"),
             t.get("strategy", "arb"),
         )))
+
+    def save_scalp_stats(self, stats: dict) -> None:
+        """Персистентность скальп-рейтинга: {symbol: {spikes, converged, ...}}."""
+        now = time.time()
+        for sym, st in stats.items():
+            self._put(("scalpstat", (
+                sym, st.get("spikes", 0), st.get("converged", 0),
+                st.get("capture_sum", 0.0), st.get("width_sum", 0.0),
+                st.get("width_n", 0), now,
+            )))
+
+    def load_scalp_stats(self) -> dict:
+        """Чтение накопленной статистики (при старте движка)."""
+        out: dict = {}
+        try:
+            cur = self._conn.execute(
+                "SELECT symbol, spikes, converged, capture_sum, width_sum, width_n FROM scalp_stats")
+            for sym, spikes, converged, capture_sum, width_sum, width_n in cur:
+                out[sym] = {"spikes": spikes or 0, "converged": converged or 0,
+                            "capture_sum": capture_sum or 0.0,
+                            "width_sum": width_sum or 0.0, "width_n": width_n or 0}
+        except Exception:
+            pass
+        return out
 
     def _put(self, item) -> None:
         try:
@@ -129,14 +161,25 @@ class Storage:
                 return
             if item is not None:
                 kind, row = item
-                (buf_q if kind == "quote" else buf_s if kind == "signal" else buf_t).append(row)
+                if kind == "quote":
+                    buf_q.append(row)
+                elif kind == "signal":
+                    buf_s.append(row)
+                elif kind == "scalpstat":
+                    self._conn.execute(
+                        "INSERT OR REPLACE INTO scalp_stats VALUES (?,?,?,?,?,?,?)", row)
+                    self._last_scalp_flush = True
+                else:
+                    buf_t.append(row)
 
             now = time.time()
-            if (len(buf_q) + len(buf_s) + len(buf_t) >= 500) or (now - last_flush > 1.0):
+            if (len(buf_q) + len(buf_s) + len(buf_t) >= 500) or (now - last_flush > 1.0) \
+                    or self._last_scalp_flush:
                 try:
                     flush()
                 except Exception:
                     pass
+                self._last_scalp_flush = False
                 last_flush = now
 
             if now - self._last_retention > 3600 and self.retention_days > 0:

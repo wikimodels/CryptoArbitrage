@@ -77,6 +77,13 @@ class Engine:
         self._scalp_stats: Dict[str, dict] = {}
         self._watchlist: list[str] = []
         self._watchlist_ts = 0.0
+        self._last_scalp_persist = 0.0
+        # персистентность: подхватываем накопленную статистику из SQLite
+        if storage is not None:
+            loaded = storage.load_scalp_stats()
+            if loaded:
+                self._scalp_stats.update(loaded)
+                log.info("Скальп-статистика загружена: %d монет", len(loaded))
 
         self.connectors: dict[str, CCXTConnector] = {}
         self.symbols: list[str] = []
@@ -130,6 +137,12 @@ class Engine:
 
     async def stop(self):
         self._running = False
+        # финальный сброс скальп-статистики перед остановкой
+        if self._scalp_stats:
+            try:
+                self.storage.save_scalp_stats(self._scalp_stats)
+            except Exception:
+                pass
         for t in list(self._ws_tasks.values()) + self._tasks:
             t.cancel()
         for conn in self.connectors.values():
@@ -275,6 +288,13 @@ class Engine:
                 log.exception("scan error")
             self.last_scan_ts = time.time()
             elapsed = self.last_scan_ts - t0
+            # персистентность скальп-рейтинга: раз в 60с на диск
+            if self._scalp_stats and self.last_scan_ts - self._last_scalp_persist > 60:
+                self._last_scalp_persist = self.last_scan_ts
+                try:
+                    self.storage.save_scalp_stats(self._scalp_stats)
+                except Exception:
+                    pass
             await asyncio.sleep(max(0.0, self.scan_interval - elapsed))
 
     async def _scan_once(self):
