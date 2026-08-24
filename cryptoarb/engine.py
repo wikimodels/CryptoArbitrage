@@ -315,6 +315,7 @@ class Engine:
                     "symbol": r.symbol, "exch_long": r.exch_long, "exch_short": r.exch_short,
                     "raw_spread_pct": r.raw_spread_pct, "funding_edge_pct": r.funding_edge_pct,
                     "fees_pct": r.fees_pct, "slippage_pct": r.slippage_pct,
+                    "width_pct": r.width_pct,
                     "net_edge_pct": r.net_edge_pct, "passed_threshold": r.passed_threshold,
                 })
                 self.storage.save_signal({"ts": now, **r.__dict__})
@@ -453,6 +454,7 @@ class Engine:
                 "raw_spread_pct": round(r.raw_spread_pct, 4),
                 "funding_edge_pct": round(r.funding_edge_pct, 4),
                 "fees_pct": round(r.fees_pct, 4), "slippage_pct": round(r.slippage_pct, 4),
+                "width_pct": round(r.width_pct, 4),
                 "net_edge_pct": round(r.net_edge_pct, 4),
                 "passed": r.passed_threshold and not suspect,
                 "suspect": suspect,

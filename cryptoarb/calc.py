@@ -25,6 +25,7 @@ class NetEdgeResult:
     funding_edge_pct: float
     fees_pct: float
     slippage_pct: float
+    width_pct: float
     net_edge_pct: float
     passed_threshold: bool
 
@@ -99,6 +100,20 @@ def slippage_pct(ob_long: Optional[OrderBookSnapshot], ob_short: Optional[OrderB
     return slip
 
 
+def book_width_pct(ob: Optional[OrderBookSnapshot]) -> float:
+    """Ширина книги (ask-bid)/mid в %. Это РЕАЛЬНАЯ стоимость выхода:
+    вошли по ask — выйти можем только по bid, т.е. платим полную ширину
+    книги, даже если цена не двинулась. На тонких альтах ширина одной
+    книги 1-2%, и 'жирный' спред между биржами целиком съедается ею."""
+    if ob and ob.asks and ob.bids:
+        ask = ob.asks[0].price
+        bid = ob.bids[0].price
+        mid = (ask + bid) / 2.0
+        if mid > 0:
+            return (ask - bid) / mid * 100.0
+    return 0.0
+
+
 def compute_net_edge(
     q_a: Quote, q_b: Quote,
     holding_hours: float,
@@ -126,7 +141,10 @@ def compute_net_edge(
     r_funding = funding_edge_pct(q_long, q_short, holding_hours)
     r_fees = fees_pct(q_long, q_short)
     r_slip = slippage_pct(ob_long, ob_short, position_size_usdt, slippage_buffer_pct)
-    net = r_spread + r_funding - r_fees - r_slip
+    # Ширина книг: платим её при выходе с обеих ног (вход по ask, выход
+    # по bid = полная ширина), даже если цена не двигалась.
+    r_width = book_width_pct(ob_long) + book_width_pct(ob_short)
+    net = r_spread + r_funding - r_fees - r_slip - r_width
 
     return NetEdgeResult(
         symbol=q_long.symbol,
@@ -136,6 +154,7 @@ def compute_net_edge(
         funding_edge_pct=r_funding,
         fees_pct=r_fees,
         slippage_pct=r_slip,
+        width_pct=r_width,
         net_edge_pct=net,
         passed_threshold=net >= min_threshold_pct,
     )

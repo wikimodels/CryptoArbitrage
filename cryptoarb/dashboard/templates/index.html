@@ -115,7 +115,7 @@
       <table>
         <thead><tr>
           <th>Символ</th><th>LONG (дешевле)</th><th>SHORT (дороже)</th>
-          <th>Спред %</th><th>Funding %</th><th>Fees %</th><th>Slippage %</th>
+          <th>Спред %</th><th>Funding %</th><th>Fees %</th><th>Slippage %</th><th>Ширина книг %</th>
           <th>Net edge %</th><th>Статус</th>
         </tr></thead>
         <tbody id="spreadsBody"></tbody>
@@ -210,7 +210,7 @@ function render() {
   if (f) rows = rows.filter(r => (r.symbol+r.exch_long+r.exch_short).toLowerCase().includes(f));
   if (onlyPass) rows = rows.filter(r => r.passed);
   const body = document.getElementById('spreadsBody');
-  if (!rows.length) { body.innerHTML = `<tr><td colspan="9" class="empty">Нет данных</td></tr>`; }
+  if (!rows.length) { body.innerHTML = `<tr><td colspan="10" class="empty">Нет данных</td></tr>`; }
   else body.innerHTML = rows.map(r => `
     <tr>
       <td class="sym">${esc(r.symbol)}</td>
@@ -220,6 +220,7 @@ function render() {
       <td class="num ${cls(r.funding_edge_pct)}">${r.funding_edge_pct.toFixed(3)}</td>
       <td class="num neg">-${r.fees_pct.toFixed(3)}</td>
       <td class="num neg">-${r.slippage_pct.toFixed(3)}</td>
+      <td class="num neg">-${(r.width_pct ?? 0).toFixed(3)}</td>
       <td class="num ${cls(r.net_edge_pct)}"><b>${r.net_edge_pct.toFixed(3)}</b></td>
       <td>${r.suspect ? '<span class="badge suspect" title="dt='+r.leg_dt_sec+'s, top=$'+r.top_notional_usdt+'">⚠ SUSPECT</span>' : (r.passed?'<span class="badge pass">PASS</span>':'<span class="badge no">—</span>')}</td>
     </tr>`).join('');
