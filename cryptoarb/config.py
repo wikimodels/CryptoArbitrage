@@ -36,7 +36,7 @@ DEFAULTS: Dict[str, Any] = {
         "min_threshold_pct": 0.30,
         "assumed_holding_hours": 8,
         "slippage_buffer_pct": 0.02,
-        "funding_max_share_of_spread": 0.3,
+        "funding_max_share_of_spread": 0.15,
     },
     "default_fees": {"taker": 0.0006, "maker": 0.0002},
     "emulator": {
