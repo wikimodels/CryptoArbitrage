@@ -33,6 +33,51 @@
   .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); }
   header .meta { color: var(--muted); font-size: 13px; margin-left: auto; display: flex; gap: 18px; }
 
+  .info-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--accent); background: transparent; color: var(--accent);
+    font-size: 15px; font-weight: 700; cursor: pointer; font-style: italic;
+    font-family: Georgia, serif; transition: all .15s; flex-shrink: 0;
+  }
+  .info-btn:hover { background: var(--accent); color: var(--bg); }
+
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100;
+    display: none; align-items: flex-start; justify-content: center;
+    padding: 40px 24px; overflow-y: auto;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    max-width: 820px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,.5);
+  }
+  .modal__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--surface); border-radius: 12px 12px 0 0;
+  }
+  .modal__head h2 { font-size: 17px; font-weight: 600; }
+  .modal__close {
+    background: transparent; border: none; color: var(--muted); font-size: 26px;
+    cursor: pointer; line-height: 1; padding: 0 4px;
+  }
+  .modal__close:hover { color: var(--text); }
+  .modal__body { padding: 16px 24px 24px; overflow-y: auto; max-height: calc(90vh - 60px); }
+  .modal__body h3 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--accent); margin: 18px 0 8px;
+  }
+  .modal__body h3:first-child { margin-top: 0; }
+  .modal__body ul { padding-left: 20px; margin: 0 0 8px; }
+  .modal__body li { margin-bottom: 6px; }
+  .modal__body .note { color: var(--muted); font-size: 12px; margin-top: 16px; }
+  table.rules { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  table.rules td { padding: 5px 10px 5px 0; vertical-align: top; font-size: 13px; }
+  table.rules td:first-child { color: var(--muted); width: 24px; font-weight: 600; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .tag.arb { background: rgba(63,185,80,.15); color: var(--green); }
+  .tag.scalp { background: rgba(248,81,73,.15); color: var(--red); }
+
   .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
@@ -88,6 +133,7 @@
 <body>
 <header>
   <h1><span class="dot" id="liveDot"></span> CryptoArbitrage</h1>
+  <button class="info-btn" id="infoBtn" title="Правила входа/выхода">i</button>
   <div class="meta">
     <span id="mUptime">uptime —</span>
     <span id="mScan">scan —</span>
@@ -95,6 +141,67 @@
     <span id="mThreshold">порог —</span>
   </div>
 </header>
+
+<!-- Rules modal -->
+<div class="modal-backdrop" id="rulesModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h2>Правила входа / выхода</h2>
+      <button class="modal__close" id="rulesClose">×</button>
+    </div>
+    <div class="modal__body">
+      <h3>ВХОД — общий конвейер (все 12 шагов должны пройти)</h3>
+      <table class="rules">
+        <tr><td>1</td><td>Монета на ≥ 2 биржах (каталог, фильтры исключений)</td></tr>
+        <tr><td>2</td><td>Котировки свежие (≤ 6 с), стакан не перекрёстный (bid &lt; ask)</td></tr>
+        <tr><td>3</td><td>Медиана цен: одноимённые разные токены отбрасываются (отклонение &gt; 50%)</td></tr>
+        <tr><td>4</td><td>Ноги по времени: Δt котировок ≤ 2 с (анти-фантом)</td></tr>
+        <tr><td>5</td><td>Сырой спред ≤ 3% — выше считается битой котировкой</td></tr>
+        <tr><td>6</td><td>Ликвидность вершины книги ≥ $200</td></tr>
+        <tr><td>7</td><td>Динамический размер: 10% × топ-3 уровня худшей ноги, [50..1000] USDT. &lt; $50 → сделки нет (стакан не двигаем)</td></tr>
+        <tr><td>8</td><td><b>net_edge ≥ 0.30%</b> = спред + funding − комиссии (4×taker) − slippage (глубина+буфер) − ширина обеих книг</td></tr>
+        <tr><td>9</td><td>Funding не главный: funding_edge ≤ 15% спреда (иначе спред = вшитый funding и не сойдётся)</td></tr>
+        <tr><td>10</td><td>Спред существует на реальном стакане прямо сейчас: (bid_шорт − ask_лонг)/ask_лонг ≥ 0.30%</td></tr>
+        <tr><td>11</td><td>Кулдауны: 60 с после любого закрытия пары; <b>15 мин</b> после убыточного</td></tr>
+        <tr><td>12</td><td>Orphan-leg: обе ноги должны исполниться по реальной глубине, иначе отмена</td></tr>
+      </table>
+
+      <h3>Сплит стратегий — по входному спреду</h3>
+      <table class="rules">
+        <tr><td class="tag arb">ARB</td><td>Спред <b>≥ 1%</b> — жирный, ждём схождения</td></tr>
+        <tr><td class="tag scalp">SCALP</td><td>Спред <b>&lt; 1%</b> — мелькающий lead-lag, быстрая сделка</td></tr>
+      </table>
+
+      <h3>ВЫХОД — SCALP (красный бейдж)</h3>
+      <ul>
+        <li>Спред сжался до <b>30% от входного</b> → закрытие (забираем схождение)</li>
+        <li><b>90 секунд</b> не сжался → тайм-стоп (дальше — направленный риск)</li>
+        <li>Funding на таком горизонте ≈ 0 (учитывается дискретно по календарю)</li>
+      </ul>
+
+      <h3>ВЫХОД — ARB (зелёный бейдж)</h3>
+      <ul>
+        <li>net_edge упал до ≤ <b>0.15%</b> (порог × 0.5) → спред сошёлся, закрытие</li>
+        <li><b>72 часа</b> → принудительное закрытие (max holding)</li>
+      </ul>
+
+      <h3>Общее для выходов</h3>
+      <ul>
+        <li>Выход идёт по реальной глубине стакана (как вход). Нет ликвидности на объём → закрытие откладывается, позиция остаётся открытой (событие exit_no_liquidity)</li>
+        <li>Funding считается дискретно по фактическим датам начислений (next_funding_ts на входе) — держал 7.9ч из 8ч интервала = 0 платежей</li>
+      </ul>
+
+      <h3>Учтённые издержки</h3>
+      <ul>
+        <li><b>Комиссии:</b> 4 × taker (вход+выход × обе ноги)</li>
+        <li><b>Slippage:</b> проход по глубине стакана на объём + буфер 0.02%</li>
+        <li><b>Ширина книг:</b> полная ширина bid-ask обеих бирж (платим при выходе даже без движения цены)</li>
+      </ul>
+
+      <p class="note">Все пороги — в config.yaml. События отказов видны во вкладке «События» (SKIP: причина).</p>
+    </div>
+  </div>
+</div>
 
 <div class="container">
   <div class="cards" id="cards"></div>
@@ -260,6 +367,13 @@ function card(label, value, signed) {
   if (signed !== undefined) c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
   return `<div class="card"><div class="label">${label}</div><div class="value ${c}">${value}</div></div>`;
 }
+
+// Rules modal
+const modal = document.getElementById('rulesModal');
+document.getElementById('infoBtn').onclick = () => modal.classList.add('open');
+document.getElementById('rulesClose').onclick = () => modal.classList.remove('open');
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
 
 connect();
 </script>
