@@ -59,6 +59,7 @@ async def main_async(config_path: str):
         orphan_timeout_sec=cfg["emulator"]["orphan_leg_timeout_sec"],
         cooldown_sec=cfg["emulator"]["cooldown_sec"],
         max_holding_hours=cfg["emulator"]["max_holding_hours"],
+        loss_cooldown_sec=cfg["emulator"].get("loss_cooldown_sec", 900),
     )
 
     engine = Engine(cfg, loggers, storage, alerts, emulator)

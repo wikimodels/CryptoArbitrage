@@ -32,9 +32,10 @@ DEFAULTS: Dict[str, Any] = {
         "signal_log_throttle_sec": 5,
     },
     "scoring": {
-        "min_threshold_pct": 0.15,
+        "min_threshold_pct": 0.30,
         "assumed_holding_hours": 8,
         "slippage_buffer_pct": 0.02,
+        "funding_max_share_of_spread": 0.3,
     },
     "default_fees": {"taker": 0.0006, "maker": 0.0002},
     "emulator": {
@@ -42,6 +43,7 @@ DEFAULTS: Dict[str, Any] = {
         "virtual_position_size_usdt": 1000,
         "orphan_leg_timeout_sec": 3,
         "cooldown_sec": 60,
+        "loss_cooldown_sec": 900,
         "max_holding_hours": 72,
         "exit_threshold_frac": 0.5,
     },

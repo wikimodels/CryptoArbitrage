@@ -48,6 +48,7 @@ class Engine:
         self.holding_hours = sc["assumed_holding_hours"]
         self.min_threshold = sc["min_threshold_pct"]
         self.slippage_buffer = sc["slippage_buffer_pct"]
+        self.funding_max_share = sc.get("funding_max_share_of_spread", 0.3)
 
         self.size_usdt = cfg["emulator"]["virtual_position_size_usdt"]
         self.exit_frac = cfg["emulator"]["exit_threshold_frac"]
@@ -321,6 +322,33 @@ class Engine:
             # 5) Прошедший порог -> алерт (не чаще троттлинга) + попытка
             # открыть позицию (кулдаун внутри эмулятора)
             if r.passed_threshold:
+                # 5a) ПРАВИЛО СООТНОШЕНИЯ: funding не должен быть главным
+                # драйвером. Спред 1% + funding 1% = отказ (спред сам есть
+                # цена funding-дифференциала, сходиться не будет).
+                if (r.funding_edge_pct > 0 and r.raw_spread_pct > 0
+                        and r.funding_edge_pct > self.funding_max_share * r.raw_spread_pct):
+                    if throttled:
+                        self._event("skip", f"{r.symbol} funding-dominated "
+                                    f"({r.funding_edge_pct:.2f}% > {self.funding_max_share:.0%} of {r.raw_spread_pct:.2f}%)")
+                    continue
+
+                # 5b) ВХОД ТОЛЬКО ПО РЕАЛЬНОМУ СТАКАНУ: спред должен
+                # существовать на ценах исполнения прямо сейчас. Сигнал
+                # считался по тикерам (могли устареть) — фантомный спред
+                # здесь отсеивается, иначе позиция становится ставкой на
+                # направление цены.
+                book_lo = ob_lo if r.exch_long == lo else ob_sh
+                book_sh = ob_sh if r.exch_short == sh else ob_lo
+                if (book_lo and book_lo.asks and book_sh and book_sh.bids):
+                    entry_long = book_lo.asks[0].price
+                    entry_short = book_sh.bids[0].price
+                    book_spread = (entry_short - entry_long) / entry_long * 100.0 if entry_long > 0 else -999
+                    if book_spread < self.min_threshold:
+                        if throttled:
+                            self._event("skip", f"{r.symbol} фантом: спред на стакане "
+                                        f"{book_spread:.3f}% < {self.min_threshold}%")
+                        continue
+
                 if throttled:
                     self.alerts.send_signal(r)
                     self._event("signal", f"{r.symbol} {r.exch_long}->{r.exch_short} net={r.net_edge_pct:+.3f}%")

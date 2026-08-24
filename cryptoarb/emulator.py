@@ -46,16 +46,18 @@ class VirtualPosition:
 class Emulator:
     def __init__(self, loggers, storage, alerts, position_size_usdt: float,
                  orphan_timeout_sec: float, cooldown_sec: float = 60.0,
-                 max_holding_hours: float = 72.0):
+                 max_holding_hours: float = 72.0, loss_cooldown_sec: float = 900.0):
         self.loggers = loggers
         self.storage = storage
         self.alerts = alerts
         self.position_size_usdt = position_size_usdt
         self.orphan_timeout_sec = orphan_timeout_sec
         self.cooldown_sec = cooldown_sec
+        self.loss_cooldown_sec = loss_cooldown_sec
         self.max_holding_hours = max_holding_hours
         self.open_positions: dict[str, VirtualPosition] = {}
         self._last_open: dict[tuple[str, str, str], float] = {}
+        self._last_loss: dict[tuple[str, str, str], float] = {}
         self.stats = {
             "trades_closed": 0, "wins": 0, "losses": 0,
             "orphan_aborts": 0, "opened": 0,
@@ -67,7 +69,13 @@ class Emulator:
 
     def _cooldown_active(self, key: tuple[str, str, str], now: float) -> bool:
         last = self._last_open.get(key)
-        return last is not None and (now - last) < self.cooldown_sec
+        if last is not None and (now - last) < self.cooldown_sec:
+            return True
+        # после убыточного закрытия — расширенный запрет на перезаход
+        last_loss = self._last_loss.get(key)
+        if last_loss is not None and (now - last_loss) < self.loss_cooldown_sec:
+            return True
+        return False
 
     def try_open(self, result: NetEdgeResult, q_long: Quote, q_short: Quote,
                  ob_long: OrderBookSnapshot | None, ob_short: OrderBookSnapshot | None) -> VirtualPosition | None:
@@ -166,6 +174,9 @@ class Emulator:
         self.stats["fees_usdt"] += total_fees
         self.stats["funding_usdt"] += funding_usdt
         self.stats["holding_sec_sum"] += holding_sec
+
+        if realized_pnl < 0:
+            self._last_loss[(pos.symbol, pos.exch_long, pos.exch_short)] = now
 
         self.loggers.emulator_trades.write({
             "event": "close", "trade_id": trade_id, "symbol": pos.symbol,
