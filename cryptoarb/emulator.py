@@ -39,6 +39,8 @@ class VirtualPosition:
     funding_interval_long: float
     funding_rate_short: float
     funding_interval_short: float
+    next_funding_ts_long: float | None
+    next_funding_ts_short: float | None
     entry_fees_usdt: float
     status: str = "open"
 
@@ -120,6 +122,7 @@ class Emulator:
             taker_long=q_long.taker_fee, taker_short=q_short.taker_fee,
             funding_rate_long=q_long.funding_rate, funding_interval_long=q_long.funding_interval_hours,
             funding_rate_short=q_short.funding_rate, funding_interval_short=q_short.funding_interval_hours,
+            next_funding_ts_long=q_long.next_funding_ts, next_funding_ts_short=q_short.next_funding_ts,
             entry_fees_usdt=entry_fees,
         )
         self.open_positions[trade_id] = pos
@@ -143,15 +146,49 @@ class Emulator:
 
     # -------------------- CLOSE --------------------
 
+    @staticmethod
+    def _funding_payments(next_ts: float | None, interval_h: float, open_ts: float, close_ts: float) -> float:
+        """Сколько начислений funding реально прошло за удержание.
+        Funding платится дискретно: только если держишь позицию в момент
+        начисления. Точный подсчёт — по календарю от next_ts (известен на
+        момент входа). Если биржа next_ts не отдала — фолбэк на непрерывное
+        начисление (старое поведение, помечено как приближение)."""
+        interval_sec = max(interval_h, 1e-6) * 3600.0
+        if next_ts and next_ts > 0:
+            if close_ts <= next_ts:
+                return 0.0
+            return float(int((close_ts - next_ts) // interval_sec) + 1)
+        return max(0.0, (close_ts - open_ts) / 3600.0 / max(interval_h, 1e-6))
+
     def try_close(self, trade_id: str, q_long: Quote, q_short: Quote,
-                  current_net_edge_pct: float, reason: str = "signal") -> float | None:
-        pos = self.open_positions.pop(trade_id, None)
+                  current_net_edge_pct: float, reason: str = "signal",
+                  ob_long: OrderBookSnapshot | None = None,
+                  ob_short: OrderBookSnapshot | None = None) -> float | None:
+        pos = self.open_positions.get(trade_id)
         if not pos:
             return None
 
         now = time.time()
-        exit_price_long = q_long.best_bid    # закрываем лонг продажей по bid
-        exit_price_short = q_short.best_ask  # закрываем шорт покупкой по ask
+
+        # Выход по реальной глубине (как вход): продаём лонг в bid-стакан,
+        # выкупаем шорт из ask-стакана. Если стаканы переданы и глубины
+        # не хватает — закрыться НЕЛЬЗЯ (нет ликвидности), позиция остаётся.
+        if ob_long is not None and ob_short is not None:
+            leg_close_long = simulate_leg_fill(ob_long, "sell", pos.size_usdt)
+            leg_close_short = simulate_leg_fill(ob_short, "buy", pos.size_usdt)
+            if not (leg_close_long.filled and leg_close_short.filled):
+                self.loggers.errors.write({
+                    "event": "exit_no_liquidity", "trade_id": trade_id,
+                    "symbol": pos.symbol,
+                    "long_ok": leg_close_long.filled, "short_ok": leg_close_short.filled,
+                })
+                return None
+            exit_price_long = leg_close_long.fill_price
+            exit_price_short = leg_close_short.fill_price
+        else:
+            # Фолбэк (стаканы недоступны): по лучшим ценам, приближение.
+            exit_price_long = q_long.best_bid
+            exit_price_short = q_short.best_ask
 
         price_pnl_long = (exit_price_long - pos.entry_price_long) / pos.entry_price_long * pos.size_usdt
         price_pnl_short = (pos.entry_price_short - exit_price_short) / pos.entry_price_short * pos.size_usdt
@@ -161,13 +198,15 @@ class Emulator:
         total_fees = pos.entry_fees_usdt + exit_fees
 
         holding_sec = now - pos.open_ts
-        holding_h = holding_sec / 3600.0
-        n_long = holding_h / max(pos.funding_interval_long, 1e-6)
-        n_short = holding_h / max(pos.funding_interval_short, 1e-6)
+        n_long = self._funding_payments(pos.next_funding_ts_long, pos.funding_interval_long,
+                                        pos.open_ts, now)
+        n_short = self._funding_payments(pos.next_funding_ts_short, pos.funding_interval_short,
+                                         pos.open_ts, now)
         funding_usdt = (pos.funding_rate_short * n_short - pos.funding_rate_long * n_long) * pos.size_usdt
 
         realized_pnl = price_pnl - total_fees + funding_usdt
 
+        self.open_positions.pop(trade_id, None)
         self.stats["trades_closed"] += 1
         self.stats["wins" if realized_pnl >= 0 else "losses"] += 1
         self.stats["pnl_usdt"] += realized_pnl

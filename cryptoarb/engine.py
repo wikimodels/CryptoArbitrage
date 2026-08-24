@@ -403,8 +403,10 @@ class Engine:
             # таймаут удержания
             if (now - pos.open_ts) / 3600.0 >= self.max_holding_h:
                 if pos.exch_long in quotes and pos.exch_short in quotes:
+                    ob_l = await self._get_ob(pos.exch_long, symbol)
+                    ob_s = await self._get_ob(pos.exch_short, symbol)
                     self.emulator.try_close(trade_id, quotes[pos.exch_long], quotes[pos.exch_short],
-                                            0.0, reason="max_holding")
+                                            0.0, reason="max_holding", ob_long=ob_l, ob_short=ob_s)
                 continue
             if pos.exch_long not in quotes or pos.exch_short not in quotes:
                 continue
@@ -415,8 +417,11 @@ class Engine:
                 slippage_buffer_pct=self.slippage_buffer,
             )
             if check.net_edge_pct <= self.min_threshold * self.exit_frac:
+                ob_l = await self._get_ob(pos.exch_long, symbol)
+                ob_s = await self._get_ob(pos.exch_short, symbol)
                 self.emulator.try_close(trade_id, quotes[pos.exch_long], quotes[pos.exch_short],
-                                        check.net_edge_pct, reason="converged")
+                                        check.net_edge_pct, reason="converged",
+                                        ob_long=ob_l, ob_short=ob_s)
 
     # -------------------- dashboard snapshot --------------------
 
