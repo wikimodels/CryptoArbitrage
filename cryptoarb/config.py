@@ -54,6 +54,7 @@ DEFAULTS: Dict[str, Any] = {
         "max_position_size_usdt": 1000,
         "orphan_leg_timeout_sec": 3,
         "cooldown_sec": 60,
+        "max_open_per_pair": 1,
         "loss_cooldown_sec": 900,
         "max_holding_hours": 72,
         "exit_threshold_frac": 0.5,

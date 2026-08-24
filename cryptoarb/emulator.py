@@ -55,7 +55,7 @@ class Emulator:
                  max_holding_hours: float = 72.0, loss_cooldown_sec: float = 900.0,
                  position_size_mode: str = "dynamic", dynamic_size_pct_of_book: float = 10.0,
                  dynamic_size_top_levels: int = 3, min_position_size_usdt: float = 50.0,
-                 max_position_size_usdt: float = 1000.0):
+                 max_position_size_usdt: float = 1000.0, max_open_per_pair: int = 1):
         self.loggers = loggers
         self.storage = storage
         self.alerts = alerts
@@ -63,6 +63,7 @@ class Emulator:
         self.orphan_timeout_sec = orphan_timeout_sec
         self.cooldown_sec = cooldown_sec
         self.loss_cooldown_sec = loss_cooldown_sec
+        self.max_open_per_pair = max(1, max_open_per_pair)
         self.max_holding_hours = max_holding_hours
         self.position_size_mode = position_size_mode
         self.dyn_pct = dynamic_size_pct_of_book
@@ -97,6 +98,11 @@ class Emulator:
     # -------------------- OPEN --------------------
 
     def _cooldown_active(self, key: tuple[str, str, str], now: float) -> bool:
+        # лимит одновременных позиций на тройку: уже открыта -> не дублируем
+        open_n = sum(1 for p in self.open_positions.values()
+                     if (p.symbol, p.exch_long, p.exch_short) == key)
+        if open_n >= self.max_open_per_pair:
+            return True
         last = self._last_open.get(key)
         if last is not None and (now - last) < self.cooldown_sec:
             return True
