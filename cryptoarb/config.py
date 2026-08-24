@@ -28,9 +28,14 @@ DEFAULTS: Dict[str, Any] = {
         "orderbook_concurrency": 8,
     },
     "scan": {
-        "interval_ms": 500,
+        "interval_ms": 200,
         "prefilter_pct": 0.05,
         "signal_log_throttle_sec": 5,
+    },
+    "scalp": {
+        "enabled": True,
+        "exit_spread_frac": 0.3,
+        "max_holding_sec": 90,
     },
     "scoring": {
         "min_threshold_pct": 0.30,

@@ -56,6 +56,11 @@ class Engine:
         self.max_holding_h = cfg["emulator"]["max_holding_hours"]
         self.emulator_enabled = cfg["emulator"]["enabled"]
 
+        sc = cfg.get("scalp", {})
+        self.scalp_enabled = bool(sc.get("enabled", False))
+        self.scalp_exit_frac = sc.get("exit_spread_frac", 0.3)
+        self.scalp_max_holding_sec = sc.get("max_holding_sec", 90)
+
         self.connectors: dict[str, CCXTConnector] = {}
         self.symbols: list[str] = []
         self.symbols_by_exchange: dict[str, set[str]] = {}
@@ -400,7 +405,31 @@ class Engine:
         for trade_id, pos in list(self.emulator.open_positions.items()):
             if pos.symbol != symbol:
                 continue
-            # таймаут удержания
+
+            # ---- Скальп-режим: выход на сжатии спреда или по тайм-стопу ----
+            if self.scalp_enabled:
+                if pos.exch_long in quotes and pos.exch_short in quotes:
+                    ql, qs = quotes[pos.exch_long], quotes[pos.exch_short]
+                    if ql.best_ask > 0:
+                        cur_spread = (qs.best_bid - ql.best_ask) / ql.best_ask * 100.0
+                        entry = getattr(pos, "entry_raw_spread_pct", 0.0) or 0.0
+                        # спред сжался до доли входного (и остался положительным)
+                        if entry > 0 and cur_spread > 0 and cur_spread <= entry * self.scalp_exit_frac:
+                            ob_l = await self._get_ob(pos.exch_long, symbol)
+                            ob_s = await self._get_ob(pos.exch_short, symbol)
+                            self.emulator.try_close(trade_id, ql, qs, cur_spread,
+                                                    reason="scalp_converged", ob_long=ob_l, ob_short=ob_s)
+                            continue
+                age_sec = now - pos.open_ts
+                if age_sec >= self.scalp_max_holding_sec:
+                    if pos.exch_long in quotes and pos.exch_short in quotes:
+                        ob_l = await self._get_ob(pos.exch_long, symbol)
+                        ob_s = await self._get_ob(pos.exch_short, symbol)
+                        self.emulator.try_close(trade_id, quotes[pos.exch_long], quotes[pos.exch_short],
+                                                0.0, reason="scalp_timeout", ob_long=ob_l, ob_short=ob_s)
+                    continue
+
+            # таймаут удержания (обычный режим)
             if (now - pos.open_ts) / 3600.0 >= self.max_holding_h:
                 if pos.exch_long in quotes and pos.exch_short in quotes:
                     ob_l = await self._get_ob(pos.exch_long, symbol)

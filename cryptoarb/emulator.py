@@ -42,6 +42,7 @@ class VirtualPosition:
     next_funding_ts_long: float | None
     next_funding_ts_short: float | None
     entry_fees_usdt: float
+    entry_raw_spread_pct: float = 0.0
     status: str = "open"
 
 
@@ -124,6 +125,7 @@ class Emulator:
             funding_rate_short=q_short.funding_rate, funding_interval_short=q_short.funding_interval_hours,
             next_funding_ts_long=q_long.next_funding_ts, next_funding_ts_short=q_short.next_funding_ts,
             entry_fees_usdt=entry_fees,
+            entry_raw_spread_pct=result.raw_spread_pct,
         )
         self.open_positions[trade_id] = pos
         self._last_open[key] = now
@@ -241,5 +243,6 @@ class Emulator:
             "trade_id": p.trade_id, "symbol": p.symbol,
             "exch_long": p.exch_long, "exch_short": p.exch_short,
             "entry_net_edge_pct": p.entry_net_edge_pct,
+            "entry_raw_spread_pct": getattr(p, "entry_raw_spread_pct", 0.0),
             "holding_seconds": now - p.open_ts, "size_usdt": p.size_usdt,
         } for p in self.open_positions.values()]
