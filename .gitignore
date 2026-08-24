@@ -13,3 +13,5 @@ logs/
 *.db
 *.db-wal
 *.db-shm
+server_out.log
+server_err.log
