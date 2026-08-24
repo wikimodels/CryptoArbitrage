@@ -1,0 +1,21 @@
+[project]
+name = "cryptoarb"
+version = "0.2.0"
+description = "CEX arbitrage screener: WS market data (ccxt.pro), self-calibrating scoring, trade emulator, dark dashboard"
+authors = [{ name = "CryptoArbitrage" }]
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "ccxt (>=4.5.0)",
+    "pyyaml (>=6.0)",
+    "fastapi (>=0.110)",
+    "uvicorn (>=0.29)",
+    "jinja2 (>=3.1)",
+]
+
+[project.scripts]
+cryptoarb = "cryptoarb.main:run"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,15 @@
+# virtualenv / poetry
+.venv/
+dist/
+*.egg-info/
+
+# python
+__pycache__/
+*.py[cod]
+
+# data & logs
+data/
+logs/
+*.db
+*.db-wal
+*.db-shm

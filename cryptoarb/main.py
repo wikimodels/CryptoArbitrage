@@ -1,0 +1,94 @@
+"""
+Точка входа CryptoArbitrage.
+
+Поднимает в одном event loop:
+  - Engine: WS-стримы цен (ccxt.pro) по всем биржам, REST funding,
+    сканер спредов, эмулятор сделок.
+  - Dashboard: FastAPI + WebSocket (тёмная тема), если включён в конфиге.
+
+Запуск:
+    poetry run cryptoarb                 # (script из pyproject)
+    poetry run python -m cryptoarb.main  # эквивалент
+    poetry run python -m cryptoarb.main --config config.yaml
+"""
+from __future__ import annotations
+
+import argparse
+import asyncio
+import logging
+
+from .alerts import ConsoleAlertChannel
+from .config import load_config
+from .emulator import Emulator
+from .engine import Engine
+from .logger_setup import Loggers
+from .storage import Storage
+
+
+def _setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)-7s | %(name)-10s | %(message)s",
+        datefmt="%H:%M:%S",
+    )
+    # ccxt довольно болтлив на INFO — приглушаем
+    logging.getLogger("ccxt").setLevel(logging.WARNING)
+
+
+async def main_async(config_path: str):
+    _setup_logging()
+    cfg = load_config(config_path)
+
+    loggers = Loggers(cfg["logging"]["dir"], cfg["logging"].get("retention_days", 90))
+    storage = Storage(cfg["storage"]["sqlite_path"], cfg["storage"].get("retention_days", 30))
+    alerts = ConsoleAlertChannel()
+    emulator = Emulator(
+        loggers, storage, alerts,
+        position_size_usdt=cfg["emulator"]["virtual_position_size_usdt"],
+        orphan_timeout_sec=cfg["emulator"]["orphan_leg_timeout_sec"],
+        cooldown_sec=cfg["emulator"]["cooldown_sec"],
+        max_holding_hours=cfg["emulator"]["max_holding_hours"],
+    )
+
+    engine = Engine(cfg, loggers, storage, alerts, emulator)
+    await engine.start()
+
+    server_task = None
+    if cfg["dashboard"]["enabled"]:
+        import uvicorn
+        from .dashboard import create_app
+        app = create_app(engine)
+        uv_cfg = uvicorn.Config(
+            app, host=cfg["dashboard"]["host"], port=cfg["dashboard"]["port"],
+            log_level="warning", loop="asyncio",
+        )
+        server = uvicorn.Server(uv_cfg)
+        server_task = asyncio.create_task(server.serve(), name="dashboard")
+        print(f"[SYSTEM] Дашборд: http://{cfg['dashboard']['host']}:{cfg['dashboard']['port']}")
+
+    try:
+        if server_task:
+            await server_task
+        else:
+            while True:
+                await asyncio.sleep(3600)
+    except (asyncio.CancelledError, KeyboardInterrupt):
+        pass
+    finally:
+        await engine.stop()
+        loggers.close_all()
+        storage.close()
+
+
+def run():
+    parser = argparse.ArgumentParser(description="CryptoArbitrage screener + dashboard")
+    parser.add_argument("--config", default="config.yaml")
+    args = parser.parse_args()
+    try:
+        asyncio.run(main_async(args.config))
+    except KeyboardInterrupt:
+        print("\n[SYSTEM] Остановка.")
+
+
+if __name__ == "__main__":
+    run()

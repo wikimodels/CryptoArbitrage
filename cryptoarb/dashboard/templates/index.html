@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CryptoArbitrage Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2128;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --green: #3fb950; --red: #f85149; --yellow: #d29922; --blue: #58a6ff;
+    --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.4;
+  }
+  /* dark scrollbars */
+  * { scrollbar-width: thin; scrollbar-color: var(--border) var(--bg); }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+  ::-webkit-scrollbar-corner { background: var(--bg); }
+
+  header {
+    padding: 14px 24px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10;
+  }
+  header h1 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--red); transition: background .3s; }
+  .dot.live { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  header .meta { color: var(--muted); font-size: 13px; margin-left: auto; display: flex; gap: 18px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .card .value { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .value.pos { color: var(--green); } .value.neg { color: var(--red); }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 10px 18px; cursor: pointer; color: var(--muted); font-weight: 500;
+    border-bottom: 2px solid transparent; user-select: none;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+  .panel { display: none; } .panel.active { display: block; }
+
+  .toolbar { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
+  .toolbar input {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; border-radius: 8px; font-size: 13px; width: 240px; outline: none;
+  }
+  .toolbar input:focus { border-color: var(--accent); }
+  .toolbar label { color: var(--muted); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: auto; max-height: 68vh; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { padding: 9px 14px; text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th {
+    background: var(--surface2); color: var(--muted); font-weight: 600; font-size: 12px;
+    position: sticky; top: 0; text-transform: uppercase; letter-spacing: .03em; cursor: pointer;
+  }
+  tbody tr { border-top: 1px solid var(--border); }
+  tbody tr:hover { background: var(--surface2); }
+  .sym { font-weight: 600; }
+  .num.pos { color: var(--green); } .num.neg { color: var(--red); } .muted { color: var(--muted); }
+  .badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .badge.pass { background: rgba(63,185,80,.15); color: var(--green); }
+  .badge.no { background: rgba(139,148,158,.12); color: var(--muted); }
+  .badge.suspect { background: rgba(210,153,34,.18); color: var(--yellow); }
+  .ex { color: var(--blue); font-weight: 600; }
+
+  .events { list-style: none; }
+  .events li { padding: 8px 12px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; }
+  .events .t { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .lvl-signal { color: var(--green); } .lvl-error { color: var(--red); } .lvl-system { color: var(--blue); }
+
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="dot" id="liveDot"></span> CryptoArbitrage</h1>
+  <div class="meta">
+    <span id="mUptime">uptime —</span>
+    <span id="mScan">scan —</span>
+    <span id="mSymbols">symbols —</span>
+    <span id="mThreshold">порог —</span>
+  </div>
+</header>
+
+<div class="container">
+  <div class="cards" id="cards"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="spreads">Спреды</div>
+    <div class="tab" data-tab="positions">Позиции</div>
+    <div class="tab" data-tab="exchanges">Биржи</div>
+    <div class="tab" data-tab="events">События</div>
+  </div>
+
+  <div class="panel active" id="panel-spreads">
+    <div class="toolbar">
+      <input id="filter" placeholder="Фильтр по символу/бирже…" oninput="render()">
+      <label><input type="checkbox" id="onlyPass" onchange="render()"> только прошедшие порог</label>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>LONG (дешевле)</th><th>SHORT (дороже)</th>
+          <th>Спред %</th><th>Funding %</th><th>Fees %</th><th>Slippage %</th>
+          <th>Net edge %</th><th>Статус</th>
+        </tr></thead>
+        <tbody id="spreadsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-positions">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>LONG</th><th>SHORT</th><th>Entry net %</th>
+          <th>Размер USDT</th><th>Удержание</th><th>Trade ID</th>
+        </tr></thead>
+        <tbody id="posBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-exchanges">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Биржа</th><th>WS</th><th>Свежих символов</th></tr></thead>
+        <tbody id="exBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-events">
+    <div class="table-wrap">
+      <ul class="events" id="eventsList"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+let snapshot = null;
+
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(t => t.onclick = () => {
+  tabs.forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+});
+
+function fmtDur(s) {
+  if (s == null) return '—';
+  s = Math.floor(s);
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h) return `${h}ч ${m}м`;
+  if (m) return `${m}м ${sec}с`;
+  return `${sec}с`;
+}
+function cls(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : 'muted'; }
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws.onopen = () => document.getElementById('liveDot').classList.add('live');
+  ws.onclose = () => { document.getElementById('liveDot').classList.remove('live'); setTimeout(connect, 2000); };
+  ws.onmessage = (e) => { snapshot = JSON.parse(e.data); render(); };
+}
+
+function render() {
+  if (!snapshot) return;
+  const s = snapshot;
+
+  document.getElementById('mUptime').textContent = 'uptime ' + fmtDur(s.uptime_sec);
+  document.getElementById('mScan').textContent = 'scan ' + (s.last_scan_age_sec==null?'—':(s.last_scan_age_sec.toFixed(1)+'с назад'));
+  document.getElementById('mSymbols').textContent = 'symbols ' + s.symbols_total;
+  document.getElementById('mThreshold').textContent = 'порог ' + s.min_threshold_pct + '%';
+
+  const st = s.stats;
+  document.getElementById('cards').innerHTML = `
+    ${card('Открытых позиций', st.open_positions)}
+    ${card('Всего открыто', st.opened)}
+    ${card('Закрыто', st.closed)}
+    ${card('Win rate', st.win_rate_pct + '%')}
+    ${card('PnL USDT', st.pnl_usdt.toFixed(2), st.pnl_usdt)}
+    ${card('Комиссии USDT', '-' + st.fees_usdt.toFixed(2), -1)}
+    ${card('Funding USDT', st.funding_usdt.toFixed(2), st.funding_usdt)}
+    ${card('Orphan-legs', st.orphan_aborts)}
+    ${card('Ср. удержание', fmtDur(st.avg_holding_sec))}
+  `;
+
+  // spreads
+  const f = document.getElementById('filter').value.trim().toLowerCase();
+  const onlyPass = document.getElementById('onlyPass').checked;
+  let rows = s.spreads;
+  if (f) rows = rows.filter(r => (r.symbol+r.exch_long+r.exch_short).toLowerCase().includes(f));
+  if (onlyPass) rows = rows.filter(r => r.passed);
+  const body = document.getElementById('spreadsBody');
+  if (!rows.length) { body.innerHTML = `<tr><td colspan="9" class="empty">Нет данных</td></tr>`; }
+  else body.innerHTML = rows.map(r => `
+    <tr>
+      <td class="sym">${esc(r.symbol)}</td>
+      <td class="ex">${esc(r.exch_long)}</td>
+      <td class="ex">${esc(r.exch_short)}</td>
+      <td class="num ${cls(r.raw_spread_pct)}">${r.raw_spread_pct.toFixed(3)}</td>
+      <td class="num ${cls(r.funding_edge_pct)}">${r.funding_edge_pct.toFixed(3)}</td>
+      <td class="num neg">-${r.fees_pct.toFixed(3)}</td>
+      <td class="num neg">-${r.slippage_pct.toFixed(3)}</td>
+      <td class="num ${cls(r.net_edge_pct)}"><b>${r.net_edge_pct.toFixed(3)}</b></td>
+      <td>${r.suspect ? '<span class="badge suspect" title="dt='+r.leg_dt_sec+'s, top=$'+r.top_notional_usdt+'">⚠ SUSPECT</span>' : (r.passed?'<span class="badge pass">PASS</span>':'<span class="badge no">—</span>')}</td>
+    </tr>`).join('');
+
+  // positions
+  const pb = document.getElementById('posBody');
+  if (!s.positions.length) pb.innerHTML = `<tr><td colspan="7" class="empty">Открытых позиций нет</td></tr>`;
+  else pb.innerHTML = s.positions.map(p => `
+    <tr>
+      <td class="sym">${esc(p.symbol)}</td>
+      <td class="ex">${esc(p.exch_long)}</td>
+      <td class="ex">${esc(p.exch_short)}</td>
+      <td class="num ${cls(p.entry_net_edge_pct)}">${p.entry_net_edge_pct.toFixed(3)}</td>
+      <td class="num">${p.size_usdt.toFixed(0)}</td>
+      <td class="num">${fmtDur(p.holding_seconds)}</td>
+      <td class="muted">${p.trade_id.slice(0,8)}</td>
+    </tr>`).join('');
+
+  // exchanges
+  document.getElementById('exBody').innerHTML = s.exchanges.map(e => `
+    <tr>
+      <td class="sym">${esc(e.name)}</td>
+      <td>${e.ws_alive?'<span class="badge pass">LIVE</span>':'<span class="badge no">OFF</span>'}</td>
+      <td class="num">${e.fresh_symbols}</td>
+    </tr>`).join('');
+
+  // events
+  document.getElementById('eventsList').innerHTML = s.events.map(ev => {
+    const t = new Date(ev.ts*1000).toLocaleTimeString('ru-RU');
+    return `<li><span class="t">${t}</span><span class="lvl-${ev.level}">${esc(ev.msg)}</span></li>`;
+  }).join('') || `<li class="empty">Событий пока нет</li>`;
+}
+
+function card(label, value, signed) {
+  let c = '';
+  if (signed !== undefined) c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
+  return `<div class="card"><div class="label">${label}</div><div class="value ${c}">${value}</div></div>`;
+}
+
+connect();
+</script>
+</body>
+</html>
