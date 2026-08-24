@@ -302,9 +302,11 @@ class Engine:
                 position_size_usdt=self.size_usdt,
             )
 
-            # 4) Троттлинг логирования сигнала на пару
+            # 4) Троттлинг логирования сигнала на пару (и алертов — иначе
+            # консоль заливает каждый проход сканера)
             key = (symbol, r.exch_long, r.exch_short)
-            if now - self._signal_last_log.get(key, 0.0) >= self.signal_throttle:
+            throttled = now - self._signal_last_log.get(key, 0.0) >= self.signal_throttle
+            if throttled:
                 self._signal_last_log[key] = now
                 self.loggers.signals.write({
                     "symbol": r.symbol, "exch_long": r.exch_long, "exch_short": r.exch_short,
@@ -316,10 +318,12 @@ class Engine:
                 self.storage.save_quote(quotes[lo])
                 self.storage.save_quote(quotes[sh])
 
-            # 5) Прошедший порог -> алерт + попытка открыть (с кулдауном внутри)
+            # 5) Прошедший порог -> алерт (не чаще троттлинга) + попытка
+            # открыть позицию (кулдаун внутри эмулятора)
             if r.passed_threshold:
-                self.alerts.send_signal(r)
-                self._event("signal", f"{r.symbol} {r.exch_long}->{r.exch_short} net={r.net_edge_pct:+.3f}%")
+                if throttled:
+                    self.alerts.send_signal(r)
+                    self._event("signal", f"{r.symbol} {r.exch_long}->{r.exch_short} net={r.net_edge_pct:+.3f}%")
                 if self.emulator_enabled:
                     q_long = quotes[r.exch_long]
                     q_short = quotes[r.exch_short]

@@ -6,7 +6,7 @@ import asyncio
 from pathlib import Path
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 
@@ -19,14 +19,27 @@ def create_app(engine) -> FastAPI:
 
     @app.get("/", response_class=HTMLResponse)
     async def index(request: Request):
-        return templates.TemplateResponse("index.html", {"request": request})
+        # Новый API starlette (>=0.29): request первым, keyword-аргументы
+        return templates.TemplateResponse(request=request, name="index.html")
+
+    @app.get("/favicon.ico")
+    async def favicon():
+        return Response(status_code=204)
+
+    @app.get("/health")
+    async def health():
+        return {"ok": True, "running": engine is not None}
 
     @app.websocket("/ws")
     async def ws(websocket: WebSocket):
         await websocket.accept()
         try:
             while True:
-                await websocket.send_json(engine.snapshot())
+                try:
+                    snap = engine.snapshot() if engine else {"error": "engine not ready"}
+                except Exception as e:
+                    snap = {"error": str(e)}
+                await websocket.send_json(snap)
                 await asyncio.sleep(1.0)
         except WebSocketDisconnect:
             pass

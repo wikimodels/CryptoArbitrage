@@ -16,6 +16,17 @@ from __future__ import annotations
 import argparse
 import asyncio
 import logging
+import sys
+
+
+def _force_utf8_stdio():
+    """Windows-консоли часто cp1252 — кириллические print падают.
+    Принудительно UTF-8 с заменой непечатаемых, независимо от окружения."""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
 from .alerts import ConsoleAlertChannel
 from .config import load_config
@@ -81,6 +92,7 @@ async def main_async(config_path: str):
 
 
 def run():
+    _force_utf8_stdio()
     parser = argparse.ArgumentParser(description="CryptoArbitrage screener + dashboard")
     parser.add_argument("--config", default="config.yaml")
     args = parser.parse_args()
