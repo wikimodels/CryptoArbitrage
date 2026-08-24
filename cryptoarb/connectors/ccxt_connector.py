@@ -104,50 +104,66 @@ class CCXTConnector(ExchangeConnector):
     # -------------------- WS PRICES --------------------
 
     async def watch_prices(self, symbols: list[str], on_price: PriceCallback) -> None:
-        """Долгоживущий цикл. Сам переподключается. Останавливается по close()."""
+        """Долгоживущий цикл сбора цен. Авто-выбор транспорта:
+        watch_tickers (если проходит проба) иначе bulk REST fetch_tickers.
+        Символы чанкуются (лимиты бирж вроде kucoin ≤100). Сам реконнектит."""
+        if not symbols:
+            return
+        use_ws = self._supports_watch_tickers and await self._probe_ws(symbols[:10])
+        mode = "watch_tickers" if use_ws else "REST fetch_tickers"
+        log.info("[%s] транспорт цен: %s (%d символов)", self.name, mode, len(symbols))
+
+        chunk = max(1, self.max_ws_symbols)
+        batches = [symbols[i:i + chunk] for i in range(0, len(symbols), chunk)]
+        runner = self._ws_batch if use_ws else self._rest_batch
+        await asyncio.gather(*(runner(b, on_price) for b in batches))
+
+    async def _probe_ws(self, sample: list[str]) -> bool:
+        try:
+            await asyncio.wait_for(self._client.watch_tickers(sample), timeout=8)
+            return True
+        except Exception as e:
+            log.info("[%s] watch_tickers недоступен (%s) -> REST", self.name, str(e)[:60])
+            return False
+
+    async def _ws_batch(self, batch: list[str], on_price: PriceCallback):
         backoff = 1.0
+        fails = 0
         while not self._closed:
             try:
-                if self._supports_watch_bidsasks:
-                    await self._loop_bids_asks(symbols, on_price)
-                elif self._supports_watch_tickers:
-                    await self._loop_tickers(symbols, on_price)
-                else:
-                    await self._loop_rest(symbols, on_price)
+                data = await self._client.watch_tickers(batch)
+                for sym, t in data.items():
+                    self._emit(sym, t, on_price)
                 backoff = 1.0
+                fails = 0
             except asyncio.CancelledError:
                 raise
             except Exception as e:
                 if self._closed:
                     return
-                log.warning("[%s] WS обрыв: %s — реконнект через %.1fs", self.name, e, backoff)
+                fails += 1
+                if fails >= 3:
+                    log.warning("[%s] watch_tickers падает (%s) -> REST для чанка", self.name, str(e)[:50])
+                    await self._rest_batch(batch, on_price)
+                    return
                 await asyncio.sleep(backoff)
                 backoff = min(backoff * 2, 30.0)
 
-    async def _loop_bids_asks(self, symbols, on_price):
-        while not self._closed:
-            data = await self._client.watch_bids_asks(symbols)
-            for sym, t in data.items():
-                self._emit(sym, t, on_price)
-
-    async def _loop_tickers(self, symbols, on_price):
-        while not self._closed:
-            data = await self._client.watch_tickers(symbols)
-            for sym, t in data.items():
-                self._emit(sym, t, on_price)
-
-    async def _loop_rest(self, symbols, on_price):
-        # Фолбэк для бирж без watchTickers — вежливый REST-поллинг.
+    async def _rest_batch(self, batch: list[str], on_price: PriceCallback):
         while not self._closed:
             try:
-                data = await self._client.fetch_tickers(symbols)
+                data = await self._client.fetch_tickers(batch)
                 for sym, t in data.items():
                     self._emit(sym, t, on_price)
+            except asyncio.CancelledError:
+                raise
             except Exception as e:
-                log.debug("[%s] REST tickers: %s", self.name, e)
+                log.debug("[%s] REST tickers: %s", self.name, str(e)[:50])
             await asyncio.sleep(1.0)
 
-    def _emit(self, sym: str, t: dict, on_price: PriceCallback):
+    def _emit(self, sym: str, t, on_price: PriceCallback):
+        if not isinstance(t, dict):
+            return  # некоторые биржи (coinex) шлют иной payload
         bid = t.get("bid")
         ask = t.get("ask")
         if bid is None or ask is None:

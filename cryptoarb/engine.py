@@ -11,15 +11,16 @@ from __future__ import annotations
 import asyncio
 import itertools
 import logging
+import json
 import time
 from collections import deque
+from pathlib import Path
 
 from .calc import compute_net_edge
 from .connectors import CCXTConnector
 from .market_state import MarketState
 
 log = logging.getLogger("engine")
-
 
 class Engine:
     def __init__(self, cfg, loggers, storage, alerts, emulator):
@@ -128,9 +129,54 @@ class Engine:
                     counter[s] += 1
             except Exception as e:
                 self.loggers.errors.write({"event": "fetch_symbols_failed", "exchange": name, "error": str(e)})
-        self.symbols = sorted(s for s, n in counter.items() if n >= 2)
-        self._event("system", f"Общих символов (2+ биржи): {len(self.symbols)}")
-        log.info("Общих символов: %d", len(self.symbols))
+
+        flt = self.cfg.get("filters", {})
+        min_common = int(flt.get("min_common_exchanges", 2))
+        exclude_bases = set(flt.get("exclude_bases", []))
+        exclude_symbols = set(flt.get("exclude_symbols", []))
+
+        # common = только на >= min_common биржах
+        common = {s for s, n in counter.items() if n >= min_common}
+
+        # применяем фильтры исключений
+        def _excluded(sym: str) -> bool:
+            if sym in exclude_symbols:
+                return True
+            base = sym.split("/")[0]
+            return base in exclude_bases
+
+        self.symbols = sorted(s for s in common if not _excluded(s))
+
+        self._event("system", (
+            f"Каталог: {len(self.symbols)} символов (2+ биржи: {len(common)}, "
+            f"исключено: {len(common) - len(self.symbols)})"
+        ))
+        log.info("Каталог: %d символов", len(self.symbols))
+
+        # видимый каталог для контроля
+        try:
+            out_dir = Path(self.cfg.get("output_dir", "output"))
+            out_dir.mkdir(parents=True, exist_ok=True)
+            catalog = {
+                "generated_ts": time.time(),
+                "min_common_exchanges": min_common,
+                "total_symbols": len(self.symbols),
+                "symbols": [
+                    {
+                        "symbol": s,
+                        "exchanges": sorted(x for x in self.connectors if s in self.symbols_by_exchange.get(x, set())),
+                        "n_exchanges": len([x for x in self.connectors if s in self.symbols_by_exchange.get(x, set())]),
+                    }
+                    for s in self.symbols
+                ],
+                "coverage": {
+                    name: len([s for s in self.symbols if s in self.symbols_by_exchange.get(name, set())])
+                    for name in self.connectors
+                },
+            }
+            (out_dir / "catalog.json").write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+        except Exception as e:
+            self.loggers.errors.write({"event": "catalog_write_failed", "error": str(e)})
 
     async def _symbols_refresh_loop(self):
         interval = self.cfg["symbols_refresh_hours"] * 3600

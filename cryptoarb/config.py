@@ -10,6 +10,12 @@ import yaml
 DEFAULTS: Dict[str, Any] = {
     "exchanges": ["bybit", "okx"],
     "symbols_refresh_hours": 6,
+    "filters": {
+        "min_common_exchanges": 2,
+        "exclude_bases": [],
+        "exclude_symbols": [],
+    },
+    "output_dir": "output",
     "market": {
         "staleness_sec": 6,
         "max_leg_dt_sec": 2.0,
