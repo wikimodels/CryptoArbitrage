@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS emulator_trades (
     entry_net_edge_pct REAL, exit_net_edge_pct REAL,
     price_pnl_usdt REAL, fees_usdt REAL, funding_usdt REAL,
     realized_pnl_usdt REAL, holding_seconds REAL,
-    orphan_leg INTEGER, status TEXT
+    orphan_leg INTEGER, status TEXT, strategy TEXT
 );
 """
 
@@ -51,6 +51,11 @@ class Storage:
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.execute("PRAGMA synchronous=NORMAL")
         self._conn.executescript(SCHEMA)
+        # миграция старых баз: колонка strategy
+        try:
+            self._conn.execute("ALTER TABLE emulator_trades ADD COLUMN strategy TEXT")
+        except Exception:
+            pass
         self._conn.commit()
         self._q: "queue.Queue" = queue.Queue(maxsize=100_000)
         self._last_retention = 0.0
@@ -76,6 +81,7 @@ class Storage:
             t.get("price_pnl_usdt"), t.get("fees_usdt"), t.get("funding_usdt"),
             t.get("realized_pnl_usdt"), t.get("holding_seconds"),
             int(t.get("orphan_leg", False)), t.get("status"),
+            t.get("strategy", "arb"),
         )))
 
     def _put(self, item) -> None:

@@ -51,15 +51,19 @@ class Engine:
         self.slippage_buffer = sc["slippage_buffer_pct"]
         self.funding_max_share = sc.get("funding_max_share_of_spread", 0.3)
 
-        self.size_usdt = cfg["emulator"]["virtual_position_size_usdt"]
+        self.size_usdt = cfg["emulator"]["virtual_position_size_usdt"] if "virtual_position_size_usdt" in cfg["emulator"] else cfg["emulator"].get("fixed_position_size_usdt", 1000)
         self.exit_frac = cfg["emulator"]["exit_threshold_frac"]
         self.max_holding_h = cfg["emulator"]["max_holding_hours"]
         self.emulator_enabled = cfg["emulator"]["enabled"]
+        self.size_mode = cfg["emulator"].get("position_size_mode", "dynamic")
+        self.min_size = cfg["emulator"].get("min_position_size_usdt", 50)
+        self.max_size = cfg["emulator"].get("max_position_size_usdt", 1000)
 
         sc = cfg.get("scalp", {})
         self.scalp_enabled = bool(sc.get("enabled", False))
         self.scalp_exit_frac = sc.get("exit_spread_frac", 0.3)
         self.scalp_max_holding_sec = sc.get("max_holding_sec", 90)
+        self.scalp_max_entry_spread = sc.get("max_entry_spread_pct", 1.0)
 
         self.connectors: dict[str, CCXTConnector] = {}
         self.symbols: list[str] = []
@@ -301,13 +305,22 @@ class Engine:
             # 3) Полный расчёт со стаканом только для кандидата
             ob_lo = await self._get_ob(lo, symbol)
             ob_sh = await self._get_ob(sh, symbol)
+
+            # 3a) Динамический размер: не двигаем стакан. 0 = слишком тонко.
+            if self.emulator_enabled and self.size_mode == "dynamic":
+                dyn_size = self.emulator.calc_dynamic_size(ob_lo, ob_sh)
+                if dyn_size <= 0:
+                    continue
+            else:
+                dyn_size = None  # fixed-режим: размер по умолчанию
+
             r = compute_net_edge(
                 quotes[lo], quotes[sh],
                 holding_hours=self.holding_hours,
                 min_threshold_pct=self.min_threshold,
                 slippage_buffer_pct=self.slippage_buffer,
                 ob_a=ob_lo, ob_b=ob_sh,
-                position_size_usdt=self.size_usdt,
+                position_size_usdt=dyn_size or self.size_usdt,
             )
 
             # 4) Троттлинг логирования сигнала на пару (и алертов — иначе
@@ -363,9 +376,15 @@ class Engine:
                 if self.emulator_enabled:
                     q_long = quotes[r.exch_long]
                     q_short = quotes[r.exch_short]
+                    # Сплит стратегий: мелькающий спред < max_entry -> СКАЛЬП
+                    # (быстрый выход на сжатии), жирный -> ПОЗИЦИОННЫЙ АРБИТРАЖ
+                    strategy = ("scalp" if (self.scalp_enabled
+                                            and r.raw_spread_pct < self.scalp_max_entry_spread)
+                                else "arb")
                     self.emulator.try_open(r, q_long, q_short,
                                            ob_lo if r.exch_long == lo else ob_sh,
-                                           ob_sh if r.exch_short == sh else ob_lo)
+                                           ob_sh if r.exch_short == sh else ob_lo,
+                                           strategy=strategy, size_usdt=dyn_size)
 
     def _drop_price_outliers(self, quotes: dict) -> dict:
         """Одноимённые, но РАЗНЫЕ токены (один тикер на разных биржах):
@@ -406,14 +425,15 @@ class Engine:
             if pos.symbol != symbol:
                 continue
 
-            # ---- Скальп-режим: выход на сжатии спреда или по тайм-стопу ----
-            if self.scalp_enabled:
+            strategy = getattr(pos, "strategy", "arb")
+
+            # ---- СКАЛЬП: выход на сжатии спреда или по тайм-стопу ----
+            if strategy == "scalp" and self.scalp_enabled:
                 if pos.exch_long in quotes and pos.exch_short in quotes:
                     ql, qs = quotes[pos.exch_long], quotes[pos.exch_short]
                     if ql.best_ask > 0:
                         cur_spread = (qs.best_bid - ql.best_ask) / ql.best_ask * 100.0
                         entry = getattr(pos, "entry_raw_spread_pct", 0.0) or 0.0
-                        # спред сжался до доли входного (и остался положительным)
                         if entry > 0 and cur_spread > 0 and cur_spread <= entry * self.scalp_exit_frac:
                             ob_l = await self._get_ob(pos.exch_long, symbol)
                             ob_s = await self._get_ob(pos.exch_short, symbol)
@@ -429,7 +449,7 @@ class Engine:
                                                 0.0, reason="scalp_timeout", ob_long=ob_l, ob_short=ob_s)
                     continue
 
-            # таймаут удержания (обычный режим)
+            # ---- ПОЗИЦИОННЫЙ АРБИТРАЖ: ждём схождения net_edge / таймаут часов ----
             if (now - pos.open_ts) / 3600.0 >= self.max_holding_h:
                 if pos.exch_long in quotes and pos.exch_short in quotes:
                     ob_l = await self._get_ob(pos.exch_long, symbol)
@@ -497,10 +517,24 @@ class Engine:
             })
         spreads.sort(key=lambda x: x["net_edge_pct"], reverse=True)
 
-        st = self.emulator.stats
-        closed = st["trades_closed"]
-        win_rate = (st["wins"] / closed * 100.0) if closed else 0.0
-        avg_hold = (st["holding_sec_sum"] / closed) if closed else 0.0
+        def snap_stats(st: dict, open_n: int) -> dict:
+            closed = st["closed"]
+            return {
+                "opened": st["opened"], "closed": closed,
+                "wins": st["wins"], "losses": st["losses"],
+                "orphan_aborts": st["orphan_aborts"],
+                "win_rate_pct": round(st["wins"] / closed * 100.0, 1) if closed else 0.0,
+                "pnl_usdt": round(st["pnl_usdt"], 2),
+                "fees_usdt": round(st["fees_usdt"], 2),
+                "funding_usdt": round(st["funding_usdt"], 2),
+                "avg_holding_sec": round(st["holding_sec_sum"] / closed, 1) if closed else 0.0,
+                "open_positions": open_n,
+            }
+
+        emu_stats = self.emulator.stats
+        positions = self.emulator.positions_snapshot()
+        n_arb = sum(1 for p in positions if p.get("strategy") == "arb")
+        n_scalp = sum(1 for p in positions if p.get("strategy") == "scalp")
         fresh_counts = self.state.fresh_count_by_exchange(self.exchanges)
 
         return {
@@ -515,17 +549,11 @@ class Engine:
             "symbols_total": len(self.symbols),
             "min_threshold_pct": self.min_threshold,
             "spreads": spreads[:60],
-            "positions": self.emulator.positions_snapshot(),
+            "positions": positions,
             "stats": {
-                "opened": st["opened"], "closed": closed,
-                "wins": st["wins"], "losses": st["losses"],
-                "orphan_aborts": st["orphan_aborts"],
-                "win_rate_pct": round(win_rate, 1),
-                "pnl_usdt": round(st["pnl_usdt"], 2),
-                "fees_usdt": round(st["fees_usdt"], 2),
-                "funding_usdt": round(st["funding_usdt"], 2),
-                "avg_holding_sec": round(avg_hold, 1),
-                "open_positions": len(self.emulator.open_positions),
+                "arb": snap_stats(emu_stats.get("arb", {}), n_arb),
+                "scalp": snap_stats(emu_stats.get("scalp", {}), n_scalp),
+                "open_positions": len(positions),
             },
             "events": list(self.events)[:40],
         }

@@ -127,8 +127,8 @@
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>Символ</th><th>LONG</th><th>SHORT</th><th>Entry net %</th>
-          <th>Размер USDT</th><th>Удержание</th><th>Trade ID</th>
+          <th>Стратегия</th><th>Символ</th><th>LONG</th><th>SHORT</th><th>Entry net %</th>
+          <th>Вход. спред %</th><th>Размер USDT</th><th>Удержание</th><th>Trade ID</th>
         </tr></thead>
         <tbody id="posBody"></tbody>
       </table>
@@ -190,17 +190,16 @@ function render() {
   document.getElementById('mSymbols').textContent = 'symbols ' + s.symbols_total;
   document.getElementById('mThreshold').textContent = 'порог ' + s.min_threshold_pct + '%';
 
-  const st = s.stats;
+  const arb = s.stats.arb, scp = s.stats.scalp;
   document.getElementById('cards').innerHTML = `
-    ${card('Открытых позиций', st.open_positions)}
-    ${card('Всего открыто', st.opened)}
-    ${card('Закрыто', st.closed)}
-    ${card('Win rate', st.win_rate_pct + '%')}
-    ${card('PnL USDT', st.pnl_usdt.toFixed(2), st.pnl_usdt)}
-    ${card('Комиссии USDT', '-' + st.fees_usdt.toFixed(2), -1)}
-    ${card('Funding USDT', st.funding_usdt.toFixed(2), st.funding_usdt)}
-    ${card('Orphan-legs', st.orphan_aborts)}
-    ${card('Ср. удержание', fmtDur(st.avg_holding_sec))}
+    ${card('Позиций открыто', s.stats.open_positions)}
+    ${card('ARB: сделок', `${arb.closed} (WR ${arb.win_rate_pct}%)`)}
+    ${card('ARB: PnL USDT', arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
+    ${card('SCALP: сделок', `${scp.closed} (WR ${scp.win_rate_pct}%)`)}
+    ${card('SCALP: PnL USDT', scp.pnl_usdt.toFixed(2), scp.pnl_usdt)}
+    ${card('Комиссии Σ', '-' + (arb.fees_usdt + scp.fees_usdt).toFixed(2), -1)}
+    ${card('Funding Σ', (arb.funding_usdt + scp.funding_usdt).toFixed(2), arb.funding_usdt + scp.funding_usdt)}
+    ${card('Orphan-legs Σ', arb.orphan_aborts + scp.orphan_aborts)}
   `;
 
   // spreads
@@ -227,13 +226,15 @@ function render() {
 
   // positions
   const pb = document.getElementById('posBody');
-  if (!s.positions.length) pb.innerHTML = `<tr><td colspan="7" class="empty">Открытых позиций нет</td></tr>`;
+  if (!s.positions.length) pb.innerHTML = `<tr><td colspan="9" class="empty">Открытых позиций нет</td></tr>`;
   else pb.innerHTML = s.positions.map(p => `
     <tr>
+      <td><span class="badge ${p.strategy==='scalp'?'suspect':'pass'}">${p.strategy==='scalp'?'SCALP':'ARB'}</span></td>
       <td class="sym">${esc(p.symbol)}</td>
       <td class="ex">${esc(p.exch_long)}</td>
       <td class="ex">${esc(p.exch_short)}</td>
       <td class="num ${cls(p.entry_net_edge_pct)}">${p.entry_net_edge_pct.toFixed(3)}</td>
+      <td class="num">${(p.entry_raw_spread_pct||0).toFixed(3)}</td>
       <td class="num">${p.size_usdt.toFixed(0)}</td>
       <td class="num">${fmtDur(p.holding_seconds)}</td>
       <td class="muted">${p.trade_id.slice(0,8)}</td>

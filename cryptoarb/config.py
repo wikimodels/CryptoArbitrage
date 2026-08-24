@@ -46,7 +46,12 @@ DEFAULTS: Dict[str, Any] = {
     "default_fees": {"taker": 0.0006, "maker": 0.0002},
     "emulator": {
         "enabled": True,
-        "virtual_position_size_usdt": 1000,
+        "position_size_mode": "dynamic",
+        "fixed_position_size_usdt": 1000,
+        "dynamic_size_pct_of_book": 10,
+        "dynamic_size_top_levels": 3,
+        "min_position_size_usdt": 50,
+        "max_position_size_usdt": 1000,
         "orphan_leg_timeout_sec": 3,
         "cooldown_sec": 60,
         "loss_cooldown_sec": 900,

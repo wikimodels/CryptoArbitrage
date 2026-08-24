@@ -1,5 +1,5 @@
 {
-  "generated_ts": 1787588623.141344,
+  "generated_ts": 1787591176.977372,
   "min_common_exchanges": 2,
   "total_symbols": 928,
   "symbols": [
@@ -1914,6 +1914,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -1922,7 +1923,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "BNC/USDT:USDT",
@@ -2142,6 +2143,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -2150,7 +2152,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "BTR/USDT:USDT",
@@ -3575,6 +3577,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -3583,7 +3586,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "ETHBTC/USDT:USDT",
@@ -4717,6 +4720,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -4725,7 +4729,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "HYPER/USDT:USDT",
@@ -6589,6 +6593,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -6597,7 +6602,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "NEIRO/USDT:USDT",
@@ -8796,6 +8801,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -8804,7 +8810,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "SOLAYER/USDT:USDT",
@@ -9270,6 +9276,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -9278,7 +9285,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "SUN/USDT:USDT",
@@ -10583,6 +10590,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -10590,7 +10598,7 @@
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 10
     },
     {
       "symbol": "XBI/USDT:USDT",
@@ -10825,6 +10833,7 @@
         "binance",
         "bingx",
         "bitget",
+        "bitmex",
         "bybit",
         "coinex",
         "gateio",
@@ -10833,7 +10842,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 10
+      "n_exchanges": 11
     },
     {
       "symbol": "XTZ/USDT:USDT",
@@ -11203,6 +11212,7 @@
     "kucoin": 651,
     "htx": 288,
     "bingx": 502,
-    "coinex": 203
+    "coinex": 203,
+    "bitmex": 9
   }
 }

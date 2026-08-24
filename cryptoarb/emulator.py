@@ -17,6 +17,8 @@ import time
 import uuid
 from dataclasses import dataclass
 
+from typing import Dict
+
 from .base import OrderBookSnapshot, Quote
 from .calc import NetEdgeResult
 from .risk import check_orphan_leg, simulate_leg_fill
@@ -26,6 +28,7 @@ from .risk import check_orphan_leg, simulate_leg_fill
 class VirtualPosition:
     trade_id: str
     symbol: str
+    strategy: str          # "arb" | "scalp"
     exch_long: str
     exch_short: str
     entry_net_edge_pct: float
@@ -49,24 +52,47 @@ class VirtualPosition:
 class Emulator:
     def __init__(self, loggers, storage, alerts, position_size_usdt: float,
                  orphan_timeout_sec: float, cooldown_sec: float = 60.0,
-                 max_holding_hours: float = 72.0, loss_cooldown_sec: float = 900.0):
+                 max_holding_hours: float = 72.0, loss_cooldown_sec: float = 900.0,
+                 position_size_mode: str = "dynamic", dynamic_size_pct_of_book: float = 10.0,
+                 dynamic_size_top_levels: int = 3, min_position_size_usdt: float = 50.0,
+                 max_position_size_usdt: float = 1000.0):
         self.loggers = loggers
         self.storage = storage
         self.alerts = alerts
-        self.position_size_usdt = position_size_usdt
+        self.position_size_usdt = position_size_usdt      # fixed-режим / референс
         self.orphan_timeout_sec = orphan_timeout_sec
         self.cooldown_sec = cooldown_sec
         self.loss_cooldown_sec = loss_cooldown_sec
         self.max_holding_hours = max_holding_hours
+        self.position_size_mode = position_size_mode
+        self.dyn_pct = dynamic_size_pct_of_book
+        self.dyn_top_levels = max(1, dynamic_size_top_levels)
+        self.min_size = min_position_size_usdt
+        self.max_size = max_position_size_usdt
         self.open_positions: dict[str, VirtualPosition] = {}
         self._last_open: dict[tuple[str, str, str], float] = {}
         self._last_loss: dict[tuple[str, str, str], float] = {}
-        self.stats = {
-            "trades_closed": 0, "wins": 0, "losses": 0,
-            "orphan_aborts": 0, "opened": 0,
-            "pnl_usdt": 0.0, "fees_usdt": 0.0, "funding_usdt": 0.0,
-            "holding_sec_sum": 0.0,
-        }
+        # stats раздельные: arb и scalp — каждое направление со своей отчётностью
+        self.stats: Dict[str, dict] = {"arb": self._new_stats(), "scalp": self._new_stats()}
+
+    @staticmethod
+    def _new_stats() -> dict:
+        return {"opened": 0, "closed": 0, "wins": 0, "losses": 0, "orphan_aborts": 0,
+                "pnl_usdt": 0.0, "fees_usdt": 0.0, "funding_usdt": 0.0,
+                "holding_sec_sum": 0.0}
+
+    def calc_dynamic_size(self, ob_long, ob_short) -> float:
+        """Размер, не двигающий стакан: dyn_pct% от нотионала первых
+        dyn_top_levels уровней на ХУДШЕЙ из двух ног, зажат в
+        [min_size, max_size]. Возвращает 0.0, если книга тоньше минимума."""
+        def top_notional(levels):
+            return sum(l.price * l.size for l in levels[: self.dyn_top_levels])
+        if not ob_long or not ob_long.asks or not ob_short or not ob_short.bids:
+            return 0.0
+        worst = min(top_notional(ob_long.asks), top_notional(ob_short.bids))
+        size = worst * self.dyn_pct / 100.0
+        size = min(size, self.max_size)
+        return size if size >= self.min_size else 0.0
 
     # -------------------- OPEN --------------------
 
@@ -81,20 +107,22 @@ class Emulator:
         return False
 
     def try_open(self, result: NetEdgeResult, q_long: Quote, q_short: Quote,
-                 ob_long: OrderBookSnapshot | None, ob_short: OrderBookSnapshot | None) -> VirtualPosition | None:
+                 ob_long: OrderBookSnapshot | None, ob_short: OrderBookSnapshot | None,
+                 strategy: str = "arb", size_usdt: float | None = None) -> VirtualPosition | None:
         now = time.time()
         key = (result.symbol, result.exch_long, result.exch_short)
         if self._cooldown_active(key, now):
             return None
 
+        size = size_usdt or self.position_size_usdt
         trade_id = str(uuid.uuid4())
-        leg_long = simulate_leg_fill(ob_long, "buy", self.position_size_usdt)
-        leg_short = simulate_leg_fill(ob_short, "sell", self.position_size_usdt)
+        leg_long = simulate_leg_fill(ob_long, "buy", size)
+        leg_short = simulate_leg_fill(ob_short, "sell", size)
 
         if check_orphan_leg(leg_long, leg_short):
             filled_exch = result.exch_long if leg_long.filled else result.exch_short
             failed_exch = result.exch_short if leg_long.filled else result.exch_long
-            self.stats["orphan_aborts"] += 1
+            self.stats[strategy]["orphan_aborts"] += 1
             self.alerts.send_orphan_leg_alert(result.symbol, filled_exch, failed_exch, trade_id)
             self.loggers.errors.write({
                 "event": "orphan_leg", "trade_id": trade_id, "symbol": result.symbol,
@@ -112,14 +140,14 @@ class Emulator:
         if not (leg_long.filled and leg_short.filled):
             return None  # обе не прошли — просто не открываем
 
-        entry_fees = (q_long.taker_fee + q_short.taker_fee) * self.position_size_usdt
+        entry_fees = (q_long.taker_fee + q_short.taker_fee) * size
 
         pos = VirtualPosition(
-            trade_id=trade_id, symbol=result.symbol,
+            trade_id=trade_id, symbol=result.symbol, strategy=strategy,
             exch_long=result.exch_long, exch_short=result.exch_short,
             entry_net_edge_pct=result.net_edge_pct,
             entry_price_long=leg_long.fill_price, entry_price_short=leg_short.fill_price,
-            open_ts=now, size_usdt=self.position_size_usdt,
+            open_ts=now, size_usdt=size,
             taker_long=q_long.taker_fee, taker_short=q_short.taker_fee,
             funding_rate_long=q_long.funding_rate, funding_interval_long=q_long.funding_interval_hours,
             funding_rate_short=q_short.funding_rate, funding_interval_short=q_short.funding_interval_hours,
@@ -129,7 +157,7 @@ class Emulator:
         )
         self.open_positions[trade_id] = pos
         self._last_open[key] = now
-        self.stats["opened"] += 1
+        self.stats[strategy]["opened"] += 1
 
         self.loggers.emulator_trades.write({
             "event": "open", "trade_id": trade_id, "symbol": pos.symbol,
@@ -209,12 +237,13 @@ class Emulator:
         realized_pnl = price_pnl - total_fees + funding_usdt
 
         self.open_positions.pop(trade_id, None)
-        self.stats["trades_closed"] += 1
-        self.stats["wins" if realized_pnl >= 0 else "losses"] += 1
-        self.stats["pnl_usdt"] += realized_pnl
-        self.stats["fees_usdt"] += total_fees
-        self.stats["funding_usdt"] += funding_usdt
-        self.stats["holding_sec_sum"] += holding_sec
+        st = self.stats.get(pos.strategy, self.stats["arb"])
+        st["closed"] += 1
+        st["wins" if realized_pnl >= 0 else "losses"] += 1
+        st["pnl_usdt"] += realized_pnl
+        st["fees_usdt"] += total_fees
+        st["funding_usdt"] += funding_usdt
+        st["holding_sec_sum"] += holding_sec
 
         if realized_pnl < 0:
             self._last_loss[(pos.symbol, pos.exch_long, pos.exch_short)] = now
@@ -227,7 +256,7 @@ class Emulator:
             "holding_seconds": holding_sec,
         })
         self.storage.save_emulator_trade({
-            "trade_id": trade_id, "symbol": pos.symbol,
+            "trade_id": trade_id, "symbol": pos.symbol, "strategy": pos.strategy,
             "exch_long": pos.exch_long, "exch_short": pos.exch_short,
             "open_ts": pos.open_ts, "close_ts": now,
             "entry_net_edge_pct": pos.entry_net_edge_pct, "exit_net_edge_pct": current_net_edge_pct,
@@ -240,7 +269,7 @@ class Emulator:
     def positions_snapshot(self) -> list[dict]:
         now = time.time()
         return [{
-            "trade_id": p.trade_id, "symbol": p.symbol,
+            "trade_id": p.trade_id, "symbol": p.symbol, "strategy": getattr(p, "strategy", "arb"),
             "exch_long": p.exch_long, "exch_short": p.exch_short,
             "entry_net_edge_pct": p.entry_net_edge_pct,
             "entry_raw_spread_pct": getattr(p, "entry_raw_spread_pct", 0.0),

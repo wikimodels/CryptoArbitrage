@@ -1,21 +1,22 @@
-19:23:01 | INFO    | engine     | Подключено: bybit
-19:23:03 | INFO    | engine     | Подключено: okx
-19:23:15 | INFO    | engine     | Подключено: gateio
-19:23:16 | INFO    | engine     | Подключено: binance
-19:23:20 | INFO    | engine     | Подключено: bitget
-19:23:32 | INFO    | engine     | Подключено: mexc
-19:23:35 | INFO    | engine     | Подключено: kucoin
-19:23:39 | INFO    | engine     | Подключено: htx
-19:23:41 | INFO    | engine     | Подключено: bingx
-19:23:43 | INFO    | engine     | Подключено: coinex
-19:23:43 | INFO    | engine     | Каталог: 928 символов
-19:23:44 | INFO    | connector  | [htx] транспорт цен: REST fetch_tickers (288 символов)
-19:23:44 | INFO    | connector  | [bingx] транспорт цен: REST fetch_tickers (502 символов)
-19:23:45 | INFO    | connector  | [coinex] транспорт цен: watch_tickers (203 символов)
-19:23:46 | INFO    | connector  | [bitget] WS: топ-380 по объёму + REST-хвост 330 (10s)
-19:23:46 | INFO    | connector  | [bybit] WS: топ-380 по объёму + REST-хвост 327 (10s)
-19:23:46 | INFO    | connector  | [okx] WS: топ-380 по объёму + REST-хвост 56 (10s)
-19:23:47 | INFO    | connector  | [kucoin] WS: топ-380 по объёму + REST-хвост 271 (10s)
-19:23:48 | INFO    | connector  | [binance] WS: топ-380 по объёму + REST-хвост 311 (10s)
-19:23:52 | INFO    | connector  | [mexc] WS: топ-380 по объёму + REST-хвост 279 (10s)
-19:23:52 | INFO    | connector  | [gateio] WS: топ-380 по объёму + REST-хвост 394 (10s)
+20:05:38 | INFO    | engine     | Подключено: bybit
+20:05:40 | INFO    | engine     | Подключено: okx
+20:05:55 | INFO    | engine     | Подключено: gateio
+20:05:56 | INFO    | engine     | Подключено: binance
+20:06:00 | INFO    | engine     | Подключено: bitget
+20:06:02 | INFO    | engine     | Подключено: mexc
+20:06:05 | INFO    | engine     | Подключено: kucoin
+20:06:09 | INFO    | engine     | Подключено: htx
+20:06:11 | INFO    | engine     | Подключено: bingx
+20:06:13 | INFO    | engine     | Подключено: coinex
+20:06:16 | INFO    | engine     | Подключено: bitmex
+20:06:16 | INFO    | engine     | Каталог: 928 символов
+20:06:18 | INFO    | connector  | [htx] транспорт цен: REST fetch_tickers (288 символов)
+20:06:18 | INFO    | connector  | [bingx] транспорт цен: REST fetch_tickers (502 символов)
+20:06:19 | INFO    | connector  | [coinex] транспорт цен: watch_tickers (203 символов)
+20:06:19 | INFO    | connector  | [bitmex] транспорт цен: watch_tickers (9 символов)
+20:06:19 | INFO    | connector  | [bitget] WS: топ-380 по объёму + REST-хвост 330 (10s)
+20:06:20 | INFO    | connector  | [okx] WS: топ-380 по объёму + REST-хвост 56 (10s)
+20:06:20 | INFO    | connector  | [bybit] WS: топ-380 по объёму + REST-хвост 327 (10s)
+20:06:21 | INFO    | connector  | [kucoin] WS: топ-380 по объёму + REST-хвост 271 (10s)
+20:06:22 | INFO    | connector  | [binance] WS: топ-380 по объёму + REST-хвост 311 (10s)
+20:06:25 | INFO    | connector  | [gateio] WS: топ-380 по объёму + REST-хвост 394 (10s)
