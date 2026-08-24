@@ -50,7 +50,7 @@ DEFAULTS: Dict[str, Any] = {
         "fixed_position_size_usdt": 1000,
         "dynamic_size_pct_of_book": 10,
         "dynamic_size_top_levels": 3,
-        "min_position_size_usdt": 50,
+        "min_position_size_usdt": 10,
         "max_position_size_usdt": 1000,
         "orphan_leg_timeout_sec": 3,
         "cooldown_sec": 60,

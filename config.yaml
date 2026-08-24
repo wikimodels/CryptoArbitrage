@@ -121,7 +121,7 @@ emulator:
   dynamic_size_pct_of_book: 10
   dynamic_size_top_levels: 3
   # Ниже минимума не торгуем (издержки > смысла), выше максимума не ходим
-  min_position_size_usdt: 50
+  min_position_size_usdt: 10
   max_position_size_usdt: 1000
   # Таймаут ожидания второй ноги (зарезервировано; ноги проверяются сразу)
   orphan_leg_timeout_sec: 3
