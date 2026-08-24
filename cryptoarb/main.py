@@ -63,6 +63,7 @@ async def main_async(config_path: str):
         max_holding_hours=cfg["emulator"]["max_holding_hours"],
         loss_cooldown_sec=cfg["emulator"].get("loss_cooldown_sec", 900),
         max_open_per_pair=cfg["emulator"].get("max_open_per_pair", 1),
+        max_entry_slippage_pct=cfg["emulator"].get("max_entry_slippage_pct", 0.15),
         position_size_mode=cfg["emulator"].get("position_size_mode", "dynamic"),
         dynamic_size_pct_of_book=cfg["emulator"].get("dynamic_size_pct_of_book", 10),
         dynamic_size_top_levels=cfg["emulator"].get("dynamic_size_top_levels", 3),

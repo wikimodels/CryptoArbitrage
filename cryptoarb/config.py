@@ -52,6 +52,7 @@ DEFAULTS: Dict[str, Any] = {
         "dynamic_size_top_levels": 3,
         "min_position_size_usdt": 10,
         "max_position_size_usdt": 1000,
+        "max_entry_slippage_pct": 0.15,
         "orphan_leg_timeout_sec": 3,
         "cooldown_sec": 60,
         "max_open_per_pair": 1,

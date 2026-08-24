@@ -55,7 +55,8 @@ class Emulator:
                  max_holding_hours: float = 72.0, loss_cooldown_sec: float = 900.0,
                  position_size_mode: str = "dynamic", dynamic_size_pct_of_book: float = 10.0,
                  dynamic_size_top_levels: int = 3, min_position_size_usdt: float = 50.0,
-                 max_position_size_usdt: float = 1000.0, max_open_per_pair: int = 1):
+                 max_position_size_usdt: float = 1000.0, max_open_per_pair: int = 1,
+                 max_entry_slippage_pct: float = 0.15):
         self.loggers = loggers
         self.storage = storage
         self.alerts = alerts
@@ -70,6 +71,7 @@ class Emulator:
         self.dyn_top_levels = max(1, dynamic_size_top_levels)
         self.min_size = min_position_size_usdt
         self.max_size = max_position_size_usdt
+        self.max_entry_slippage_pct = max_entry_slippage_pct
         self.open_positions: dict[str, VirtualPosition] = {}
         self._last_open: dict[tuple[str, str, str], float] = {}
         self._last_loss: dict[tuple[str, str, str], float] = {}
@@ -83,14 +85,28 @@ class Emulator:
                 "holding_sec_sum": 0.0}
 
     def calc_dynamic_size(self, ob_long, ob_short) -> float:
-        """Размер, не двигающий стакан: dyn_pct% от нотионала первых
-        dyn_top_levels уровней на ХУДШЕЙ из двух ног, зажат в
-        [min_size, max_size]. Возвращает 0.0, если книга тоньше минимума."""
-        def top_notional(levels):
-            return sum(l.price * l.size for l in levels[: self.dyn_top_levels])
+        """Размер, не двигающий стакан И не проходящий глубоко в книгу:
+        1) набираем только уровни в пределах max_entry_slippage_pct от
+           лучшей цены (дальше — тонкие книги съедят спред);
+        2) берём dyn_pct% от этого на ХУДШЕЙ из двух ног;
+        3) зажимаем в [min_size, max_size]. 0.0 = торговать нельзя."""
+        def fillable(levels) -> float:
+            if not levels:
+                return 0.0
+            best = levels[0].price
+            if best <= 0:
+                return 0.0
+            acc = 0.0
+            for lvl in levels:
+                if abs(lvl.price - best) / best * 100.0 > self.max_entry_slippage_pct:
+                    break
+                acc += lvl.price * lvl.size
+            return acc
         if not ob_long or not ob_long.asks or not ob_short or not ob_short.bids:
             return 0.0
-        worst = min(top_notional(ob_long.asks), top_notional(ob_short.bids))
+        worst = min(fillable(ob_long.asks), fillable(ob_short.bids))
+        if worst <= 0:
+            return 0.0
         size = worst * self.dyn_pct / 100.0
         size = min(size, self.max_size)
         return size if size >= self.min_size else 0.0
