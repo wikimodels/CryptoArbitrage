@@ -209,6 +209,7 @@
   <div class="tabs">
     <div class="tab active" data-tab="spreads">Спреды</div>
     <div class="tab" data-tab="positions">Позиции</div>
+    <div class="tab" data-tab="rank">Скальп-рейтинг</div>
     <div class="tab" data-tab="exchanges">Биржи</div>
     <div class="tab" data-tab="events">События</div>
   </div>
@@ -238,6 +239,22 @@
           <th>Вход. спред %</th><th>Размер USDT</th><th>Удержание</th><th>Trade ID</th>
         </tr></thead>
         <tbody id="posBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-rank">
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">
+      Авто-отбор: спайки спреда ≥ порога → сошёлся ли он за окно → score = сходимость × захват × частота.
+      В режиме watchlist=auto скальп-входы разрешены только топ-монетам из этой таблицы.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>Спайков</th><th>Сошлось</th><th>Сходимость %</th>
+          <th>Ср. захват %</th><th>Ср. ширина книг %</th><th>Score</th><th>В watchlist</th>
+        </tr></thead>
+        <tbody id="rankBody"></tbody>
       </table>
     </div>
   </div>
@@ -353,6 +370,23 @@ function render() {
       <td class="sym">${esc(e.name)}</td>
       <td>${e.ws_alive?'<span class="badge pass">LIVE</span>':'<span class="badge no">OFF</span>'}</td>
       <td class="num">${e.fresh_symbols}</td>
+    </tr>`).join('');
+
+  // scalp rank
+  const wl = new Set(s.watchlist || []);
+  const rank = s.scalp_rank || [];
+  const rb = document.getElementById('rankBody');
+  if (!rank.length) rb.innerHTML = `<tr><td colspan="8" class="empty">Набирается статистика (нужно ≥5 спайков на монету)…</td></tr>`;
+  else rb.innerHTML = rank.map(r => `
+    <tr>
+      <td class="sym">${esc(r.symbol)}</td>
+      <td class="num">${r.spikes}</td>
+      <td class="num">${r.converged}</td>
+      <td class="num ${r.conv_rate>=50?'pos':'muted'}">${r.conv_rate}</td>
+      <td class="num pos">${r.avg_capture}</td>
+      <td class="num neg">${r.avg_width}</td>
+      <td class="num"><b>${r.score}</b></td>
+      <td>${wl.has(r.symbol)?'<span class="badge pass">ДА</span>':'<span class="badge no">—</span>'}</td>
     </tr>`).join('');
 
   // events

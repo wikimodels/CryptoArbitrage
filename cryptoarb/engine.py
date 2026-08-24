@@ -64,6 +64,19 @@ class Engine:
         self.scalp_exit_frac = sc.get("exit_spread_frac", 0.3)
         self.scalp_max_holding_sec = sc.get("max_holding_sec", 90)
         self.scalp_max_entry_spread = sc.get("max_entry_spread_pct", 1.0)
+        # ---- авто-watchlist: измеряем, какие монеты скальпятся ----
+        self.spike_min_spread = sc.get("spike_min_spread_pct", 0.3)
+        self.conv_frac = sc.get("convergence_frac", 0.5)
+        self.conv_window = sc.get("convergence_window_sec", 120)
+        self.watchlist_mode = sc.get("watchlist_mode", "auto")
+        self.watchlist_top = sc.get("watchlist_top", 15)
+        self.watchlist_min_spikes = sc.get("watchlist_min_spikes", 5)
+        # symbol -> deque[(ts, raw_spread, pair_key)]
+        self._spikes: Dict[str, deque] = {}
+        # symbol -> {"spikes": n, "converged": n, "capture_sum": x, "width_sum": x, "width_n": n}
+        self._scalp_stats: Dict[str, dict] = {}
+        self._watchlist: list[str] = []
+        self._watchlist_ts = 0.0
 
         self.connectors: dict[str, CCXTConnector] = {}
         self.symbols: list[str] = []
@@ -327,6 +340,13 @@ class Engine:
             # консоль заливает каждый проход сканера)
             key = (symbol, r.exch_long, r.exch_short)
             throttled = now - self._signal_last_log.get(key, 0.0) >= self.signal_throttle
+
+            # 4a) Скальп-рейтинг: спайк + сходимость (по сырым спредам пары)
+            if self.scalp_enabled and r.raw_spread_pct >= self.spike_min_spread:
+                self._track_spike(symbol, r.raw_spread_pct, (r.exch_long, r.exch_short),
+                                  r.width_pct, now)
+                self._refresh_watchlist(now)
+
             if throttled:
                 self._signal_last_log[key] = now
                 self.loggers.signals.write({
@@ -381,10 +401,73 @@ class Engine:
                     strategy = ("scalp" if (self.scalp_enabled
                                             and r.raw_spread_pct < self.scalp_max_entry_spread)
                                 else "arb")
+                    # Гейт: в auto-режиме скальпим только топ-N монет по score
+                    if strategy == "scalp" and self.watchlist_mode == "auto" and \
+                            symbol not in self._watchlist:
+                        if throttled:
+                            self._event("skip", f"{symbol} не в скальп-watchlist (топ-{self.watchlist_top})")
+                        continue
                     self.emulator.try_open(r, q_long, q_short,
                                            ob_lo if r.exch_long == lo else ob_sh,
                                            ob_sh if r.exch_short == sh else ob_lo,
                                            strategy=strategy, size_usdt=dyn_size)
+
+    # ---- скальп-рейтинг: спайки и их сходимость ----
+
+    def _track_spike(self, symbol: str, raw_spread: float, pair_key: tuple[str, str],
+                     width_pct: float | None, now: float):
+        """Регистрирует спайк; сравнивает с предыдущим — если спред сжался
+        до conv_frac за conv_window, предыдущий спайк = СОШЁДШИЙСЯ."""
+        st = self._scalp_stats.setdefault(
+            symbol, {"spikes": 0, "converged": 0, "capture_sum": 0.0,
+                     "width_sum": 0.0, "width_n": 0})
+        dq = self._spikes.setdefault(symbol, deque(maxlen=60))
+
+        # сходимость предыдущего спайка той же пары
+        for i in range(len(dq) - 1, -1, -1):
+            ts0, sp0, pk0 = dq[i]
+            if pk0 != pair_key:
+                continue
+            dt = now - ts0
+            if dt <= self.conv_window and sp0 > 0:
+                if raw_spread > 0 and raw_spread <= sp0 * self.conv_frac:
+                    st["converged"] += 1
+                    st["capture_sum"] += (sp0 - raw_spread)
+            break
+
+        dq.append((now, raw_spread, pair_key))
+        st["spikes"] += 1
+        if width_pct is not None:
+            st["width_sum"] += width_pct
+            st["width_n"] += 1
+
+    def _scalp_scores(self) -> list[dict]:
+        """Рейтинг монет для скальпа: сходимость × захват × частота."""
+        out = []
+        now = time.time()
+        for sym, st in self._scalp_stats.items():
+            if st["spikes"] < self.watchlist_min_spikes:
+                continue
+            conv_rate = st["converged"] / st["spikes"]
+            avg_cap = st["capture_sum"] / max(st["converged"], 1)
+            avg_width = st["width_sum"] / st["width_n"] if st["width_n"] else 0.0
+            freq = min(st["spikes"], 30) / 30.0
+            score = conv_rate * avg_cap * freq
+            out.append({"symbol": sym, "spikes": st["spikes"],
+                        "converged": st["converged"],
+                        "conv_rate": round(conv_rate * 100, 1),
+                        "avg_capture": round(avg_cap, 3),
+                        "avg_width": round(avg_width, 3),
+                        "score": round(score, 3)})
+        out.sort(key=lambda x: x["score"], reverse=True)
+        return out
+
+    def _refresh_watchlist(self, now: float):
+        if now - self._watchlist_ts < 30:
+            return
+        self._watchlist_ts = now
+        ranked = self._scalp_scores()
+        self._watchlist = [r["symbol"] for r in ranked[: self.watchlist_top]]
 
     def _drop_price_outliers(self, quotes: dict) -> dict:
         """Одноимённые, но РАЗНЫЕ токены (один тикер на разных биржах):
@@ -550,6 +633,8 @@ class Engine:
             "min_threshold_pct": self.min_threshold,
             "spreads": spreads[:60],
             "positions": positions,
+            "scalp_rank": self._scalp_scores()[:20],
+            "watchlist": list(self._watchlist),
             "stats": {
                 "arb": snap_stats(emu_stats.get("arb", {}), n_arb),
                 "scalp": snap_stats(emu_stats.get("scalp", {}), n_scalp),
