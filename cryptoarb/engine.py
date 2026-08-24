@@ -38,6 +38,7 @@ class Engine:
         self.max_leg_dt = m["max_leg_dt_sec"]
         self.max_sane_spread = m["max_sane_spread_pct"]
         self.min_top_notional = m["min_top_notional_usdt"]
+        self.price_sanity_pct = m.get("price_sanity_deviation_pct", 50)
 
         s = cfg["scan"]
         self.scan_interval = s["interval_ms"] / 1000.0
@@ -258,6 +259,7 @@ class Engine:
         now = time.time()
         for symbol in self.symbols:
             quotes = self.state.fresh_quotes(symbol, self.exchanges)
+            quotes = self._drop_price_outliers(quotes)
             if len(quotes) < 2:
                 continue
 
@@ -359,6 +361,24 @@ class Engine:
                                            ob_lo if r.exch_long == lo else ob_sh,
                                            ob_sh if r.exch_short == sh else ob_lo)
 
+    def _drop_price_outliers(self, quotes: dict) -> dict:
+        """Одноимённые, но РАЗНЫЕ токены (один тикер на разных биржах):
+        их цена отличается в разы/в тысячи раз. Настоящий токен так
+        расходиться не может — арбитраж свёл бы цену мгновенно.
+        Выбрасываем котировки, чья средняя цена дальше медианы по биржам,
+        чем на price_sanity_deviation_pct."""
+        if len(quotes) < 2:
+            return quotes
+        mids = sorted((q.best_bid + q.best_ask) / 2.0 for q in quotes.values())
+        n = len(mids)
+        median = mids[n // 2] if n % 2 else (mids[n // 2 - 1] + mids[n // 2]) / 2.0
+        if median <= 0:
+            return quotes
+        lo = median * (1.0 - self.price_sanity_pct / 100.0)
+        hi = median * (1.0 + self.price_sanity_pct / 100.0)
+        return {ex: q for ex, q in quotes.items()
+                if lo <= (q.best_bid + q.best_ask) / 2.0 <= hi}
+
     def _best_pair(self, quotes: dict) -> tuple[float, str, str] | None:
         """Лучшая пара по сырому спреду (корректно по ask/bid, оба направления)."""
         best = None
@@ -404,6 +424,7 @@ class Engine:
         spreads = []
         for symbol in self.symbols:
             quotes = self.state.fresh_quotes(symbol, self.exchanges)
+            quotes = self._drop_price_outliers(quotes)
             if len(quotes) < 2:
                 continue
             best = self._best_pair(quotes)

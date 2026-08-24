@@ -21,6 +21,7 @@ DEFAULTS: Dict[str, Any] = {
         "max_leg_dt_sec": 2.0,
         "max_sane_spread_pct": 3.0,
         "min_top_notional_usdt": 200,
+        "price_sanity_deviation_pct": 50,
         "funding_refresh_sec": 300,
         "orderbook_depth": 20,
         "orderbook_ttl_sec": 2.0,
