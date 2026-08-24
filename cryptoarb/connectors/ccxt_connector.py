@@ -64,6 +64,9 @@ class CCXTConnector(ExchangeConnector):
         self.default_maker_fee = default_maker_fee
         self._fees: dict[str, tuple[float, float]] = {}
         self._csize: dict[str, float] = {}
+        self.max_ws_symbols = 100        # подписок на один вызов watch (kucoin <=100)
+        self.ws_max_total = 380          # лимит подписок на СЕССИЮ (kucoin <=400);
+                                         # больше символов -> вся биржа на REST
         self._supports_watch_tickers = bool(self._client.has.get("watchTickers"))
         self._supports_watch_bidsasks = bool(self._client.has.get("watchBidsAsks"))
         self._closed = False
@@ -106,17 +109,57 @@ class CCXTConnector(ExchangeConnector):
     async def watch_prices(self, symbols: list[str], on_price: PriceCallback) -> None:
         """Долгоживущий цикл сбора цен. Авто-выбор транспорта:
         watch_tickers (если проходит проба) иначе bulk REST fetch_tickers.
-        Символы чанкуются (лимиты бирж вроде kucoin ≤100). Сам реконнектит."""
+        Если символов больше лимита подписок сессии — топ по объёму идёт
+        на WS, хвост поллится одним bulk-REST раз в 10с (1 запрос)."""
         if not symbols:
             return
         use_ws = self._supports_watch_tickers and await self._probe_ws(symbols[:10])
-        mode = "watch_tickers" if use_ws else "REST fetch_tickers"
-        log.info("[%s] транспорт цен: %s (%d символов)", self.name, mode, len(symbols))
 
+        if use_ws and len(symbols) > self.ws_max_total:
+            # Приоритет по ликвидности: 24h quoteVolume с одного bulk-снимка
+            try:
+                tick = await self._client.fetch_tickers(symbols)
+                vol = {s: float(t.get("quoteVolume") or 0.0)
+                       for s, t in tick.items() if isinstance(t, dict)}
+                ranked = sorted(symbols, key=lambda s: vol.get(s, 0.0), reverse=True)
+            except Exception as e:
+                log.info("[%s] volume snapshot failed (%s) — алфавитный порядок", self.name, str(e)[:50])
+                ranked = list(symbols)
+            ws_syms = ranked[:self.ws_max_total]
+            tail = ranked[self.ws_max_total:]
+            log.info("[%s] WS: топ-%d по объёму + REST-хвост %d (10s)",
+                     self.name, len(ws_syms), len(tail))
+            await asyncio.gather(
+                self._ws_all(ws_syms, on_price),
+                self._tail_rest(tail, on_price),
+            )
+            return
+
+        if not use_ws:
+            log.info("[%s] транспорт цен: REST fetch_tickers (%d символов)", self.name, len(symbols))
+            await self._rest_batch(symbols, on_price)
+            return
+
+        log.info("[%s] транспорт цен: watch_tickers (%d символов)", self.name, len(symbols))
+        await self._ws_all(symbols, on_price)
+
+    async def _ws_all(self, symbols: list[str], on_price: PriceCallback):
         chunk = max(1, self.max_ws_symbols)
         batches = [symbols[i:i + chunk] for i in range(0, len(symbols), chunk)]
-        runner = self._ws_batch if use_ws else self._rest_batch
-        await asyncio.gather(*(runner(b, on_price) for b in batches))
+        await asyncio.gather(*(self._ws_batch(b, on_price) for b in batches))
+
+    async def _tail_rest(self, tail: list[str], on_price: PriceCallback):
+        """Хвост вне лимита подписок: один bulk fetch_tickers раз в 10с."""
+        while not self._closed:
+            try:
+                data = await self._client.fetch_tickers(tail)
+                for sym, t in data.items():
+                    self._emit(sym, t, on_price)
+            except asyncio.CancelledError:
+                raise
+            except Exception as e:
+                log.debug("[%s] tail REST: %s", self.name, str(e)[:50])
+            await asyncio.sleep(10.0)
 
     async def _probe_ws(self, sample: list[str]) -> bool:
         try:
@@ -131,7 +174,8 @@ class CCXTConnector(ExchangeConnector):
         fails = 0
         while not self._closed:
             try:
-                data = await self._client.watch_tickers(batch)
+                data = await asyncio.wait_for(
+                    self._client.watch_tickers(batch), timeout=30)
                 for sym, t in data.items():
                     self._emit(sym, t, on_price)
                 backoff = 1.0
