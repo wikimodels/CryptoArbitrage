@@ -7,15 +7,19 @@ from pathlib import Path
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, Response
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
+STATIC_DIR = Path(__file__).parent / "static"
 
 
 def create_app(engine) -> FastAPI:
     app = FastAPI(title="CryptoArbitrage Dashboard")
     templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+    if STATIC_DIR.exists():
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
     @app.get("/", response_class=HTMLResponse)
     async def index(request: Request):
@@ -24,6 +28,9 @@ def create_app(engine) -> FastAPI:
 
     @app.get("/favicon.ico")
     async def favicon():
+        f = STATIC_DIR / "favicon.ico"
+        if f.exists():
+            return Response(content=f.read_bytes(), media_type="image/x-icon")
         return Response(status_code=204)
 
     @app.get("/health")

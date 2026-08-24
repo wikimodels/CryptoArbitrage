@@ -15,3 +15,4 @@ logs/
 *.db-shm
 server_out.log
 server_err.log
+favicon_master.png
