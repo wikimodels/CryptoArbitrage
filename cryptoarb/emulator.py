@@ -295,5 +295,11 @@ class Emulator:
             "exch_long": p.exch_long, "exch_short": p.exch_short,
             "entry_net_edge_pct": p.entry_net_edge_pct,
             "entry_raw_spread_pct": getattr(p, "entry_raw_spread_pct", 0.0),
+            "entry_price_long": p.entry_price_long, "entry_price_short": p.entry_price_short,
+            "taker_long": p.taker_long, "taker_short": p.taker_short,
+            "funding_rate_long": p.funding_rate_long, "funding_interval_long": p.funding_interval_long,
+            "funding_rate_short": p.funding_rate_short, "funding_interval_short": p.funding_interval_short,
+            "next_funding_ts_long": p.next_funding_ts_long, "next_funding_ts_short": p.next_funding_ts_short,
+            "entry_fees_usdt": p.entry_fees_usdt,
             "holding_seconds": now - p.open_ts, "size_usdt": p.size_usdt,
         } for p in self.open_positions.values()]

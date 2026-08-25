@@ -638,6 +638,31 @@ class Engine:
         positions = self.emulator.positions_snapshot()
         n_arb = sum(1 for p in positions if p.get("strategy") == "arb")
         n_scalp = sum(1 for p in positions if p.get("strategy") == "scalp")
+
+        # mark-to-market по открытым позициям: сколько было бы PnL,
+        # если закрыть прямо сейчас по лучшим ценам (без walk-book)
+        for p in positions:
+            p["cur_spread_pct"] = None
+            p["unrealized_pnl_usdt"] = None
+            q = self.state.fresh_quotes(p["symbol"], self.exchanges)
+            ql = q.get(p["exch_long"])
+            qs = q.get(p["exch_short"])
+            if not ql or not qs or ql.best_ask <= 0:
+                continue
+            cur = (qs.best_bid - ql.best_ask) / ql.best_ask * 100.0
+            size = p["size_usdt"]
+            price_pnl = ((ql.best_bid - p["entry_price_long"]) / p["entry_price_long"] * size
+                         + (p["entry_price_short"] - qs.best_ask) / p["entry_price_short"] * size)
+            exit_fees = (p["taker_long"] + p["taker_short"]) * size
+            n_l = self.emulator._funding_payments(p["next_funding_ts_long"], p["funding_interval_long"],
+                                                  p["open_ts"], now)
+            n_s = self.emulator._funding_payments(p["next_funding_ts_short"], p["funding_interval_short"],
+                                                  p["open_ts"], now)
+            funding = (p["funding_rate_short"] * n_s - p["funding_rate_long"] * n_l) * size
+            p["cur_spread_pct"] = round(cur, 3)
+            p["unrealized_pnl_usdt"] = round(
+                price_pnl - p["entry_fees_usdt"] - exit_fees + funding, 2)
+
         fresh_counts = self.state.fresh_count_by_exchange(self.exchanges)
 
         return {

@@ -236,7 +236,7 @@
       <table>
         <thead><tr>
           <th>Стратегия</th><th>Символ</th><th>LONG</th><th>SHORT</th><th>Entry net %</th>
-          <th>Вход. спред %</th><th>Размер USDT</th><th>Удержание</th><th>Trade ID</th>
+          <th>Вход. спред %</th><th>Тек. спред %</th><th>Размер USDT</th><th>Тек. PnL USDT</th><th>Удержание</th><th>Trade ID</th>
         </tr></thead>
         <tbody id="posBody"></tbody>
       </table>
@@ -350,8 +350,13 @@ function render() {
 
   // positions
   const pb = document.getElementById('posBody');
-  if (!s.positions.length) pb.innerHTML = `<tr><td colspan="9" class="empty">Открытых позиций нет</td></tr>`;
-  else pb.innerHTML = s.positions.map(p => `
+  if (!s.positions.length) pb.innerHTML = `<tr><td colspan="11" class="empty">Открытых позиций нет</td></tr>`;
+  else pb.innerHTML = s.positions.map(p => {
+    const u = p.unrealized_pnl_usdt;
+    const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
+    const uTxt = u == null ? '—' : (u > 0 ? '+' : '') + u.toFixed(2);
+    const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
+    return `
     <tr>
       <td><span class="badge ${p.strategy==='scalp'?'suspect':'pass'}">${p.strategy==='scalp'?'SCALP':'ARB'}</span></td>
       <td class="sym">${esc(p.symbol)}</td>
@@ -359,10 +364,12 @@ function render() {
       <td class="ex">${esc(p.exch_short)}</td>
       <td class="num ${cls(p.entry_net_edge_pct)}">${p.entry_net_edge_pct.toFixed(3)}</td>
       <td class="num">${(p.entry_raw_spread_pct||0).toFixed(3)}</td>
+      <td class="num ${cls(cur === '—' ? 0 : p.cur_spread_pct)}">${cur}</td>
       <td class="num">${p.size_usdt.toFixed(0)}</td>
+      <td class="num ${uCls}"><b>${uTxt}</b></td>
       <td class="num">${fmtDur(p.holding_seconds)}</td>
       <td class="muted">${p.trade_id.slice(0,8)}</td>
-    </tr>`).join('');
+    </tr>`;}).join('');
 
   // exchanges
   document.getElementById('exBody').innerHTML = s.exchanges.map(e => `
