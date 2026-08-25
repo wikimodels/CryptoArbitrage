@@ -78,6 +78,8 @@ class Engine:
         self._watchlist: list[str] = []
         self._watchlist_ts = 0.0
         self._last_scalp_persist = 0.0
+        # открытые спайки: (symbol, pair) -> (ts, spread) — ждут сходимости
+        self._open_spikes: Dict[tuple[str, tuple[str, str]], tuple[float, float]] = {}
         # персистентность: подхватываем накопленную статистику из SQLite
         if storage is not None:
             loaded = storage.load_scalp_stats()
@@ -310,7 +312,13 @@ class Engine:
 
             # 2) Быстрый предфильтр: лучшая пара по сырому спреду (без IO)
             best = self._best_pair(quotes)
-            if best is None or best[0] < self.prefilter:
+            if best is None:
+                continue
+            # 1a) Сходимость открытых спайков — проверяется на КАЖДОМ скане
+            # по текущему спреду (схождение уходит ниже порога спайка)
+            if self.scalp_enabled and self._open_spikes:
+                self._check_convergence(symbol, best[0], (best[1], best[2]), now)
+            if best[0] < self.prefilter:
                 continue
             _, lo, sh = best
             q_lo, q_sh = quotes[lo], quotes[sh]
@@ -436,30 +444,38 @@ class Engine:
 
     def _track_spike(self, symbol: str, raw_spread: float, pair_key: tuple[str, str],
                      width_pct: float | None, now: float):
-        """Регистрирует спайк; сравнивает с предыдущим — если спред сжался
-        до conv_frac за conv_window, предыдущий спайк = СОШЁДШИЙСЯ."""
+        """Регистрирует спайк. САМА сходимость проверяется на каждом скане
+        (_check_convergence): спред обычно схлдывается НИЖЕ порога спайка,
+        и сравнивать спайк-со-спайком нельзя — схождение не видно."""
         st = self._scalp_stats.setdefault(
             symbol, {"spikes": 0, "converged": 0, "capture_sum": 0.0,
                      "width_sum": 0.0, "width_n": 0})
-        dq = self._spikes.setdefault(symbol, deque(maxlen=60))
-
-        # сходимость предыдущего спайка той же пары
-        for i in range(len(dq) - 1, -1, -1):
-            ts0, sp0, pk0 = dq[i]
-            if pk0 != pair_key:
-                continue
-            dt = now - ts0
-            if dt <= self.conv_window and sp0 > 0:
-                if raw_spread > 0 and raw_spread <= sp0 * self.conv_frac:
-                    st["converged"] += 1
-                    st["capture_sum"] += (sp0 - raw_spread)
-            break
-
-        dq.append((now, raw_spread, pair_key))
+        self._spikes.setdefault(symbol, deque(maxlen=60)).append((now, raw_spread, pair_key))
         st["spikes"] += 1
+        self._open_spikes[(symbol, pair_key)] = (now, raw_spread)
         if width_pct is not None:
             st["width_sum"] += width_pct
             st["width_n"] += 1
+
+    def _check_convergence(self, symbol: str, cur_raw: float, pair_key: tuple[str, str], now: float):
+        """Вызывается на КАЖДОМ скане по текущему сырому спреду пары:
+        открытый спайк сжался до conv_frac за conv_window -> СОШЁЛСЯ
+        (+захват). Окно истекло без сжатия -> не сошёлся (списываем)."""
+        key = (symbol, pair_key)
+        sp = self._open_spikes.get(key)
+        if not sp:
+            return
+        ts0, sp0 = sp
+        dt = now - ts0
+        if cur_raw > 0 and cur_raw <= sp0 * self.conv_frac:
+            st = self._scalp_stats.setdefault(
+                symbol, {"spikes": 0, "converged": 0, "capture_sum": 0.0,
+                         "width_sum": 0.0, "width_n": 0})
+            st["converged"] += 1
+            st["capture_sum"] += (sp0 - cur_raw)
+            del self._open_spikes[key]
+        elif dt > self.conv_window:
+            del self._open_spikes[key]
 
     def _scalp_scores(self) -> list[dict]:
         """Рейтинг монет для скальпа: сходимость × захват × частота."""

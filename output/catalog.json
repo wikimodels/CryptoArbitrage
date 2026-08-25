@@ -1,7 +1,7 @@
 {
-  "generated_ts": 1787639369.3688183,
+  "generated_ts": 1787642377.2036998,
   "min_common_exchanges": 2,
-  "total_symbols": 928,
+  "total_symbols": 929,
   "symbols": [
     {
       "symbol": "0G/USDT:USDT",
@@ -388,9 +388,10 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio"
+        "gateio",
+        "htx"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 4
     },
     {
       "symbol": "AEHR/USDT:USDT",
@@ -3141,6 +3142,15 @@
       "n_exchanges": 6
     },
     {
+      "symbol": "DGAI/USDT:USDT",
+      "exchanges": [
+        "bingx",
+        "gateio",
+        "mexc"
+      ],
+      "n_exchanges": 3
+    },
+    {
       "symbol": "DIA/USDT:USDT",
       "exchanges": [
         "binance",
@@ -5178,9 +5188,10 @@
       "symbol": "JP225/USDT:USDT",
       "exchanges": [
         "bitget",
+        "htx",
         "mexc"
       ],
-      "n_exchanges": 2
+      "n_exchanges": 3
     },
     {
       "symbol": "JPM/USDT:USDT",
@@ -5477,13 +5488,12 @@
         "bingx",
         "bitget",
         "bybit",
-        "coinex",
         "gateio",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "KSTR/USDT:USDT",
@@ -9203,12 +9213,11 @@
         "bingx",
         "bitget",
         "bybit",
-        "coinex",
         "gateio",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "STRC/USDT:USDT",
@@ -11205,14 +11214,14 @@
   "coverage": {
     "bybit": 707,
     "okx": 436,
-    "gateio": 774,
+    "gateio": 775,
     "binance": 691,
     "bitget": 710,
-    "mexc": 659,
+    "mexc": 660,
     "kucoin": 651,
-    "htx": 288,
-    "bingx": 502,
-    "coinex": 203,
+    "htx": 290,
+    "bingx": 503,
+    "coinex": 201,
     "bitmex": 9
   }
 }
