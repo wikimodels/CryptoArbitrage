@@ -1,7 +1,7 @@
 {
-  "generated_ts": 1787652773.7996836,
+  "generated_ts": 1787659731.690367,
   "min_common_exchanges": 2,
-  "total_symbols": 930,
+  "total_symbols": 931,
   "symbols": [
     {
       "symbol": "0G/USDT:USDT",
@@ -3178,9 +3178,10 @@
       "symbol": "DJT/USDT:USDT",
       "exchanges": [
         "binance",
-        "bitget"
+        "bitget",
+        "bybit"
       ],
-      "n_exchanges": 2
+      "n_exchanges": 3
     },
     {
       "symbol": "DKNG/USDT:USDT",
@@ -4973,6 +4974,14 @@
         "okx"
       ],
       "n_exchanges": 6
+    },
+    {
+      "symbol": "INTU/USDT:USDT",
+      "exchanges": [
+        "bybit",
+        "gateio"
+      ],
+      "n_exchanges": 2
     },
     {
       "symbol": "INTW/USDT:USDT",
@@ -7892,12 +7901,13 @@
       "exchanges": [
         "binance",
         "bitget",
+        "bybit",
         "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 7
     },
     {
       "symbol": "RARE/USDT:USDT",
@@ -11226,9 +11236,9 @@
     }
   ],
   "coverage": {
-    "bybit": 707,
+    "bybit": 710,
     "okx": 436,
-    "gateio": 776,
+    "gateio": 777,
     "binance": 696,
     "bitget": 711,
     "mexc": 660,

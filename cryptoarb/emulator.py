@@ -301,5 +301,6 @@ class Emulator:
             "funding_rate_short": p.funding_rate_short, "funding_interval_short": p.funding_interval_short,
             "next_funding_ts_long": p.next_funding_ts_long, "next_funding_ts_short": p.next_funding_ts_short,
             "entry_fees_usdt": p.entry_fees_usdt,
+            "open_ts": p.open_ts,
             "holding_seconds": now - p.open_ts, "size_usdt": p.size_usdt,
         } for p in self.open_positions.values()]
