@@ -37,6 +37,7 @@ DEFAULTS: Dict[str, Any] = {
         "exit_spread_frac": 0.3,
         "max_holding_sec": 90,
         "max_entry_spread_pct": 1.0,
+        "min_capture_pct": 0.30,
         "watchlist_mode": "auto",
         "watchlist_top": 15,
         "watchlist_min_spikes": 5,

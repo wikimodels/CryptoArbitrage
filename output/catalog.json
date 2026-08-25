@@ -1,7 +1,7 @@
 {
-  "generated_ts": 1787647670.2141852,
+  "generated_ts": 1787652773.7996836,
   "min_common_exchanges": 2,
-  "total_symbols": 929,
+  "total_symbols": 930,
   "symbols": [
     {
       "symbol": "0G/USDT:USDT",
@@ -2303,9 +2303,10 @@
         "bybit",
         "gateio",
         "htx",
+        "kucoin",
         "mexc"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 5
     },
     {
       "symbol": "CAT/USDT:USDT",
@@ -3172,6 +3173,14 @@
         "kucoin"
       ],
       "n_exchanges": 4
+    },
+    {
+      "symbol": "DJT/USDT:USDT",
+      "exchanges": [
+        "binance",
+        "bitget"
+      ],
+      "n_exchanges": 2
     },
     {
       "symbol": "DKNG/USDT:USDT",
@@ -6390,13 +6399,14 @@
     {
       "symbol": "MRNA/USDT:USDT",
       "exchanges": [
+        "binance",
         "bitget",
         "bybit",
         "gateio",
         "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 6
     },
     {
       "symbol": "MRVL/USDT:USDT",
@@ -7880,13 +7890,14 @@
     {
       "symbol": "RAM/USDT:USDT",
       "exchanges": [
+        "binance",
         "bitget",
         "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 6
     },
     {
       "symbol": "RARE/USDT:USDT",
@@ -8555,6 +8566,7 @@
     {
       "symbol": "SKDD/USDT:USDT",
       "exchanges": [
+        "binance",
         "bitget",
         "bybit",
         "gateio",
@@ -8562,7 +8574,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 7
     },
     {
       "symbol": "SKHY/USDT:USDT",
@@ -8620,6 +8632,7 @@
     {
       "symbol": "SKUU/USDT:USDT",
       "exchanges": [
+        "binance",
         "bitget",
         "bybit",
         "gateio",
@@ -8627,7 +8640,7 @@
         "mexc",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 7
     },
     {
       "symbol": "SKY/USDT:USDT",
@@ -11216,10 +11229,10 @@
     "bybit": 707,
     "okx": 436,
     "gateio": 776,
-    "binance": 691,
-    "bitget": 710,
+    "binance": 696,
+    "bitget": 711,
     "mexc": 660,
-    "kucoin": 651,
+    "kucoin": 652,
     "htx": 290,
     "bingx": 503,
     "coinex": 201,

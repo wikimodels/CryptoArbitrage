@@ -64,6 +64,7 @@ class Engine:
         self.scalp_exit_frac = sc.get("exit_spread_frac", 0.3)
         self.scalp_max_holding_sec = sc.get("max_holding_sec", 90)
         self.scalp_max_entry_spread = sc.get("max_entry_spread_pct", 1.0)
+        self.scalp_min_capture = sc.get("min_capture_pct", 0.30)
         # ---- авто-watchlist: измеряем, какие монеты скальпятся ----
         self.spike_min_spread = sc.get("spike_min_spread_pct", 0.3)
         self.conv_frac = sc.get("convergence_frac", 0.5)
@@ -491,6 +492,17 @@ class Engine:
                         if throttled:
                             self._event("skip", f"{symbol} не в скальп-watchlist (топ-{self.watchlist_top})")
                         continue
+                    # Гейт: экономика. Средний захват монеты должен покрывать
+                    # кост-флор (комиссии+slippage+ширина ~0.30%) с запасом.
+                    if strategy == "scalp":
+                        st = self._scalp_stats.get(symbol)
+                        if st and st.get("converged", 0) > 0:
+                            avg_cap = st["capture_sum"] / st["converged"]
+                            if avg_cap < self.scalp_min_capture:
+                                if throttled:
+                                    self._event("skip", f"{symbol} захват {avg_cap:.2f}% < "
+                                                f"{self.scalp_min_capture}% (после комиссий минус)")
+                                continue
                     self.emulator.try_open(r, q_long, q_short,
                                            ob_lo if r.exch_long == lo else ob_sh,
                                            ob_sh if r.exch_short == sh else ob_lo,
