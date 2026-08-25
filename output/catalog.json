@@ -1,5 +1,5 @@
 {
-  "generated_ts": 1787642377.2036998,
+  "generated_ts": 1787647670.2141852,
   "min_common_exchanges": 2,
   "total_symbols": 929,
   "symbols": [
@@ -2301,10 +2301,11 @@
       "symbol": "CASHCAT/USDT:USDT",
       "exchanges": [
         "bybit",
+        "gateio",
         "htx",
         "mexc"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 4
     },
     {
       "symbol": "CAT/USDT:USDT",
@@ -11214,7 +11215,7 @@
   "coverage": {
     "bybit": 707,
     "okx": 436,
-    "gateio": 775,
+    "gateio": 776,
     "binance": 691,
     "bitget": 710,
     "mexc": 660,

@@ -1,0 +1,26 @@
+11:46:53 | INFO    | engine     | Скальп-статистика загружена: 55 монет
+11:46:56 | INFO    | engine     | Подключено: bybit
+11:46:58 | INFO    | engine     | Подключено: okx
+11:47:11 | INFO    | engine     | Подключено: gateio
+11:47:14 | INFO    | engine     | Подключено: binance
+11:47:20 | INFO    | engine     | Подключено: bitget
+11:47:26 | INFO    | engine     | Подключено: mexc
+11:47:30 | INFO    | engine     | Подключено: kucoin
+11:47:36 | INFO    | engine     | Подключено: htx
+11:47:41 | INFO    | engine     | Подключено: bingx
+11:47:44 | INFO    | engine     | Подключено: coinex
+11:47:50 | INFO    | engine     | Подключено: bitmex
+11:47:50 | INFO    | engine     | Каталог: 929 символов
+11:47:52 | INFO    | connector  | [htx] транспорт цен: REST fetch_tickers (290 символов)
+11:47:52 | INFO    | connector  | [bingx] транспорт цен: REST fetch_tickers (503 символов)
+11:47:53 | INFO    | connector  | [coinex] транспорт цен: watch_tickers (201 символов)
+11:47:54 | INFO    | connector  | [okx] WS: топ-380 по объёму + REST-хвост 56 (10s)
+11:47:55 | INFO    | connector  | [bitget] WS: топ-380 по объёму + REST-хвост 330 (10s)
+11:47:55 | INFO    | connector  | [bitmex] транспорт цен: watch_tickers (9 символов)
+11:47:55 | INFO    | connector  | [bybit] WS: топ-380 по объёму + REST-хвост 327 (10s)
+11:47:56 | INFO    | connector  | [binance] WS: топ-380 по объёму + REST-хвост 311 (10s)
+11:47:59 | INFO    | connector  | [gateio] WS: топ-380 по объёму + REST-хвост 396 (10s)
+11:48:02 | INFO    | connector  | [kucoin] WS: топ-380 по объёму + REST-хвост 271 (10s)
+11:48:05 | INFO    | connector  | [mexc] WS: топ-380 по объёму + REST-хвост 280 (10s)
+11:49:31 | WARNING | connector  | [coinex] watch_tickers падает () -> REST для чанка
+11:49:31 | WARNING | connector  | [coinex] watch_tickers падает () -> REST для чанка

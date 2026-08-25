@@ -17,7 +17,7 @@ DEFAULTS: Dict[str, Any] = {
     },
     "output_dir": "output",
     "market": {
-        "staleness_sec": 6,
+        "staleness_sec": 15,
         "max_leg_dt_sec": 2.0,
         "max_sane_spread_pct": 3.0,
         "min_top_notional_usdt": 200,

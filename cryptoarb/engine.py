@@ -96,6 +96,7 @@ class Engine:
         self._signal_last_log: dict[tuple[str, str, str], float] = {}
         self._tasks: list[asyncio.Task] = []
         self._ws_tasks: dict[str, asyncio.Task] = {}
+        self._stream_restarts: dict[str, int] = {}
         self.events: deque = deque(maxlen=120)
         self.started_at = time.time()
         self.last_scan_ts = 0.0
@@ -127,13 +128,14 @@ class Engine:
         self.state.set_fee_lookup(self._fee_lookup)
         await self._refresh_symbols()
 
-        # WS-стримы цен
+        # WS-стримы цен (с супервизором: мёртвый/молчащий стрим перезапускается)
         for name, conn in self.connectors.items():
             self._ws_tasks[name] = asyncio.create_task(self._price_stream(name, conn), name=f"ws-{name}")
-        # Funding + сканер + периодический рефреш символов
+        # Funding + сканер + периодический рефреш символов + watchdog
         self._tasks.append(asyncio.create_task(self._funding_loop(), name="funding"))
         self._tasks.append(asyncio.create_task(self._scanner_loop(), name="scanner"))
         self._tasks.append(asyncio.create_task(self._symbols_refresh_loop(), name="symbols-refresh"))
+        self._tasks.append(asyncio.create_task(self._stream_watchdog(), name="stream-watchdog"))
         self.loggers.system.write({"event": "startup", "exchanges": self.exchanges,
                                    "symbols": len(self.symbols)})
 
@@ -239,16 +241,68 @@ class Engine:
     # -------------------- WS price stream --------------------
 
     async def _price_stream(self, name: str, conn: CCXTConnector):
-        syms = self._symbols_for(name)
-        if not syms:
-            return
-        try:
-            await conn.watch_prices(syms, self.state.update_price)
-        except asyncio.CancelledError:
-            raise
-        except Exception as e:
-            self.loggers.errors.write({"event": "price_stream_died", "exchange": name, "error": str(e)})
-            self._event("error", f"WS {name} остановлен: {e}")
+        """Супервизор стрима: watch_prices живёт вечно, но сеть флапает —
+        если стрим вернулся/умер, перезапускаем через паузу."""
+        while self._running:
+            syms = self._symbols_for(name)
+            if not syms:
+                await asyncio.sleep(30)
+                continue
+            # точка отсчёта для watchdog: даём стриму 90с на первый тик
+            self.state.last_price_ts[name] = time.time()
+            try:
+                await conn.watch_prices(syms, self.state.update_price)
+            except asyncio.CancelledError:
+                raise
+            except Exception as e:
+                self.loggers.errors.write({"event": "price_stream_error", "exchange": name, "error": str(e)})
+            if not self._running:
+                return
+            self.state.last_price_ts[name] = time.time()
+            await asyncio.sleep(5)
+
+    async def _stream_watchdog(self):
+        """Раз в 30с: если от биржи нет ни одного тика > 90с (или таск умер)
+        — перезапускаем её стрим. 3 тихих рестарта подряд -> полная
+        пересборка коннектора (свежий WS-клиент)."""
+        while self._running:
+            await asyncio.sleep(30)
+            now = time.time()
+            for name in list(self._ws_tasks.keys()):
+                task = self._ws_tasks.get(name)
+                silent = now - self.state.last_price_ts.get(name, 0.0) > 90
+                dead = task is None or task.done()
+                if not (silent or dead):
+                    self._stream_restarts[name] = 0
+                    continue
+                if name not in self.connectors:
+                    continue
+                self._stream_restarts[name] = self._stream_restarts.get(name, 0) + 1
+                try:
+                    if self._stream_restarts[name] >= 3:
+                        self._event("system", f"{name}: пересборка коннектора (3 тихих рестарта)")
+                        log.warning("[%s] full connector rebuild", name)
+                        try:
+                            await self.connectors[name].close()
+                        except Exception:
+                            pass
+                        fees = self.cfg["default_fees"]
+                        c = CCXTConnector(name, fees["taker"], fees["maker"])
+                        await c.connect()
+                        self.connectors[name] = c
+                        self._stream_restarts[name] = 0
+                    else:
+                        why = "task dead" if dead else "нет тиков >90с"
+                        self._event("system", f"{name}: стрим перезапущен ({why})")
+                        log.warning("[%s] watchdog restart stream (%s)", name, why)
+                    if task and not task.done():
+                        task.cancel()
+                    conn = self.connectors[name]
+                    self._ws_tasks[name] = asyncio.create_task(
+                        self._price_stream(name, conn), name=f"ws-{name}")
+                except Exception as e:
+                    self.loggers.errors.write({"event": "watchdog_restart_failed",
+                                               "exchange": name, "error": str(e)})
 
     # -------------------- funding --------------------
 
@@ -337,10 +391,12 @@ class Engine:
                 continue
 
             # 2c) Ликвидность вершины книги: спред неторгуем, если на лучших
-            # уровнях мало объёма (покупаем в ask lo, продаём в bid sh).
+            # уровнях мало объёма. Если объёмы неизвестны (биржа отдаёт только
+            # last) — гейт пропускает, защиту делает проверка по стакану.
             top_long = q_lo.best_ask * q_lo.ask_size
             top_short = q_sh.best_bid * q_sh.bid_size
-            if min(top_long, top_short) < self.min_top_notional:
+            sizes_known = q_lo.ask_size > 0 and q_sh.bid_size > 0
+            if sizes_known and min(top_long, top_short) < self.min_top_notional:
                 continue
 
             # 3) Полный расчёт со стаканом только для кандидата
@@ -610,10 +666,11 @@ class Engine:
             top_long = q_lo.best_ask * q_lo.ask_size
             top_short = q_sh.best_bid * q_sh.bid_size
             top_notional = min(top_long, top_short)
+            sizes_known = q_lo.ask_size > 0 and q_sh.bid_size > 0
             suspect = (
                 best[0] > self.max_sane_spread
                 or leg_dt > self.max_leg_dt
-                or top_notional < self.min_top_notional
+                or (sizes_known and top_notional < self.min_top_notional)
             )
             r = compute_net_edge(
                 q_lo, q_sh,

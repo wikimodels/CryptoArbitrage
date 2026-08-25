@@ -194,15 +194,19 @@ class CCXTConnector(ExchangeConnector):
                 backoff = min(backoff * 2, 30.0)
 
     async def _rest_batch(self, batch: list[str], on_price: PriceCallback):
+        fails = 0
         while not self._closed:
             try:
                 data = await self._client.fetch_tickers(batch)
+                fails = 0
                 for sym, t in data.items():
                     self._emit(sym, t, on_price)
             except asyncio.CancelledError:
                 raise
             except Exception as e:
-                log.debug("[%s] REST tickers: %s", self.name, str(e)[:50])
+                fails += 1
+                if fails in (1, 5, 15):  # видимые варнинги, не спам
+                    log.warning("[%s] REST tickers fail x%d: %s", self.name, fails, str(e)[:60])
             await asyncio.sleep(1.0)
 
     def _emit(self, sym: str, t, on_price: PriceCallback):
@@ -210,6 +214,12 @@ class CCXTConnector(ExchangeConnector):
             return  # некоторые биржи (coinex) шлют иной payload
         bid = t.get("bid")
         ask = t.get("ask")
+        if (bid is None or ask is None):
+            last = t.get("last")
+            if last:
+                # binance/coinex bulk-tickers отдают только last — используем
+                # как bid≈ask (экран); реальный стакан проверяется при входе
+                bid = ask = float(last)
         if bid is None or ask is None:
             return
         cs = self._contract_size(sym)

@@ -20,6 +20,7 @@ class MarketState:
         # fee lookup: (exchange, symbol) -> (taker, maker)
         self._fees: Callable[[str, str], tuple[float, float]] = lambda e, s: (0.0006, 0.0002)
         self.updates = 0
+        self.last_price_ts: dict[str, float] = {}  # exchange -> время последнего тика
 
     def set_fee_lookup(self, fn: Callable[[str, str], tuple[float, float]]):
         self._fees = fn
@@ -27,6 +28,7 @@ class MarketState:
     def update_price(self, exchange: str, symbol: str, bid: float, ask: float,
                      bid_size: float, ask_size: float):
         self._price[(exchange, symbol)] = [bid, ask, bid_size, ask_size, time.time()]
+        self.last_price_ts[exchange] = time.time()
         self.updates += 1
 
     def update_funding(self, exchange: str, mapping: dict[str, tuple[float, float, Optional[float]]]):
