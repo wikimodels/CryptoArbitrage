@@ -46,6 +46,7 @@ class VirtualPosition:
     next_funding_ts_short: float | None
     entry_fees_usdt: float
     entry_raw_spread_pct: float = 0.0
+    side: str = "long"     # arb: всегда long (нога A); dir: long|short
     status: str = "open"
 
 
@@ -75,8 +76,9 @@ class Emulator:
         self.open_positions: dict[str, VirtualPosition] = {}
         self._last_open: dict[tuple[str, str, str], float] = {}
         self._last_loss: dict[tuple[str, str, str], float] = {}
-        # stats раздельные: arb и scalp — каждое направление со своей отчётностью
-        self.stats: Dict[str, dict] = {"arb": self._new_stats(), "scalp": self._new_stats()}
+        # stats раздельные: arb / scalp / dir — каждая стратегия своя
+        self.stats: Dict[str, dict] = {"arb": self._new_stats(), "scalp": self._new_stats(),
+                                       "dir": self._new_stats()}
 
     @staticmethod
     def _new_stats() -> dict:
@@ -211,6 +213,133 @@ class Emulator:
                 return 0.0
             return float(int((close_ts - next_ts) // interval_sec) + 1)
         return max(0.0, (close_ts - open_ts) / 3600.0 / max(interval_h, 1e-6))
+
+    def calc_dir_size(self, ob: OrderBookSnapshot, side: str) -> float:
+        """Размер для направленной сделки: fillable-нотионал в пределах
+        max_entry_slippage_pct от лучшей цены, x dyn_pct, [min_size..max_size]."""
+        levels = ob.asks if side == "long" else ob.bids
+        if not levels:
+            return 0.0
+        best = levels[0].price
+        if best <= 0:
+            return 0.0
+        acc = 0.0
+        for lvl in levels:
+            if abs(lvl.price - best) / best * 100.0 > self.max_entry_slippage_pct:
+                break
+            acc += lvl.price * lvl.size
+        size = acc * self.dyn_pct / 100.0
+        size = min(size, self.max_size)
+        return size if size >= self.min_size else 0.0
+
+    def try_open_dir(self, symbol: str, exchange: str, side: str, size: float,
+                     spread_pct: float, q: Quote, ob: OrderBookSnapshot | None,
+                     now: float | None = None) -> VirtualPosition | None:
+        """Направленный вход одной ногой (lead-lag): side=long|short.
+        Отдельный кулдаун/лимит на ключ (symbol, exchange, side)."""
+        now = now or time.time()
+        key = (symbol, exchange, side)
+        if self._cooldown_active(key, now):
+            return None
+
+        leg = simulate_leg_fill(ob, "buy" if side == "long" else "sell", size)
+        if not leg.filled:
+            return None
+
+        entry_fees = q.taker_fee * size
+        trade_id = str(uuid.uuid4())
+        pos = VirtualPosition(
+            trade_id=trade_id, symbol=symbol, strategy="dir",
+            exch_long=exchange, exch_short=exchange,
+            entry_net_edge_pct=spread_pct,
+            entry_price_long=leg.fill_price, entry_price_short=leg.fill_price,
+            open_ts=now, size_usdt=size,
+            taker_long=q.taker_fee, taker_short=q.taker_fee,
+            funding_rate_long=q.funding_rate, funding_interval_long=q.funding_interval_hours,
+            funding_rate_short=q.funding_rate, funding_interval_short=q.funding_interval_hours,
+            next_funding_ts_long=q.next_funding_ts, next_funding_ts_short=q.next_funding_ts,
+            entry_fees_usdt=entry_fees,
+            entry_raw_spread_pct=spread_pct,
+            side=side,
+        )
+        self.open_positions[trade_id] = pos
+        self._last_open[key] = now
+        self.stats["dir"]["opened"] += 1
+
+        self.loggers.emulator_trades.write({
+            "event": "open_dir", "trade_id": trade_id, "symbol": symbol,
+            "exchange": exchange, "side": side, "entry_dev_pct": spread_pct,
+            "entry_price": leg.fill_price, "size_usdt": size,
+        })
+        self.storage.save_emulator_trade({
+            "trade_id": trade_id, "symbol": symbol, "strategy": "dir",
+            "exch_long": exchange, "exch_short": exchange,
+            "open_ts": now, "entry_net_edge_pct": spread_pct,
+            "orphan_leg": False, "status": "open",
+        })
+        return pos
+
+    def try_close_dir(self, trade_id: str, q: Quote,
+                      ob: OrderBookSnapshot | None = None,
+                      reason: str = "dir_exit") -> float | None:
+        pos = self.open_positions.get(trade_id)
+        if not pos:
+            return None
+        now = time.time()
+
+        if ob is not None:
+            leg = simulate_leg_fill(ob, "sell" if pos.side == "long" else "buy", pos.size_usdt)
+            if not leg.filled:
+                self.loggers.errors.write({"event": "exit_no_liquidity",
+                                           "trade_id": trade_id, "symbol": pos.symbol})
+                return None
+            exit_price = leg.fill_price
+        else:
+            exit_price = q.best_bid if pos.side == "long" else q.best_ask
+
+        if pos.side == "long":
+            price_pnl = (exit_price - pos.entry_price_long) / pos.entry_price_long * pos.size_usdt
+        else:
+            price_pnl = (pos.entry_price_long - exit_price) / pos.entry_price_long * pos.size_usdt
+
+        total_fees = (pos.taker_long + pos.taker_short) * pos.size_usdt  # вход+выход одной ноги
+        holding_sec = now - pos.open_ts
+        n = self._funding_payments(pos.next_funding_ts_long, pos.funding_interval_long,
+                                   pos.open_ts, now)
+        # шорт получает funding при положительной ставке, лонг платит
+        sign = 1.0 if pos.side == "short" else -1.0
+        funding_usdt = sign * pos.funding_rate_long * n * pos.size_usdt
+
+        realized_pnl = price_pnl - total_fees + funding_usdt
+
+        self.open_positions.pop(trade_id, None)
+        st = self.stats["dir"]
+        st["closed"] += 1
+        st["wins" if realized_pnl >= 0 else "losses"] += 1
+        st["pnl_usdt"] += realized_pnl
+        st["fees_usdt"] += total_fees
+        st["funding_usdt"] += funding_usdt
+        st["holding_sec_sum"] += holding_sec
+        if realized_pnl < 0:
+            self._last_loss[(pos.symbol, pos.exch_long, pos.side)] = now
+
+        self.loggers.emulator_trades.write({
+            "event": "close_dir", "trade_id": trade_id, "symbol": pos.symbol,
+            "side": pos.side, "reason": reason,
+            "price_pnl_usdt": price_pnl, "fees_usdt": total_fees,
+            "funding_usdt": funding_usdt, "realized_pnl_usdt": realized_pnl,
+            "holding_seconds": holding_sec,
+        })
+        self.storage.save_emulator_trade({
+            "trade_id": trade_id, "symbol": pos.symbol, "strategy": "dir",
+            "exch_long": pos.exch_long, "exch_short": pos.exch_short,
+            "open_ts": pos.open_ts, "close_ts": now,
+            "entry_net_edge_pct": pos.entry_net_edge_pct,
+            "price_pnl_usdt": price_pnl, "fees_usdt": total_fees, "funding_usdt": funding_usdt,
+            "realized_pnl_usdt": realized_pnl, "holding_seconds": holding_sec,
+            "orphan_leg": False, "status": "closed",
+        })
+        return realized_pnl
 
     def try_close(self, trade_id: str, q_long: Quote, q_short: Quote,
                   current_net_edge_pct: float, reason: str = "signal",

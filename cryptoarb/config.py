@@ -45,6 +45,14 @@ DEFAULTS: Dict[str, Any] = {
         "convergence_frac": 0.5,
         "convergence_window_sec": 120,
     },
+    "dir": {
+        "enabled": False,
+        "min_spread_pct": 0.3,
+        "min_lag_sec": 0.2,
+        "exit_frac": 0.3,
+        "stop_mult": 2.0,
+        "max_holding_sec": 90,
+    },
     "scoring": {
         "min_threshold_pct": 0.30,
         "assumed_holding_hours": 8,

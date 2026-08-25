@@ -120,6 +120,7 @@
   .badge.pass { background: rgba(63,185,80,.15); color: var(--green); }
   .badge.no { background: rgba(139,148,158,.12); color: var(--muted); }
   .badge.suspect { background: rgba(210,153,34,.18); color: var(--yellow); }
+  .badge.dir { background: rgba(88,166,255,.15); color: var(--blue); }
   .ex { color: var(--blue); font-weight: 600; }
 
   .events { list-style: none; }
@@ -323,12 +324,15 @@ function render() {
   document.getElementById('mThreshold').textContent = 'порог ' + s.min_threshold_pct + '%';
 
   const arb = s.stats.arb, scp = s.stats.scalp;
+  const dir = s.stats.dir || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
   document.getElementById('cards').innerHTML = `
     ${card('Позиций открыто', s.stats.open_positions)}
     ${card('ARB: сделок', `${arb.closed} (WR ${arb.win_rate_pct}%)`)}
     ${card('ARB: PnL USDT', arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
     ${card('SCALP: сделок', `${scp.closed} (WR ${scp.win_rate_pct}%)`)}
     ${card('SCALP: PnL USDT', scp.pnl_usdt.toFixed(2), scp.pnl_usdt)}
+    ${card('DIR: сделок', String(dir.closed) + ' (WR ' + dir.win_rate_pct + '%)')}
+    ${card('DIR: PnL USDT', dir.pnl_usdt.toFixed(2), dir.pnl_usdt)}
     ${card('Комиссии Σ', '-' + (arb.fees_usdt + scp.fees_usdt).toFixed(2), -1)}
     ${card('Funding Σ', (arb.funding_usdt + scp.funding_usdt).toFixed(2), arb.funding_usdt + scp.funding_usdt)}
     ${card('Orphan-legs Σ', arb.orphan_aborts + scp.orphan_aborts)}
@@ -366,7 +370,7 @@ function render() {
     const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
     return `
     <tr>
-      <td><span class="badge ${p.strategy==='scalp'?'suspect':'pass'}">${p.strategy==='scalp'?'SCALP':'ARB'}</span></td>
+      <td><span class="badge ${p.strategy==='scalp'?'suspect':(p.strategy==='dir'?'dir':'pass')}">${p.strategy==='scalp'?'SCALP':(p.strategy==='dir'?'DIR':'ARB')}</span></td>
       <td class="sym">${esc(p.symbol)}</td>
       <td class="ex">${esc(p.exch_long)}</td>
       <td class="ex">${esc(p.exch_short)}</td>

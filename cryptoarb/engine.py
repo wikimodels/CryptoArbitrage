@@ -65,6 +65,14 @@ class Engine:
         self.scalp_max_holding_sec = sc.get("max_holding_sec", 90)
         self.scalp_max_entry_spread = sc.get("max_entry_spread_pct", 1.0)
         self.scalp_min_capture = sc.get("min_capture_pct", 0.30)
+
+        dr = cfg.get("dir", {})
+        self.dir_enabled = bool(dr.get("enabled", False))
+        self.dir_min_spread = dr.get("min_spread_pct", 0.3)
+        self.dir_min_lag = dr.get("min_lag_sec", 0.2)
+        self.dir_exit_frac = dr.get("exit_frac", 0.3)
+        self.dir_stop_mult = dr.get("stop_mult", 2.0)
+        self.dir_max_holding_sec = dr.get("max_holding_sec", 90)
         # ---- авто-watchlist: измеряем, какие монеты скальпятся ----
         self.spike_min_spread = sc.get("spike_min_spread_pct", 0.3)
         self.conv_frac = sc.get("convergence_frac", 0.5)
@@ -377,18 +385,27 @@ class Engine:
                 continue
             _, lo, sh = best
             q_lo, q_sh = quotes[lo], quotes[sh]
+            raw = best[0]
+            dt = abs(q_lo.ts - q_sh.ts)
+
+            # 2b) Отсечка выбросов (ДО dir!): аномальный спред = битая
+            # котировка или разные токены — направленно не торгуем.
+            if raw > self.max_sane_spread:
+                self.loggers.errors.write({
+                    "event": "suspect_spread", "symbol": symbol,
+                    "exch_long": lo, "exch_short": sh, "raw_spread_pct": round(raw, 4),
+                })
+                continue
+
+            # 1b) DIR: большой dt = видимый лаг -> направленный вход одной
+            # ногой на отстающей бирже (фронт-ран лаггера)
+            if self.dir_enabled and dt > self.max_leg_dt and raw >= self.dir_min_spread:
+                await self._try_dir_entry(symbol, raw, lo, sh, q_lo, q_sh, dt, now)
+                continue
 
             # 2a) Выравнивание ног по времени: свежесть по отдельности мало,
             # важно чтобы обе котировки были сняты близко друг к другу.
-            if abs(q_lo.ts - q_sh.ts) > self.max_leg_dt:
-                continue
-
-            # 2b) Отсечка выбросов: аномальный спред = битая котировка.
-            if best[0] > self.max_sane_spread:
-                self.loggers.errors.write({
-                    "event": "suspect_spread", "symbol": symbol,
-                    "exch_long": lo, "exch_short": sh, "raw_spread_pct": round(best[0], 4),
-                })
+            if dt > self.max_leg_dt:
                 continue
 
             # 2c) Ликвидность вершины книги: спред неторгуем, если на лучших
@@ -427,8 +444,8 @@ class Engine:
             throttled = now - self._signal_last_log.get(key, 0.0) >= self.signal_throttle
 
             # 4a) Скальп-рейтинг: спайк + сходимость (по сырым спредам пары)
-            if self.scalp_enabled and r.raw_spread_pct >= self.spike_min_spread:
-                self._track_spike(symbol, r.raw_spread_pct, (r.exch_long, r.exch_short),
+            if self.scalp_enabled and raw >= self.spike_min_spread:
+                self._track_spike(symbol, raw, (r.exch_long, r.exch_short),
                                   r.width_pct, now)
                 self._refresh_watchlist(now)
 
@@ -507,6 +524,51 @@ class Engine:
                                            ob_lo if r.exch_long == lo else ob_sh,
                                            ob_sh if r.exch_short == sh else ob_lo,
                                            strategy=strategy, size_usdt=dyn_size)
+
+    # ---- DIR: направленный вход на отстающей бирже ----
+
+    async def _try_dir_entry(self, symbol: str, raw: float, lo: str, sh: str,
+                             q_lo, q_sh, dt: float, now: float):
+        """Фронт-ран лаггера: лидер двинулся, лаггер ещё нет.
+        Лаг = более старая котировка. Вход одной ногой на лаггере по
+        направлению к лидеру. Перед входом — верификация по свежему
+        стакану лаггера (лаг мог уже закрыться)."""
+        if dt < self.dir_min_lag:
+            return
+        # отстающая = более старая котировка; направление — к лидеру
+        if q_lo.ts <= q_sh.ts:
+            lag_ex, side, lead_q = lo, "long", q_sh   # отстала дешёвая -> догонит вверх
+        else:
+            lag_ex, side = sh, "short"                # отстала дорогая -> догонит вниз
+            lead_q = q_lo
+
+        key = (symbol, lag_ex, side)
+        ob = await self._get_ob(lag_ex, symbol)
+        if not ob or not ob.asks or not ob.bids:
+            return
+
+        # Верификация: отклонение должно существовать на СВЕЖЕМ стакане
+        # лаггера против свежего лидера. Иначе лаг закрыт — вход без эджа.
+        lead_mid = (lead_q.best_bid + lead_q.best_ask) / 2.0
+        if lead_mid <= 0:
+            return
+        if side == "long":
+            lag_ask = ob.asks[0].price
+            dev = (lead_mid - lag_ask) / lag_ask * 100.0
+        else:
+            lag_bid = ob.bids[0].price
+            dev = (lag_bid - lead_mid) / lead_mid * 100.0
+        if dev < self.dir_min_spread:
+            return  # лаг уже закрылся на реальных ценах
+
+        size = self.emulator.calc_dir_size(ob, side)
+        if size <= 0:
+            return
+
+        q_lag = q_lo if lag_ex == lo else q_sh
+        pos = self.emulator.try_open_dir(symbol, lag_ex, side, size, dev, q_lag, ob, now)
+        if pos:
+            self._event("dir_open", f"{symbol} {side.upper()} {lag_ex} dev={dev:.2f}% size={size:.0f}")
 
     # ---- скальп-рейтинг: спайки и их сходимость ----
 
@@ -613,6 +675,31 @@ class Engine:
                 continue
 
             strategy = getattr(pos, "strategy", "arb")
+
+            # ---- DIR: тейк/стоп/тайм-стоп по PnL самой ноги ----
+            if strategy == "dir":
+                q = quotes.get(pos.exch_long)
+                if q is None:
+                    continue
+                dev = getattr(pos, "entry_raw_spread_pct", 0.0) or 0.0
+                if dev <= 0:
+                    continue
+                if pos.side == "long":
+                    pnl_pct = (q.best_bid - pos.entry_price_long) / pos.entry_price_long * 100.0
+                else:
+                    pnl_pct = (pos.entry_price_long - q.best_ask) / pos.entry_price_long * 100.0
+
+                reason = None
+                if pnl_pct >= self.dir_exit_frac * dev:
+                    reason = "dir_tp"
+                elif pnl_pct <= -self.dir_stop_mult * dev:
+                    reason = "dir_stop"
+                elif (now - pos.open_ts) >= self.dir_max_holding_sec:
+                    reason = "dir_timeout"
+                if reason:
+                    ob = await self._get_ob(pos.exch_long, symbol)
+                    self.emulator.try_close_dir(trade_id, q, ob, reason)
+                continue
 
             # ---- СКАЛЬП: выход на сжатии спреда или по тайм-стопу ----
             if strategy == "scalp" and self.scalp_enabled:
@@ -723,6 +810,7 @@ class Engine:
         positions = self.emulator.positions_snapshot()
         n_arb = sum(1 for p in positions if p.get("strategy") == "arb")
         n_scalp = sum(1 for p in positions if p.get("strategy") == "scalp")
+        n_dir = sum(1 for p in positions if p.get("strategy") == "dir")
 
         # mark-to-market по открытым позициям: сколько было бы PnL,
         # если закрыть прямо сейчас по лучшим ценам (без walk-book)
@@ -768,6 +856,7 @@ class Engine:
             "stats": {
                 "arb": snap_stats(emu_stats.get("arb", {}), n_arb),
                 "scalp": snap_stats(emu_stats.get("scalp", {}), n_scalp),
+                "dir": snap_stats(emu_stats.get("dir", {}), n_dir),
                 "open_positions": len(positions),
             },
             "events": list(self.events)[:40],
