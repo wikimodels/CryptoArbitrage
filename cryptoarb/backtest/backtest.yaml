@@ -1,0 +1,17 @@
+# ??????? z-score: ??? ?????/????? ?? config.yaml, ????? ?? ?????? z
+exchanges: [bybit, okx, gateio, binance, bitget, mexc, kucoin, htx, bingx]
+min_common_exchanges: 3
+days_history: 90
+ma_period: 50
+ma_type: EMA
+entry_zs: [2.2, 2.4, 2.5, 2.7, 3.0]
+exit_z: 0.3
+stop_mult: 1.5
+timestop_min: 15
+fee_round_pct: 0.24
+slip_pct: 0.04
+out_sample_frac: 0.25
+# пилот: только эти биржи + фильтр по медианному 24ч объёму
+pilot_exchanges: [okx, bitget, mexc, kucoin, bingx]
+volume_min_usdt: 100000
+volume_max_usdt: 10000000

@@ -16,9 +16,11 @@ import time
 from collections import deque
 from pathlib import Path
 
-from .calc import compute_net_edge
+from .calc import compute_net_edge, NetEdgeResult
 from .connectors import CCXTConnector
 from .market_state import MarketState
+from .risk import simulate_leg_fill
+from .zscore_tracker import ZScoreTracker
 
 log = logging.getLogger("engine")
 
@@ -49,7 +51,8 @@ class Engine:
         self.holding_hours = sc["assumed_holding_hours"]
         self.min_threshold = sc["min_threshold_pct"]
         self.slippage_buffer = sc["slippage_buffer_pct"]
-        self.funding_max_share = sc.get("funding_max_share_of_spread", 0.3)
+        self.funding_max_share = sc.get("funding_max_share_of_spread", 0.15)
+        self.max_book_width = sc.get("max_book_width_pct", 0.3)
 
         self.size_usdt = cfg["emulator"]["virtual_position_size_usdt"] if "virtual_position_size_usdt" in cfg["emulator"] else cfg["emulator"].get("fixed_position_size_usdt", 1000)
         self.exit_frac = cfg["emulator"]["exit_threshold_frac"]
@@ -58,6 +61,17 @@ class Engine:
         self.size_mode = cfg["emulator"].get("position_size_mode", "dynamic")
         self.min_size = cfg["emulator"].get("min_position_size_usdt", 50)
         self.max_size = cfg["emulator"].get("max_position_size_usdt", 1000)
+
+        # ---- Z-Score конфигурация ----
+        zc = cfg.get("zscore", {})
+        self.zscore_enabled = bool(zc.get("enabled", True))
+        self.entry_z = float(zc.get("entry_z", 4.0))
+        self.exit_z = float(zc.get("exit_z", 0.0))
+        self.stop_mult = float(zc.get("stop_mult", 2.0))
+        self.timestop_sec = float(zc.get("timestop_sec", 1800))
+        self.min_profit_margin_pct = float(zc.get("min_profit_margin_pct", 0.25))
+        self.zscore_period = int(zc.get("period", 1440))
+        self.z_tracker = ZScoreTracker(period=self.zscore_period)
 
         sc = cfg.get("scalp", {})
         self.scalp_enabled = bool(sc.get("enabled", False))
@@ -127,6 +141,10 @@ class Engine:
                 self._event("system", f"Подключено: {exch_id}")
                 log.info("Подключено: %s", exch_id)
             except Exception as e:
+                try:
+                    await c.close()
+                except Exception:
+                    pass
                 self._event("error", f"Не удалось подключить {exch_id}: {e}")
                 log.warning("Не удалось подключить %s: %s", exch_id, e)
 
@@ -136,6 +154,14 @@ class Engine:
         self.exchanges = list(self.connectors.keys())
         self.state.set_fee_lookup(self._fee_lookup)
         await self._refresh_symbols()
+
+        # Прогрев ZScoreTracker
+        if self.zscore_enabled:
+            try:
+                prewarmed = self.z_tracker.prewarm(self.symbols, self.exchanges, data_dir=Path("data/raw_1m_30d"))
+                self._event("system", f"ZScoreTracker прогрет: {prewarmed} пар")
+            except Exception as e:
+                log.warning("Ошибка прогрева ZScoreTracker: %s", e)
 
         # WS-стримы цен (с супервизором: мёртвый/молчащий стрим перезапускается)
         for name, conn in self.connectors.items():
@@ -165,6 +191,13 @@ class Engine:
     def _fee_lookup(self, exchange: str, symbol: str) -> tuple[float, float]:
         conn = self.connectors.get(exchange)
         return conn.fees_for(symbol) if conn else (0.0006, 0.0002)
+
+    def _on_price_update(self, exchange: str, symbol: str, bid: float, ask: float,
+                          bid_size: float, ask_size: float):
+        self.state.update_price(exchange, symbol, bid, ask, bid_size, ask_size)
+        if self.zscore_enabled and bid > 0 and ask > 0:
+            mid = (bid + ask) / 2.0
+            self.z_tracker.on_tick(symbol, exchange, mid, time.time())
 
     # -------------------- symbols --------------------
 
@@ -260,7 +293,7 @@ class Engine:
             # точка отсчёта для watchdog: даём стриму 90с на первый тик
             self.state.last_price_ts[name] = time.time()
             try:
-                await conn.watch_prices(syms, self.state.update_price)
+                await conn.watch_prices(syms, self._on_price_update)
             except asyncio.CancelledError:
                 raise
             except Exception as e:
@@ -373,7 +406,14 @@ class Engine:
             # 1) Проверка выходов по открытым позициям этого символа
             await self._check_exits(symbol, quotes, now)
 
-            # 2) Быстрый предфильтр: лучшая пара по сырому спреду (без IO)
+            # 2) Проверка Z-Score арбитража (основная стратегия)
+            if self.zscore_enabled:
+                await self._scan_zscore_symbol(symbol, quotes, now)
+
+            # 3) Быстрый предфильтр: лучшая пара по сырому спреду (legacy скальп/dir)
+            if not (self.scalp_enabled or self.dir_enabled):
+                continue
+
             best = self._best_pair(quotes)
             if best is None:
                 continue
@@ -475,7 +515,17 @@ class Engine:
                                     f"({r.funding_edge_pct:.2f}% > {self.funding_max_share:.0%} of {r.raw_spread_pct:.2f}%)")
                     continue
 
-                # 5b) ВХОД ТОЛЬКО ПО РЕАЛЬНОМУ СТАКАНУ: спред должен
+                # 5b) ГЕЙТ ШИРИНЫ КНИГ: суммарная ширина обеих книг больше
+                # порога -> реальный кост-флор (вход-walk + ширина выхода)
+                # не отбивается порогом. Тонкие/широкие монеты отсекаются:
+                # на них зелёного закрытия не бывает в принципе.
+                if r.width_pct > self.max_book_width:
+                    if throttled:
+                        self._event("skip", f"{r.symbol} ширина книг "
+                                    f"{r.width_pct:.2f}% > {self.max_book_width}%")
+                    continue
+
+                # 5c) ВХОД ТОЛЬКО ПО РЕАЛЬНОМУ СТАКАНУ: спред должен
                 # существовать на ценах исполнения прямо сейчас. Сигнал
                 # считался по тикерам (могли устареть) — фантомный спред
                 # здесь отсеивается, иначе позиция становится ставкой на
@@ -669,6 +719,116 @@ class Engine:
                     best = (s_ba, b, a)
         return best
 
+    async def _scan_zscore_symbol(self, symbol: str, quotes: dict, now: float):
+        """Поиск возможностей Z-Score арбитража (|Z| >= entry_z) с валидацией стакана."""
+        exs = list(quotes.keys())
+        for ea, eb in itertools.combinations(exs, 2):
+            qa, qb = quotes[ea], quotes[eb]
+            mid_a = (qa.best_bid + qa.best_ask) / 2.0
+            mid_b = (qb.best_bid + qb.best_ask) / 2.0
+            z = self.z_tracker.get_z(symbol, ea, eb, mid_a, mid_b)
+            if z is None or abs(z) < self.entry_z:
+                continue
+
+            # Направление: z > 0 => ea дороже, eb дешевле; z < 0 => ea дешевле, eb дороже
+            if z > 0:
+                ex_short, ex_long = ea, eb
+                z_in = z
+            else:
+                ex_short, ex_long = eb, ea
+                z_in = -z
+
+            q_long, q_short = quotes[ex_long], quotes[ex_short]
+            key = (symbol, ex_long, ex_short)
+            throttled = now - self._signal_last_log.get(key, 0.0) >= self.signal_throttle
+
+            # 1. Защита от рассинхрона по времени котировок
+            dt = abs(q_long.ts - q_short.ts)
+            if dt > self.max_leg_dt:
+                if throttled:
+                    self._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} dt={dt:.1f}с > {self.max_leg_dt}с (рассинхрон котировок)")
+                continue
+
+            # 2. Защита от битых/аномальных спредов
+            raw_top_spread = (q_short.best_bid - q_long.best_ask) / q_long.best_ask * 100.0 if q_long.best_ask > 0 else 0.0
+            if raw_top_spread > self.max_sane_spread:
+                if throttled:
+                    self._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} спред={raw_top_spread:.1f}% > {self.max_sane_spread}% (выброс)")
+                continue
+
+            # 3. Ликвидность лучших цен (минимальный порог, глубокий расчет идет через VWAP)
+            top_long = q_long.best_ask * q_long.ask_size
+            top_short = q_short.best_bid * q_short.bid_size
+            sizes_known = q_long.ask_size > 0 and q_short.bid_size > 0
+            if sizes_known and min(top_long, top_short) < 10.0:
+                if throttled:
+                    self._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} пустой топ стакана: ${min(top_long, top_short):.0f}")
+                continue
+
+            # 4. Проверка стакана (L2 Order Book)
+            ob_long = await self._get_ob(ex_long, symbol)
+            ob_short = await self._get_ob(ex_short, symbol)
+            if not ob_long or not ob_short:
+                if throttled:
+                    self._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} стаканы недоступны")
+                continue
+
+            # 5. Размер позиции
+            if self.size_mode == "dynamic":
+                trade_size = self.emulator.calc_dynamic_size(ob_long, ob_short)
+            else:
+                trade_size = self.size_usdt
+
+            if trade_size < self.min_size:
+                if throttled:
+                    self._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} размер ${trade_size:.0f} < ${self.min_size}")
+                continue
+
+            # 6. Расчет честного исполнения через VWAP
+            fill_long = simulate_leg_fill(ob_long, "buy", trade_size)
+            fill_short = simulate_leg_fill(ob_short, "sell", trade_size)
+            if not (fill_long.filled and fill_short.filled):
+                if throttled:
+                    self._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} не хватает глубины на ${trade_size:.0f}")
+                continue
+
+            vwap_long = fill_long.fill_price
+            vwap_short = fill_short.fill_price
+            real_spread = (vwap_short - vwap_long) / vwap_long * 100.0
+            total_fees_pct = (q_long.taker_fee + q_short.taker_fee) * 2 * 100.0
+            net_edge = real_spread - total_fees_pct
+
+            # Гейт безопасности: реальный чистый спред должен покрывать все 4 комиссии с запасом
+            if net_edge < self.min_profit_margin_pct:
+                if throttled:
+                    self._signal_last_log[key] = now
+                    self._event("skip", f"Z-Score {symbol} Z={z:+.1f} VWAP-спред={real_spread:+.2f}% - 4x ком.={total_fees_pct:.2f}% -> edge={net_edge:+.3f}% < {self.min_profit_margin_pct}%")
+                continue
+
+            # 7. Логирование и алерт
+            res = NetEdgeResult(
+                symbol=symbol, exch_long=ex_long, exch_short=ex_short,
+                raw_spread_pct=real_spread, funding_edge_pct=0.0,
+                fees_pct=total_fees_pct, slippage_pct=0.0, width_pct=0.0,
+                net_edge_pct=net_edge, passed_threshold=True,
+            )
+            if throttled:
+                self._signal_last_log[key] = now
+                self.alerts.send_signal(res)
+                self._event("signal", f"🔥 ВХОД Z-Score {symbol} {ex_long}->{ex_short} Z={z:+.2f} edge={net_edge:+.3f}%")
+                self.loggers.signals.write({
+                    "symbol": symbol, "exch_long": ex_long, "exch_short": ex_short,
+                    "z_score": round(z, 2), "raw_spread_pct": round(real_spread, 4),
+                    "fees_pct": round(total_fees_pct, 4), "net_edge_pct": round(net_edge, 4),
+                    "passed_threshold": True,
+                })
+                self.storage.save_signal({"ts": now, "strategy": "zscore", **res.__dict__})
+
+            # 8. Открытие позиции через эмулятор
+            if self.emulator_enabled:
+                self.emulator.try_open(res, q_long, q_short, ob_long, ob_short,
+                                       strategy="arb", size_usdt=trade_size, z_in=z_in)
+
     async def _check_exits(self, symbol: str, quotes: dict, now: float):
         for trade_id, pos in list(self.emulator.open_positions.items()):
             if pos.symbol != symbol:
@@ -702,6 +862,9 @@ class Engine:
                 continue
 
             # ---- СКАЛЬП: выход на сжатии спреда или по тайм-стопу ----
+            # Триггер по тикерам, но закрытие только если ЧЕСТНЫЙ PnL
+            # выхода (walk по стаканам + комиссии) >= 0: иначе сжатие
+            # тикера — ловушка, ширина книг съедает остаток спреда.
             if strategy == "scalp" and self.scalp_enabled:
                 if pos.exch_long in quotes and pos.exch_short in quotes:
                     ql, qs = quotes[pos.exch_long], quotes[pos.exch_short]
@@ -711,8 +874,10 @@ class Engine:
                         if entry > 0 and cur_spread > 0 and cur_spread <= entry * self.scalp_exit_frac:
                             ob_l = await self._get_ob(pos.exch_long, symbol)
                             ob_s = await self._get_ob(pos.exch_short, symbol)
-                            self.emulator.try_close(trade_id, ql, qs, cur_spread,
-                                                    reason="scalp_converged", ob_long=ob_l, ob_short=ob_s)
+                            est = self.emulator.estimate_close_pnl(pos, ql, qs, ob_l, ob_s)
+                            if est is not None and est >= 0:
+                                self.emulator.try_close(trade_id, ql, qs, cur_spread,
+                                                        reason="scalp_converged", ob_long=ob_l, ob_short=ob_s)
                             continue
                 age_sec = now - pos.open_ts
                 if age_sec >= self.scalp_max_holding_sec:
@@ -723,27 +888,59 @@ class Engine:
                                                 0.0, reason="scalp_timeout", ob_long=ob_l, ob_short=ob_s)
                     continue
 
-            # ---- ПОЗИЦИОННЫЙ АРБИТРАЖ: ждём схождения net_edge / таймаут часов ----
-            if (now - pos.open_ts) / 3600.0 >= self.max_holding_h:
+            # ---- ПОЗИЦИОННЫЙ Z-SCORE АРБИТРАЖ: ждём РЕАЛЬНО прибыльного закрытия ----
+            hold_sec = now - pos.open_ts
+            if hold_sec / 3600.0 >= self.max_holding_h:
                 if pos.exch_long in quotes and pos.exch_short in quotes:
                     ob_l = await self._get_ob(pos.exch_long, symbol)
                     ob_s = await self._get_ob(pos.exch_short, symbol)
                     self.emulator.try_close(trade_id, quotes[pos.exch_long], quotes[pos.exch_short],
                                             0.0, reason="max_holding", ob_long=ob_l, ob_short=ob_s)
                 continue
+
             if pos.exch_long not in quotes or pos.exch_short not in quotes:
                 continue
-            check = compute_net_edge(
-                quotes[pos.exch_long], quotes[pos.exch_short],
-                holding_hours=self.holding_hours,
-                min_threshold_pct=self.min_threshold,
-                slippage_buffer_pct=self.slippage_buffer,
-            )
-            if check.net_edge_pct <= self.min_threshold * self.exit_frac:
-                ob_l = await self._get_ob(pos.exch_long, symbol)
-                ob_s = await self._get_ob(pos.exch_short, symbol)
-                self.emulator.try_close(trade_id, quotes[pos.exch_long], quotes[pos.exch_short],
-                                        check.net_edge_pct, reason="converged",
+
+            ql, qs = quotes[pos.exch_long], quotes[pos.exch_short]
+            ob_l = await self._get_ob(pos.exch_long, symbol)
+            ob_s = await self._get_ob(pos.exch_short, symbol)
+
+            # Честная оценка PnL закрытия (обе комиссии + стаканы + funding)
+            est = self.emulator.estimate_close_pnl(pos, ql, qs, ob_l, ob_s)
+
+            # Z-схождение
+            converged = False
+            cur_z = None
+            if self.zscore_enabled:
+                mid_l = (ql.best_bid + ql.best_ask) / 2.0
+                mid_s = (qs.best_bid + qs.best_ask) / 2.0
+                cur_z = self.z_tracker.get_z(symbol, pos.exch_short, pos.exch_long, mid_s, mid_l)
+                if cur_z is not None:
+                    # Входили: pos.exch_short дороже, pos.exch_long дешевле => z_in > 0
+                    if cur_z <= self.exit_z or abs(cur_z) <= self.exit_z:
+                        converged = True
+            else:
+                converged = True
+
+            cur_spread = ((qs.best_bid - ql.best_ask) / ql.best_ask * 100.0
+                          if ql.best_ask > 0 else 0.0)
+
+            # Стоп-лосс по расширению аномалии (|Z| > stop_mult * z_in)
+            if cur_z is not None and getattr(pos, "z_in", 0.0) > 0 and cur_z >= self.stop_mult * pos.z_in:
+                self.emulator.try_close(trade_id, ql, qs, cur_spread,
+                                        reason="stop", ob_long=ob_l, ob_short=ob_s)
+                continue
+
+            # Тайм-стоп (например, 30 минут)
+            if hold_sec >= self.timestop_sec:
+                self.emulator.try_close(trade_id, ql, qs, cur_spread,
+                                        reason="timestop", ob_long=ob_l, ob_short=ob_s)
+                continue
+
+            # Схождение: сошлись по Z И реальный результат закрытия в плюс
+            if converged and est is not None and est >= 0:
+                self.emulator.try_close(trade_id, ql, qs, cur_spread,
+                                        reason="converged",
                                         ob_long=ob_l, ob_short=ob_s)
 
     # -------------------- dashboard snapshot --------------------
@@ -812,9 +1009,51 @@ class Engine:
         n_scalp = sum(1 for p in positions if p.get("strategy") == "scalp")
         n_dir = sum(1 for p in positions if p.get("strategy") == "dir")
 
+        # Z-Score Радар для дашборда
+        z_radar = []
+        max_abs_z = 0.0
+        max_z_info = "—"
+        if self.zscore_enabled:
+            for (sym, ea, eb), state in self.z_tracker.states.items():
+                if state.ma is None or state.sd is None or state.sd <= 0:
+                    continue
+                q = self.state.fresh_quotes(sym, [ea, eb])
+                qa, qb = q.get(ea), q.get(eb)
+                if not qa or not qb:
+                    continue
+                mid_a = (qa.best_bid + qa.best_ask) / 2.0
+                mid_b = (qb.best_bid + qb.best_ask) / 2.0
+                z = state.get_z(mid_a, mid_b)
+                if z is None:
+                    continue
+                abs_z = abs(z)
+                if abs_z > max_abs_z:
+                    max_abs_z = abs_z
+                    max_z_info = f"{sym.split('/')[0]} ({z:+.2f})"
+
+                ratio = mid_a / mid_b if mid_b > 0 else 1.0
+                spread = (mid_a - mid_b) / mid_b * 100.0 if mid_b > 0 else 0.0
+                fees = (qa.taker_fee + qb.taker_fee) * 2 * 100.0
+                z_radar.append({
+                    "symbol": sym,
+                    "ex_a": ea,
+                    "ex_b": eb,
+                    "z": round(z, 2),
+                    "abs_z": round(abs_z, 2),
+                    "ratio": round(ratio, 5),
+                    "ma": round(state.ma, 5),
+                    "sd": round(state.sd, 5),
+                    "spread_pct": round(spread, 3),
+                    "fees_pct": round(fees, 3),
+                    "is_signal": abs_z >= self.entry_z,
+                })
+            z_radar.sort(key=lambda x: x["abs_z"], reverse=True)
+
         # mark-to-market по открытым позициям: сколько было бы PnL,
         # если закрыть прямо сейчас по лучшим ценам (без walk-book)
         for p in positions:
+            p["z_in"] = round(float(p.get("z_in") or 0.0), 2)
+            p["cur_z"] = None
             p["cur_spread_pct"] = None
             p["unrealized_pnl_usdt"] = None
             q = self.state.fresh_quotes(p["symbol"], self.exchanges)
@@ -822,6 +1061,14 @@ class Engine:
             qs = q.get(p["exch_short"])
             if not ql or not qs or ql.best_ask <= 0:
                 continue
+
+            if self.zscore_enabled:
+                mid_l = (ql.best_bid + ql.best_ask) / 2.0
+                mid_s = (qs.best_bid + qs.best_ask) / 2.0
+                cz = self.z_tracker.get_z(p["symbol"], p["exch_short"], p["exch_long"], mid_s, mid_l)
+                if cz is not None:
+                    p["cur_z"] = round(cz, 2)
+
             cur = (qs.best_bid - ql.best_ask) / ql.best_ask * 100.0
             size = p["size_usdt"]
             price_pnl = ((ql.best_bid - p["entry_price_long"]) / p["entry_price_long"] * size
@@ -849,8 +1096,19 @@ class Engine:
             ],
             "symbols_total": len(self.symbols),
             "min_threshold_pct": self.min_threshold,
+            "zscore": {
+                "enabled": self.zscore_enabled,
+                "entry_z": self.entry_z,
+                "exit_z": self.exit_z,
+                "timestop_sec": self.timestop_sec,
+                "min_profit_margin_pct": self.min_profit_margin_pct,
+                "max_abs_z": round(max_abs_z, 2),
+                "max_z_info": max_z_info,
+                "radar": z_radar[:60],
+            },
             "spreads": spreads[:60],
             "positions": positions,
+            "closed_trades": self.emulator.closed_trades_snapshot()[:100],
             "scalp_rank": self._scalp_scores()[:20],
             "watchlist": list(self._watchlist),
             "stats": {

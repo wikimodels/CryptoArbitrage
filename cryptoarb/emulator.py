@@ -15,8 +15,8 @@ from __future__ import annotations
 
 import time
 import uuid
+from collections import deque
 from dataclasses import dataclass
-
 from typing import Dict
 
 from .base import OrderBookSnapshot, Quote
@@ -46,6 +46,7 @@ class VirtualPosition:
     next_funding_ts_short: float | None
     entry_fees_usdt: float
     entry_raw_spread_pct: float = 0.0
+    z_in: float = 0.0
     side: str = "long"     # arb: всегда long (нога A); dir: long|short
     status: str = "open"
 
@@ -79,6 +80,26 @@ class Emulator:
         # stats раздельные: arb / scalp / dir — каждая стратегия своя
         self.stats: Dict[str, dict] = {"arb": self._new_stats(), "scalp": self._new_stats(),
                                        "dir": self._new_stats()}
+        self.closed_trades: deque = deque(maxlen=200)
+        if storage is not None and hasattr(storage, "get_recent_trades"):
+            for t in storage.get_recent_trades(limit=50):
+                self.closed_trades.append({
+                    "trade_id": t.get("trade_id", ""),
+                    "symbol": t.get("symbol", ""),
+                    "strategy": t.get("strategy", "arb"),
+                    "exch_long": t.get("exch_long", ""),
+                    "exch_short": t.get("exch_short", ""),
+                    "open_ts": t.get("open_ts") or 0.0,
+                    "close_ts": t.get("close_ts") or 0.0,
+                    "holding_seconds": t.get("holding_seconds") or 0.0,
+                    "size_usdt": 0.0,
+                    "price_pnl_usdt": round(t.get("price_pnl_usdt") or 0.0, 4),
+                    "fees_usdt": round(t.get("fees_usdt") or 0.0, 4),
+                    "funding_usdt": round(t.get("funding_usdt") or 0.0, 4),
+                    "realized_pnl_usdt": round(t.get("realized_pnl_usdt") or 0.0, 4),
+                    "pnl_pct": 0.0,
+                    "reason": "db_history",
+                })
 
     @staticmethod
     def _new_stats() -> dict:
@@ -87,31 +108,36 @@ class Emulator:
                 "holding_sec_sum": 0.0}
 
     def calc_dynamic_size(self, ob_long, ob_short) -> float:
-        """Размер, не двигающий стакан И не проходящий глубоко в книгу:
-        1) набираем только уровни в пределах max_entry_slippage_pct от
-           лучшей цены (дальше — тонкие книги съедят спред);
-        2) берём dyn_pct% от этого на ХУДШЕЙ из двух ног;
-        3) зажимаем в [min_size, max_size]. 0.0 = торговать нельзя."""
-        def fillable(levels) -> float:
+        """Динамический размер: берем ровно dyn_pct% от суммарного объема
+        первых dyn_top_levels слоев стакана на худшей (более тонкой) ноге,
+        чтобы гарантированно не пробивать стакан и забирать спред на верхушке."""
+        if not ob_long or not ob_long.asks or not ob_short or not ob_short.bids:
+            return 0.0
+
+        def depth_notional(levels, max_levels: int) -> float:
+            acc = 0.0
             if not levels:
                 return 0.0
             best = levels[0].price
             if best <= 0:
                 return 0.0
-            acc = 0.0
-            for lvl in levels:
+            for lvl in levels[:max_levels]:
                 if abs(lvl.price - best) / best * 100.0 > self.max_entry_slippage_pct:
                     break
                 acc += lvl.price * lvl.size
             return acc
-        if not ob_long or not ob_long.asks or not ob_short or not ob_short.bids:
-            return 0.0
-        worst = min(fillable(ob_long.asks), fillable(ob_short.bids))
+
+        # Считаем глубину первых 3 уровней: аски на покупке (лонг) и биды на продаже (шорт)
+        depth_long = depth_notional(ob_long.asks, self.dyn_top_levels)
+        depth_short = depth_notional(ob_short.bids, self.dyn_top_levels)
+        worst = min(depth_long, depth_short)
         if worst <= 0:
             return 0.0
-        size = worst * self.dyn_pct / 100.0
+
+        # Ровно dyn_pct% (по умолчанию 10%) от доступного объема первых уровней
+        size = worst * (self.dyn_pct / 100.0)
         size = min(size, self.max_size)
-        return size if size >= self.min_size else 0.0
+        return round(size, 2) if size >= self.min_size else 0.0
 
     # -------------------- OPEN --------------------
 
@@ -132,7 +158,8 @@ class Emulator:
 
     def try_open(self, result: NetEdgeResult, q_long: Quote, q_short: Quote,
                  ob_long: OrderBookSnapshot | None, ob_short: OrderBookSnapshot | None,
-                 strategy: str = "arb", size_usdt: float | None = None) -> VirtualPosition | None:
+                 strategy: str = "arb", size_usdt: float | None = None,
+                 z_in: float = 0.0) -> VirtualPosition | None:
         now = time.time()
         key = (result.symbol, result.exch_long, result.exch_short)
         if self._cooldown_active(key, now):
@@ -178,6 +205,7 @@ class Emulator:
             next_funding_ts_long=q_long.next_funding_ts, next_funding_ts_short=q_short.next_funding_ts,
             entry_fees_usdt=entry_fees,
             entry_raw_spread_pct=result.raw_spread_pct,
+            z_in=z_in,
         )
         self.open_positions[trade_id] = pos
         self._last_open[key] = now
@@ -185,13 +213,17 @@ class Emulator:
 
         self.loggers.emulator_trades.write({
             "event": "open", "trade_id": trade_id, "symbol": pos.symbol,
+            "strategy": strategy,
             "exch_long": pos.exch_long, "exch_short": pos.exch_short,
             "entry_net_edge_pct": pos.entry_net_edge_pct,
+            "entry_raw_spread_pct": getattr(result, "raw_spread_pct", 0.0),
             "entry_price_long": pos.entry_price_long, "entry_price_short": pos.entry_price_short,
+            "size_usdt": pos.size_usdt,
             "entry_fees_usdt": entry_fees,
+            "z_in": z_in,
         })
         self.storage.save_emulator_trade({
-            "trade_id": trade_id, "symbol": pos.symbol,
+            "trade_id": trade_id, "symbol": pos.symbol, "strategy": strategy,
             "exch_long": pos.exch_long, "exch_short": pos.exch_short,
             "open_ts": pos.open_ts, "entry_net_edge_pct": pos.entry_net_edge_pct,
             "orphan_leg": False, "status": "open",
@@ -323,12 +355,21 @@ class Emulator:
         if realized_pnl < 0:
             self._last_loss[(pos.symbol, pos.exch_long, pos.side)] = now
 
+        closed_rec = {
+            "trade_id": trade_id, "symbol": pos.symbol, "strategy": "dir",
+            "side": pos.side, "reason": reason, "exchange": pos.exch_long,
+            "open_ts": pos.open_ts, "close_ts": now, "holding_seconds": holding_sec,
+            "size_usdt": pos.size_usdt,
+            "entry_price": pos.entry_price_long, "exit_price": exit_price,
+            "price_pnl_usdt": round(price_pnl, 4), "fees_usdt": round(total_fees, 4),
+            "funding_usdt": round(funding_usdt, 4), "realized_pnl_usdt": round(realized_pnl, 4),
+            "pnl_pct": round(realized_pnl / pos.size_usdt * 100.0, 3) if pos.size_usdt > 0 else 0.0,
+        }
+        self.closed_trades.appendleft(closed_rec)
+
         self.loggers.emulator_trades.write({
-            "event": "close_dir", "trade_id": trade_id, "symbol": pos.symbol,
-            "side": pos.side, "reason": reason,
-            "price_pnl_usdt": price_pnl, "fees_usdt": total_fees,
-            "funding_usdt": funding_usdt, "realized_pnl_usdt": realized_pnl,
-            "holding_seconds": holding_sec,
+            "event": "close_dir",
+            **closed_rec
         })
         self.storage.save_emulator_trade({
             "trade_id": trade_id, "symbol": pos.symbol, "strategy": "dir",
@@ -341,6 +382,49 @@ class Emulator:
         })
         return realized_pnl
 
+    @staticmethod
+    def _exit_fills(pos: VirtualPosition, q_long: Quote, q_short: Quote,
+                    ob_long: OrderBookSnapshot | None,
+                    ob_short: OrderBookSnapshot | None) -> tuple[float, float] | None:
+        """Цены выхода: по реальной глубине (как вход) — продаём лонг в
+        bid-стакан, выкупаем шорт из ask-стакана. Если стаканы переданы
+        и глубины не хватает — закрыться НЕЛЬЗЯ (None). Фолбэк (стаканы
+        недоступны) — лучшие цены тикера, приближение."""
+        if ob_long is not None and ob_short is not None:
+            leg_close_long = simulate_leg_fill(ob_long, "sell", pos.size_usdt)
+            leg_close_short = simulate_leg_fill(ob_short, "buy", pos.size_usdt)
+            if not (leg_close_long.filled and leg_close_short.filled):
+                return None
+            return leg_close_long.fill_price, leg_close_short.fill_price
+        return q_long.best_bid, q_short.best_ask
+
+    def estimate_close_pnl(self, pos: VirtualPosition, q_long: Quote, q_short: Quote,
+                           ob_long: OrderBookSnapshot | None = None,
+                           ob_short: OrderBookSnapshot | None = None) -> float | None:
+        """Честная оценка реализованного PnL, если закрыть позицию ПРЯМО
+        СЕЙЧАС (без side-effects). Та же логика, что try_close: walk по
+        обоим стаканам + комиссии выхода + накопленный funding. None =
+        нет ликвидности для закрытия. Это критерий 'converged': выходить
+        только когда закрытие реально прибыльно, а не когда сошлись
+        тикеры (ширина книг съедает остаток спреда)."""
+        fills = self._exit_fills(pos, q_long, q_short, ob_long, ob_short)
+        if fills is None:
+            return None
+        exit_price_long, exit_price_short = fills
+
+        price_pnl = ((exit_price_long - pos.entry_price_long) / pos.entry_price_long
+                     + (pos.entry_price_short - exit_price_short) / pos.entry_price_short
+                     ) * pos.size_usdt
+        exit_fees = (pos.taker_long + pos.taker_short) * pos.size_usdt
+        now = time.time()
+        n_long = self._funding_payments(pos.next_funding_ts_long, pos.funding_interval_long,
+                                        pos.open_ts, now)
+        n_short = self._funding_payments(pos.next_funding_ts_short, pos.funding_interval_short,
+                                         pos.open_ts, now)
+        funding_usdt = (pos.funding_rate_short * n_short - pos.funding_rate_long * n_long) * pos.size_usdt
+        total_fees = pos.entry_fees_usdt + exit_fees
+        return price_pnl - total_fees + funding_usdt
+
     def try_close(self, trade_id: str, q_long: Quote, q_short: Quote,
                   current_net_edge_pct: float, reason: str = "signal",
                   ob_long: OrderBookSnapshot | None = None,
@@ -351,25 +435,17 @@ class Emulator:
 
         now = time.time()
 
-        # Выход по реальной глубине (как вход): продаём лонг в bid-стакан,
-        # выкупаем шорт из ask-стакана. Если стаканы переданы и глубины
-        # не хватает — закрыться НЕЛЬЗЯ (нет ликвидности), позиция остаётся.
-        if ob_long is not None and ob_short is not None:
-            leg_close_long = simulate_leg_fill(ob_long, "sell", pos.size_usdt)
-            leg_close_short = simulate_leg_fill(ob_short, "buy", pos.size_usdt)
-            if not (leg_close_long.filled and leg_close_short.filled):
-                self.loggers.errors.write({
-                    "event": "exit_no_liquidity", "trade_id": trade_id,
-                    "symbol": pos.symbol,
-                    "long_ok": leg_close_long.filled, "short_ok": leg_close_short.filled,
-                })
-                return None
-            exit_price_long = leg_close_long.fill_price
-            exit_price_short = leg_close_short.fill_price
-        else:
-            # Фолбэк (стаканы недоступны): по лучшим ценам, приближение.
-            exit_price_long = q_long.best_bid
-            exit_price_short = q_short.best_ask
+        fills = self._exit_fills(pos, q_long, q_short, ob_long, ob_short)
+        if fills is None:
+            long_ok = bool(simulate_leg_fill(ob_long, "sell", pos.size_usdt).filled) if ob_long else False
+            short_ok = bool(simulate_leg_fill(ob_short, "buy", pos.size_usdt).filled) if ob_short else False
+            self.loggers.errors.write({
+                "event": "exit_no_liquidity", "trade_id": trade_id,
+                "symbol": pos.symbol,
+                "long_ok": long_ok, "short_ok": short_ok,
+            })
+            return None
+        exit_price_long, exit_price_short = fills
 
         price_pnl_long = (exit_price_long - pos.entry_price_long) / pos.entry_price_long * pos.size_usdt
         price_pnl_short = (pos.entry_price_short - exit_price_short) / pos.entry_price_short * pos.size_usdt
@@ -399,12 +475,25 @@ class Emulator:
         if realized_pnl < 0:
             self._last_loss[(pos.symbol, pos.exch_long, pos.exch_short)] = now
 
-        self.loggers.emulator_trades.write({
-            "event": "close", "trade_id": trade_id, "symbol": pos.symbol,
+        closed_rec = {
+            "trade_id": trade_id, "symbol": pos.symbol,
+            "strategy": getattr(pos, "strategy", "arb"),
+            "exch_long": pos.exch_long, "exch_short": pos.exch_short,
+            "open_ts": pos.open_ts, "close_ts": now, "holding_seconds": holding_sec,
+            "size_usdt": pos.size_usdt,
+            "entry_price_long": pos.entry_price_long, "entry_price_short": pos.entry_price_short,
+            "exit_price_long": exit_price_long, "exit_price_short": exit_price_short,
+            "z_in": getattr(pos, "z_in", 0.0),
             "reason": reason, "exit_net_edge_pct": current_net_edge_pct,
-            "price_pnl_usdt": price_pnl, "fees_usdt": total_fees,
-            "funding_usdt": funding_usdt, "realized_pnl_usdt": realized_pnl,
-            "holding_seconds": holding_sec,
+            "price_pnl_usdt": round(price_pnl, 4), "fees_usdt": round(total_fees, 4),
+            "funding_usdt": round(funding_usdt, 4), "realized_pnl_usdt": round(realized_pnl, 4),
+            "pnl_pct": round(realized_pnl / pos.size_usdt * 100.0, 3) if pos.size_usdt > 0 else 0.0,
+        }
+        self.closed_trades.appendleft(closed_rec)
+
+        self.loggers.emulator_trades.write({
+            "event": "close",
+            **closed_rec
         })
         self.storage.save_emulator_trade({
             "trade_id": trade_id, "symbol": pos.symbol, "strategy": pos.strategy,
@@ -433,3 +522,6 @@ class Emulator:
             "open_ts": p.open_ts,
             "holding_seconds": now - p.open_ts, "size_usdt": p.size_usdt,
         } for p in self.open_positions.values()]
+
+    def closed_trades_snapshot(self) -> list[dict]:
+        return list(self.closed_trades)

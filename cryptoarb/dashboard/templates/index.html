@@ -3,20 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CryptoArbitrage Dashboard</title>
+<title>CryptoArbitrage Z-Score Dashboard</title>
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --surface2: #1c2128;
     --border: #30363d; --text: #e6edf3; --muted: #8b949e;
     --green: #3fb950; --red: #f85149; --yellow: #d29922; --blue: #58a6ff;
-    --accent: #58a6ff;
+    --accent: #58a6ff; --purple: #bc8cff;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.4;
   }
-  /* dark scrollbars */
   * { scrollbar-width: thin; scrollbar-color: var(--border) var(--bg); }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -49,7 +48,7 @@
   .modal-backdrop.open { display: flex; }
   .modal {
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    max-width: 820px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    max-width: 840px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,.5);
   }
   .modal__head {
     display: flex; align-items: center; justify-content: space-between;
@@ -74,17 +73,14 @@
   table.rules { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
   table.rules td { padding: 5px 10px 5px 0; vertical-align: top; font-size: 13px; }
   table.rules td:first-child { color: var(--muted); width: 24px; font-weight: 600; }
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  .tag.arb { background: rgba(63,185,80,.15); color: var(--green); }
-  .tag.scalp { background: rgba(248,81,73,.15); color: var(--red); }
 
-  .container { max-width: 1400px; margin: 0 auto; padding: 20px 24px; }
+  .container { max-width: 1440px; margin: 0 auto; padding: 20px 24px; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
   .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
   .card .value { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
-  .value.pos { color: var(--green); } .value.neg { color: var(--red); }
+  .value.pos { color: var(--green); } .value.neg { color: var(--red); } .value.purple { color: var(--purple); }
 
   .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
   .tab {
@@ -99,7 +95,7 @@
   .toolbar { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; }
   .toolbar input {
     background: var(--surface2); border: 1px solid var(--border); color: var(--text);
-    padding: 8px 12px; border-radius: 8px; font-size: 13px; width: 240px; outline: none;
+    padding: 8px 12px; border-radius: 8px; font-size: 13px; width: 260px; outline: none;
   }
   .toolbar input:focus { border-color: var(--accent); }
   .toolbar label { color: var(--muted); display: flex; align-items: center; gap: 6px; cursor: pointer; }
@@ -116,11 +112,18 @@
   tbody tr:hover { background: var(--surface2); }
   .sym { font-weight: 600; }
   .num.pos { color: var(--green); } .num.neg { color: var(--red); } .muted { color: var(--muted); }
-  .badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  
+  .badge { padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
   .badge.pass { background: rgba(63,185,80,.15); color: var(--green); }
   .badge.no { background: rgba(139,148,158,.12); color: var(--muted); }
   .badge.suspect { background: rgba(210,153,34,.18); color: var(--yellow); }
   .badge.dir { background: rgba(88,166,255,.15); color: var(--blue); }
+  .badge.z-signal {
+    background: rgba(63,185,80,.25); color: #3fb950; border: 1px solid #3fb950;
+    box-shadow: 0 0 6px rgba(63,185,80,.4);
+  }
+  .badge.z-watch { background: rgba(210,153,34,.2); color: var(--yellow); border: 1px solid rgba(210,153,34,.4); }
+  .badge.z-norm { background: rgba(139,148,158,.12); color: var(--muted); }
   .ex { color: var(--blue); font-weight: 600; }
 
   .events { list-style: none; }
@@ -133,13 +136,13 @@
 </head>
 <body>
 <header>
-  <h1><span class="dot" id="liveDot"></span> CryptoArbitrage</h1>
-  <button class="info-btn" id="infoBtn" title="Правила входа/выхода">i</button>
+  <h1><span class="dot" id="liveDot"></span> CryptoArbitrage <span style="font-size:12px; color:var(--purple); border:1px solid var(--purple); border-radius:12px; padding:1px 8px; margin-left:6px;">Z-SCORE v2</span></h1>
+  <button class="info-btn" id="infoBtn" title="Правила стратегии Z-Score">i</button>
   <div class="meta">
     <span id="mUptime">uptime —</span>
     <span id="mScan">scan —</span>
     <span id="mSymbols">symbols —</span>
-    <span id="mThreshold">порог —</span>
+    <span id="mThreshold">порог Z —</span>
   </div>
 </header>
 
@@ -147,67 +150,34 @@
 <div class="modal-backdrop" id="rulesModal">
   <div class="modal">
     <div class="modal__head">
-      <h2>Правила входа / выхода</h2>
+      <h2>Правила стратегии Z-Score</h2>
       <button class="modal__close" id="rulesClose">×</button>
     </div>
     <div class="modal__body">
-      <h3>ВХОД — общий конвейер (все 12 шагов должны пройти)</h3>
+      <h3>СТАТИСТИЧЕСКИЙ ВХОД (Z-Score &ge; 4.0)</h3>
       <table class="rules">
-        <tr><td>1</td><td>Монета на ≥ 2 биржах (каталог, фильтры исключений)</td></tr>
-        <tr><td>2</td><td>Котировки свежие (≤ 6 с), стакан не перекрёстный (bid &lt; ask)</td></tr>
-        <tr><td>3</td><td>Медиана цен: одноимённые разные токены отбрасываются (отклонение &gt; 50%)</td></tr>
-        <tr><td>4</td><td>Ноги по времени: Δt котировок ≤ 2 с (анти-фантом)</td></tr>
-        <tr><td>5</td><td>Сырой спред ≤ 3% — выше считается битой котировкой</td></tr>
-        <tr><td>6</td><td>Ликвидность вершины книги ≥ $200</td></tr>
-        <tr><td>7</td><td>Динамический размер: 10% × топ-3 уровня худшей ноги, [10..1000] USDT. &lt; $10 → сделки нет (стакан не двигаем)</td></tr>
-        <tr><td>8</td><td><b>net_edge ≥ 0.30%</b> = спред + funding − комиссии (4×taker) − slippage (глубина+буфер) − ширина обеих книг</td></tr>
-        <tr><td>9</td><td>Funding не главный: funding_edge ≤ 15% спреда (иначе спред = вшитый funding и не сойдётся)</td></tr>
-        <tr><td>10</td><td>Спред существует на реальном стакане прямо сейчас: (bid_шорт − ask_лонг)/ask_лонг ≥ 0.30%</td></tr>
-        <tr><td>11</td><td>Кулдауны: 60 с после любого закрытия пары; <b>15 мин</b> после убыточного</td></tr>
-        <tr><td>12</td><td>Orphan-leg: обе ноги должны исполниться по реальной глубине, иначе отмена</td></tr>
+        <tr><td>1</td><td><b>Статистический триггер:</b> |Z| &ge; 4.0 (отклонение от 24ч EMA на 4 сигмы). Рассчитывается в реалтайме по WebSocket.</td></tr>
+        <tr><td>2</td><td><b>Направление:</b> Z &gt; 0 &rarr; шорт дорогой биржи, лонг дешевой; Z &lt; 0 &rarr; лонг дешевой, шорт дорогой.</td></tr>
+        <tr><td>3</td><td><b>Анти-рассинхрон:</b> разница возраста котировок ног &le; 2.0 с, отсечка битых спредов &gt; 3%.</td></tr>
+        <tr><td>4</td><td><b>Честный VWAP по стакану L2:</b> покупка и продажа моделируются проходом по реальным уровням книги заявок.</td></tr>
+        <tr><td>5</td><td><b>Маржа безопасности:</b> реальный спред по VWAP обязан быть больше 4 тейкерских комиссий + <b>0.25% чистой прибыли</b>.</td></tr>
       </table>
 
-      <h3>Сплит стратегий — по входному спреду</h3>
-      <table class="rules">
-        <tr><td class="tag arb">ARB</td><td>Спред <b>≥ 1%</b> — жирный, ждём схождения</td></tr>
-        <tr><td class="tag scalp">SCALP</td><td>Спред <b>&lt; 1%</b> — мелькающий lead-lag, быстрая сделка</td></tr>
-      </table>
-
-      <h3>ВЫХОД — SCALP (красный бейдж)</h3>
+      <h3>ВЫХОД И ЗАКРЫТИЕ ПОЗИЦИИ</h3>
       <ul>
-        <li>Спред сжался до <b>30% от входного</b> → закрытие (забираем схождение)</li>
-        <li><b>90 секунд</b> не сжался → тайм-стоп (дальше — направленный риск)</li>
-        <li>Funding на таком горизонте ≈ 0 (учитывается дискретно по календарю)</li>
+        <li><b>Схождение (converged):</b> Z-Score возвращается к 0.0 И расчетный PnL закрытия по реальным стаканам с учетом входных и выходных комиссий строго <b>&ge; 0</b>.</li>
+        <li><b>Тайм-стоп (timestop):</b> если схождение не произошло за <b>30 минут</b> (1800 с) &rarr; закрытие по рынку для ликвидации временного риска.</li>
+        <li><b>Стоп-лосс (stop):</b> расширение аномалии до <b>|Z| &ge; 8.0</b> (2 &times; entry_z) &rarr; экстренный выход.</li>
+        <li><b>Максимальное удержание:</b> принудительный выход через 72 часа.</li>
       </ul>
 
-      <h3>ВЫХОД — ARB (зелёный бейдж)</h3>
+      <h3>УЧЕТ ИЗДЕРЖЕК В ЭМУЛЯТОРЕ</h3>
       <ul>
-        <li>net_edge упал до ≤ <b>0.15%</b> (порог × 0.5) → спред сошёлся, закрытие</li>
-        <li><b>72 часа</b> → принудительное закрытие (max holding)</li>
+        <li><b>Комиссии:</b> списываются 4 &times; taker (вход обеих ног + выход обеих ног).</li>
+        <li><b>Проскальзывание:</b> реальный VWAP по глубине 20 уровней стакана.</li>
+        <li><b>Фандинг:</b> точный календарный учет по временным меткам начислений.</li>
       </ul>
-
-      <h3>Общее для выходов</h3>
-      <ul>
-        <li>Выход идёт по реальной глубине стакана (как вход). Нет ликвидности на объём → закрытие откладывается, позиция остаётся открытой (событие exit_no_liquidity)</li>
-        <li>Funding считается дискретно по фактическим датам начислений (next_funding_ts на входе) — держал 7.9ч из 8ч интервала = 0 платежей</li>
-      </ul>
-
-      <h3>Экономика скальпа — почему не каждая монета берётся</h3>
-      <ul>
-        <li>Полный цикл = 2 ноги × (вход + выход) = <b>4 × taker</b> ≈ 0.24% комиссий</li>
-        <li>+ slippage и ширина книг ≈ 0.06% → <b>кост-флор ≈ 0.30%</b></li>
-        <li>Средний захват монеты (из статистики) должен быть <b>выше 0.30%</b> — иначе после комиссий минус</li>
-        <li>Пример из данных: UNITREE захват 0.48% → нетто <b>+0.24%</b> (берём); TRUMP 0.21% → нетто <b>−0.03%</b> (не берём)</li>
-      </ul>
-
-      <h3>Учтённые издержки</h3>
-      <ul>
-        <li><b>Комиссии:</b> 4 × taker (вход+выход × обе ноги)</li>
-        <li><b>Slippage:</b> проход по глубине стакана на объём + буфер 0.02%</li>
-        <li><b>Ширина книг:</b> полная ширина bid-ask обеих бирж (платим при выходе даже без движения цены)</li>
-      </ul>
-
-      <p class="note">Все пороги — в config.yaml. События отказов видны во вкладке «События» (SKIP: причина).</p>
+      <p class="note">Все параметры настраиваются в config.yaml в блоке zscore.</p>
     </div>
   </div>
 </div>
@@ -216,14 +186,66 @@
   <div class="cards" id="cards"></div>
 
   <div class="tabs">
-    <div class="tab active" data-tab="spreads">Спреды</div>
+    <div class="tab active" data-tab="zscore">Z-Score Радар</div>
     <div class="tab" data-tab="positions">Позиции</div>
-    <div class="tab" data-tab="rank">Скальп-рейтинг</div>
+    <div class="tab" data-tab="trades">История сделок</div>
+    <div class="tab" data-tab="spreads">Спреды</div>
     <div class="tab" data-tab="exchanges">Биржи</div>
     <div class="tab" data-tab="events">События</div>
   </div>
 
-  <div class="panel active" id="panel-spreads">
+  <!-- Z-Score Radar Panel -->
+  <div class="panel active" id="panel-zscore">
+    <div class="toolbar">
+      <input id="zFilter" placeholder="Фильтр по монете/бирже…" oninput="render()">
+      <label><input type="checkbox" id="onlyZSignals" onchange="render()"> только сигналы (|Z| &ge; 4.0)</label>
+      <label><input type="checkbox" id="onlyZWatch" onchange="render()"> мониторинг (|Z| &ge; 2.5)</label>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>Биржа A</th><th>Биржа B</th>
+          <th>Z-Score</th><th>Ratio (A/B)</th><th>24ч EMA (MA)</th><th>STD (1&sigma;)</th>
+          <th>Спред Mid %</th><th>4x Taker %</th><th>Статус</th>
+        </tr></thead>
+        <tbody id="zBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Positions Panel -->
+  <div class="panel" id="panel-positions">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
+          <th>Z входа</th><th>Текущий Z</th><th>Вход. спред %</th><th>Тек. спред %</th>
+          <th>Размер USDT</th><th>Тек. PnL USDT</th><th>Удержание</th><th>ID</th>
+        </tr></thead>
+        <tbody id="posBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Trades History Panel -->
+  <div class="panel" id="panel-trades">
+    <div class="toolbar">
+      <input id="tradeFilter" placeholder="Фильтр по монете/бирже…" oninput="render()">
+      <span class="muted" id="tradeSummary"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Время закрытия</th><th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
+          <th>Z входа</th><th>Размер $</th><th>Удержание</th><th>PnL USDT</th><th>PnL %</th><th>Комиссии Σ</th><th>Причина</th>
+        </tr></thead>
+        <tbody id="tradesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Spreads Panel -->
+  <div class="panel" id="panel-spreads">
     <div class="toolbar">
       <input id="filter" placeholder="Фильтр по символу/бирже…" oninput="render()">
       <label><input type="checkbox" id="onlyPass" onchange="render()"> только прошедшие порог</label>
@@ -240,43 +262,17 @@
     </div>
   </div>
 
-  <div class="panel" id="panel-positions">
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Стратегия</th><th>Символ</th><th>LONG</th><th>SHORT</th><th>Entry net %</th>
-          <th>Вход. спред %</th><th>Тек. спред %</th><th>Размер USDT</th><th>Тек. PnL USDT</th><th>Удержание</th><th>Trade ID</th>
-        </tr></thead>
-        <tbody id="posBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="panel" id="panel-rank">
-    <p style="color:var(--muted);font-size:13px;margin-bottom:12px;">
-      Авто-отбор: спайки спреда ≥ порога → сошёлся ли он за окно → score = сходимость × захват × частота.
-      В режиме watchlist=auto скальп-входы разрешены только топ-монетам из этой таблицы.
-    </p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Символ</th><th>Спайков</th><th>Сошлось</th><th>Сходимость %</th>
-          <th>Ср. захват %</th><th>Ср. ширина книг %</th><th>Score</th><th>В watchlist</th>
-        </tr></thead>
-        <tbody id="rankBody"></tbody>
-      </table>
-    </div>
-  </div>
-
+  <!-- Exchanges Panel -->
   <div class="panel" id="panel-exchanges">
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Биржа</th><th>WS</th><th>Свежих символов</th></tr></thead>
+        <thead><tr><th>Биржа</th><th>WS Статус</th><th>Свежих символов</th></tr></thead>
         <tbody id="exBody"></tbody>
       </table>
     </div>
   </div>
 
+  <!-- Events Panel -->
   <div class="panel" id="panel-events">
     <div class="table-wrap">
       <ul class="events" id="eventsList"></ul>
@@ -321,24 +317,136 @@ function render() {
   document.getElementById('mUptime').textContent = 'uptime ' + fmtDur(s.uptime_sec);
   document.getElementById('mScan').textContent = 'scan ' + (s.last_scan_age_sec==null?'—':(s.last_scan_age_sec.toFixed(1)+'с назад'));
   document.getElementById('mSymbols').textContent = 'symbols ' + s.symbols_total;
-  document.getElementById('mThreshold').textContent = 'порог ' + s.min_threshold_pct + '%';
+  
+  const zCfg = s.zscore || {};
+  document.getElementById('mThreshold').textContent = `порог Z: ±${zCfg.entry_z || 4.0}`;
 
-  const arb = s.stats.arb, scp = s.stats.scalp;
-  const dir = s.stats.dir || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
+  const arb = s.stats.arb || { closed: 0, win_rate_pct: 0, pnl_usdt: 0, fees_usdt: 0, funding_usdt: 0, orphan_aborts: 0 };
+  const maxZTxt = zCfg.max_z_info || '—';
+  
   document.getElementById('cards').innerHTML = `
-    ${card('Позиций открыто', s.stats.open_positions)}
+    ${card('Позиций открыто', s.stats.open_positions, s.stats.open_positions > 0 ? 1 : 0)}
+    ${card('Стратегия Z-Score', `Вход ±${zCfg.entry_z || 4.0} / Выход ${zCfg.exit_z || 0.0}`, 'purple')}
+    ${card('Max |Z| на рынке', maxZTxt, zCfg.max_abs_z >= 4.0 ? 'pos' : (zCfg.max_abs_z >= 2.5 ? 'yellow' : ''))}
     ${card('ARB: сделок', `${arb.closed} (WR ${arb.win_rate_pct}%)`)}
-    ${card('ARB: PnL USDT', arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
-    ${card('SCALP: сделок', `${scp.closed} (WR ${scp.win_rate_pct}%)`)}
-    ${card('SCALP: PnL USDT', scp.pnl_usdt.toFixed(2), scp.pnl_usdt)}
-    ${card('DIR: сделок', String(dir.closed) + ' (WR ' + dir.win_rate_pct + '%)')}
-    ${card('DIR: PnL USDT', dir.pnl_usdt.toFixed(2), dir.pnl_usdt)}
-    ${card('Комиссии Σ', '-' + (arb.fees_usdt + scp.fees_usdt).toFixed(2), -1)}
-    ${card('Funding Σ', (arb.funding_usdt + scp.funding_usdt).toFixed(2), arb.funding_usdt + scp.funding_usdt)}
-    ${card('Orphan-legs Σ', arb.orphan_aborts + scp.orphan_aborts)}
+    ${card('ARB: PnL USDT', (arb.pnl_usdt >= 0 ? '+' : '') + arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
+    ${card('Комиссии Σ', '-' + arb.fees_usdt.toFixed(2), -1)}
+    ${card('Funding Σ', arb.funding_usdt.toFixed(2), arb.funding_usdt)}
   `;
 
-  // spreads
+  // 1. Z-Score Radar Table
+  const zFilter = document.getElementById('zFilter').value.trim().toLowerCase();
+  const onlySignals = document.getElementById('onlyZSignals').checked;
+  const onlyWatch = document.getElementById('onlyZWatch').checked;
+
+  let zRows = zCfg.radar || [];
+  if (zFilter) zRows = zRows.filter(r => (r.symbol + r.ex_a + r.ex_b).toLowerCase().includes(zFilter));
+  if (onlySignals) zRows = zRows.filter(r => r.abs_z >= (zCfg.entry_z || 4.0));
+  else if (onlyWatch) zRows = zRows.filter(r => r.abs_z >= 2.5);
+
+  const zb = document.getElementById('zBody');
+  if (!zRows.length) {
+    zb.innerHTML = `<tr><td colspan="10" class="empty">Нет пар, соответствующих фильтру</td></tr>`;
+  } else {
+    zb.innerHTML = zRows.map(r => {
+      let badge = '<span class="badge z-norm">NORM</span>';
+      if (r.abs_z >= (zCfg.entry_z || 4.0)) {
+        badge = `<span class="badge z-signal">🔥 SIGNAL (${r.z > 0 ? 'SHORT A / LONG B' : 'LONG A / SHORT B'})</span>`;
+      } else if (r.abs_z >= 2.5) {
+        badge = '<span class="badge z-watch">⚡ WATCH</span>';
+      }
+      const zCls = r.abs_z >= 4.0 ? 'pos' : (r.abs_z >= 2.5 ? 'purple' : 'muted');
+      return `
+        <tr>
+          <td class="sym">${esc(r.symbol)}</td>
+          <td class="ex">${esc(r.ex_a)}</td>
+          <td class="ex">${esc(r.ex_b)}</td>
+          <td class="num ${zCls}"><b>${r.z >= 0 ? '+' : ''}${r.z.toFixed(2)}</b></td>
+          <td class="num">${r.ratio.toFixed(5)}</td>
+          <td class="num muted">${r.ma.toFixed(5)}</td>
+          <td class="num muted">${r.sd.toFixed(5)}</td>
+          <td class="num ${cls(r.spread_pct)}">${r.spread_pct >= 0 ? '+' : ''}${r.spread_pct.toFixed(3)}%</td>
+          <td class="num neg">-${r.fees_pct.toFixed(3)}%</td>
+          <td>${badge}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // 2. Positions Table
+  const pb = document.getElementById('posBody');
+  if (!s.positions.length) {
+    pb.innerHTML = `<tr><td colspan="12" class="empty">Открытых позиций нет</td></tr>`;
+  } else {
+    pb.innerHTML = s.positions.map(p => {
+      const u = p.unrealized_pnl_usdt;
+      const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
+      const uTxt = u == null ? '—' : (u > 0 ? '+' : '') + u.toFixed(2);
+      const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
+      const curZ = p.cur_z == null ? '—' : (p.cur_z >= 0 ? '+' : '') + p.cur_z.toFixed(2);
+      const curZCls = p.cur_z == null ? 'muted' : (Math.abs(p.cur_z) <= 0.3 ? 'pos' : 'purple');
+      return `
+        <tr>
+          <td><span class="badge pass">Z-ARB</span></td>
+          <td class="sym">${esc(p.symbol)}</td>
+          <td class="ex">${esc(p.exch_long)}</td>
+          <td class="ex">${esc(p.exch_short)}</td>
+          <td class="num purple"><b>${p.z_in ? (p.z_in >= 0 ? '+' : '') + p.z_in.toFixed(2) : '—'}</b></td>
+          <td class="num ${curZCls}"><b>${curZ}</b></td>
+          <td class="num">${(p.entry_raw_spread_pct||0).toFixed(3)}%</td>
+          <td class="num ${cls(cur === '—' ? 0 : p.cur_spread_pct)}">${cur}%</td>
+          <td class="num">${p.size_usdt.toFixed(0)}</td>
+          <td class="num ${uCls}"><b>${uTxt}</b></td>
+          <td class="num">${fmtDur(p.holding_seconds)}</td>
+          <td class="muted">${p.trade_id.slice(0,8)}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // 3. Closed Trades Table
+  const trBody = document.getElementById('tradesBody');
+  const tFilter = (document.getElementById('tradeFilter')?.value || '').trim().toLowerCase();
+  let closedTrades = s.closed_trades || [];
+  if (tFilter) {
+    closedTrades = closedTrades.filter(t => (t.symbol + (t.exch_long||'') + (t.exch_short||'') + (t.strategy||'') + (t.reason||'')).toLowerCase().includes(tFilter));
+  }
+  const sumEl = document.getElementById('tradeSummary');
+  if (sumEl) {
+    sumEl.textContent = `Закрытых сделок: ${closedTrades.length}`;
+  }
+  if (!closedTrades.length) {
+    trBody.innerHTML = `<tr><td colspan="12" class="empty">Нет закрытых сделок</td></tr>`;
+  } else {
+    trBody.innerHTML = closedTrades.map(t => {
+      const pnl = t.realized_pnl_usdt ?? 0;
+      const pnlCls = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
+      const pnlSign = pnl > 0 ? '+' : '';
+      const closeTime = t.close_ts ? new Date(t.close_ts * 1000).toLocaleTimeString('ru-RU') : '—';
+      const zinTxt = t.z_in != null && t.z_in !== 0 ? ((t.z_in > 0 ? '+' : '') + Number(t.z_in).toFixed(2)) : '—';
+      const dur = fmtDur(t.holding_seconds || 0);
+      const exL = t.exch_long || t.exchange || '—';
+      const exS = t.exch_short || t.side || '—';
+      const sz = t.size_usdt ? `$${Math.round(t.size_usdt)}` : '—';
+      const fees = t.fees_usdt != null ? `-$${t.fees_usdt.toFixed(2)}` : '—';
+      const pnlPct = t.pnl_pct != null ? `${pnlSign}${t.pnl_pct.toFixed(2)}%` : '—';
+      return `<tr>
+        <td class="muted">${closeTime}</td>
+        <td><span class="badge ${t.strategy === 'arb' ? 'pass' : 'dir'}">${esc(t.strategy || 'arb')}</span></td>
+        <td class="sym">${esc(t.symbol)}</td>
+        <td class="ex">${esc(exL)}</td>
+        <td class="ex">${esc(exS)}</td>
+        <td class="num">${zinTxt}</td>
+        <td class="num">${sz}</td>
+        <td class="num">${dur}</td>
+        <td class="num ${pnlCls}"><b>${pnlSign}${pnl.toFixed(2)}</b></td>
+        <td class="num ${pnlCls}">${pnlPct}</td>
+        <td class="num neg">${fees}</td>
+        <td><span class="muted">${esc(t.reason || 'close')}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 4. Spreads Table
   const f = document.getElementById('filter').value.trim().toLowerCase();
   const onlyPass = document.getElementById('onlyPass').checked;
   let rows = s.spreads;
@@ -360,30 +468,7 @@ function render() {
       <td>${r.suspect ? '<span class="badge suspect" title="dt='+r.leg_dt_sec+'s, top=$'+r.top_notional_usdt+'">⚠ SUSPECT</span>' : (r.passed?'<span class="badge pass">PASS</span>':'<span class="badge no">—</span>')}</td>
     </tr>`).join('');
 
-  // positions
-  const pb = document.getElementById('posBody');
-  if (!s.positions.length) pb.innerHTML = `<tr><td colspan="11" class="empty">Открытых позиций нет</td></tr>`;
-  else pb.innerHTML = s.positions.map(p => {
-    const u = p.unrealized_pnl_usdt;
-    const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
-    const uTxt = u == null ? '—' : (u > 0 ? '+' : '') + u.toFixed(2);
-    const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
-    return `
-    <tr>
-      <td><span class="badge ${p.strategy==='scalp'?'suspect':(p.strategy==='dir'?'dir':'pass')}">${p.strategy==='scalp'?'SCALP':(p.strategy==='dir'?'DIR':'ARB')}</span></td>
-      <td class="sym">${esc(p.symbol)}</td>
-      <td class="ex">${esc(p.exch_long)}</td>
-      <td class="ex">${esc(p.exch_short)}</td>
-      <td class="num ${cls(p.entry_net_edge_pct)}">${p.entry_net_edge_pct.toFixed(3)}</td>
-      <td class="num">${(p.entry_raw_spread_pct||0).toFixed(3)}</td>
-      <td class="num ${cls(cur === '—' ? 0 : p.cur_spread_pct)}">${cur}</td>
-      <td class="num">${p.size_usdt.toFixed(0)}</td>
-      <td class="num ${uCls}"><b>${uTxt}</b></td>
-      <td class="num">${fmtDur(p.holding_seconds)}</td>
-      <td class="muted">${p.trade_id.slice(0,8)}</td>
-    </tr>`;}).join('');
-
-  // exchanges
+  // 4. Exchanges Table
   document.getElementById('exBody').innerHTML = s.exchanges.map(e => `
     <tr>
       <td class="sym">${esc(e.name)}</td>
@@ -391,24 +476,7 @@ function render() {
       <td class="num">${e.fresh_symbols}</td>
     </tr>`).join('');
 
-  // scalp rank
-  const wl = new Set(s.watchlist || []);
-  const rank = s.scalp_rank || [];
-  const rb = document.getElementById('rankBody');
-  if (!rank.length) rb.innerHTML = `<tr><td colspan="8" class="empty">Набирается статистика (нужно ≥5 спайков на монету)…</td></tr>`;
-  else rb.innerHTML = rank.map(r => `
-    <tr>
-      <td class="sym">${esc(r.symbol)}</td>
-      <td class="num">${r.spikes}</td>
-      <td class="num">${r.converged}</td>
-      <td class="num ${r.conv_rate>=50?'pos':'muted'}">${r.conv_rate}</td>
-      <td class="num pos">${r.avg_capture}</td>
-      <td class="num neg">${r.avg_width}</td>
-      <td class="num"><b>${r.score}</b></td>
-      <td>${wl.has(r.symbol)?'<span class="badge pass">ДА</span>':'<span class="badge no">—</span>'}</td>
-    </tr>`).join('');
-
-  // events
+  // 5. Events List
   document.getElementById('eventsList').innerHTML = s.events.map(ev => {
     const t = new Date(ev.ts*1000).toLocaleTimeString('ru-RU');
     return `<li><span class="t">${t}</span><span class="lvl-${ev.level}">${esc(ev.msg)}</span></li>`;
@@ -417,7 +485,10 @@ function render() {
 
 function card(label, value, signed) {
   let c = '';
-  if (signed !== undefined) c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
+  if (signed === 'purple') c = 'purple';
+  else if (signed === 'yellow') c = 'value'; // default or colored
+  else if (signed !== undefined && typeof signed === 'number') c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
+  else if (signed === 'pos') c = 'pos';
   return `<div class="card"><div class="label">${label}</div><div class="value ${c}">${value}</div></div>`;
 }
 

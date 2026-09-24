@@ -37,6 +37,12 @@ def create_app(engine) -> FastAPI:
     async def health():
         return {"ok": True, "running": engine is not None}
 
+    try:
+        from cryptoarb.backtest.api import mount as mount_backtest
+        mount_backtest(app)
+    except Exception:
+        pass
+
     @app.websocket("/ws")
     async def ws(websocket: WebSocket):
         await websocket.accept()

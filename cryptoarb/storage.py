@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS quotes (
     funding_rate REAL, funding_interval_hours REAL
 );
 CREATE INDEX IF NOT EXISTS idx_quotes_symbol_ts ON quotes(symbol, ts);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_quotes_uniq ON quotes(exchange, symbol, ts);
 
 CREATE TABLE IF NOT EXISTS signals (
     ts REAL, symbol TEXT,
@@ -116,6 +117,25 @@ class Storage:
             pass
         return out
 
+    def get_recent_trades(self, limit: int = 100) -> list[dict]:
+        """Чтение последних закрытых сделок эмулятора."""
+        out: list[dict] = []
+        try:
+            cur = self._conn.execute(
+                "SELECT trade_id, symbol, exch_long, exch_short, open_ts, close_ts, "
+                "entry_net_edge_pct, exit_net_edge_pct, price_pnl_usdt, fees_usdt, "
+                "funding_usdt, realized_pnl_usdt, holding_seconds, status, strategy "
+                "FROM emulator_trades WHERE status = 'closed' "
+                "ORDER BY close_ts DESC LIMIT ?",
+                (limit,)
+            )
+            cols = [d[0] for d in cur.description]
+            for row in cur.fetchall():
+                out.append(dict(zip(cols, row)))
+        except Exception:
+            pass
+        return out
+
     def _put(self, item) -> None:
         try:
             self._q.put_nowait(item)
@@ -139,7 +159,9 @@ class Storage:
         def flush():
             nonlocal buf_q, buf_s, buf_t
             if buf_q:
-                self._conn.executemany("INSERT INTO quotes VALUES (?,?,?,?,?,?,?)", buf_q)
+                # OR IGNORE: один и тот же снимок может прийти дважды
+                # (повторный save_quote) — уникальный индекс отсекает дубль
+                self._conn.executemany("INSERT OR IGNORE INTO quotes VALUES (?,?,?,?,?,?,?)", buf_q)
                 buf_q = []
             if buf_s:
                 self._conn.executemany("INSERT INTO signals VALUES (?,?,?,?,?,?,?,?,?,?)", buf_s)

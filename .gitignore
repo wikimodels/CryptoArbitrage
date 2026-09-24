@@ -16,3 +16,12 @@ logs/
 server_out.log
 server_err.log
 favicon_master.png
+*.log
+*.err
+output/*.err
+output/*.log
+output/*.jsonl
+temp.json
+ngrok.json
+bazzar*.json
+bizzar*.json

@@ -1,0 +1,15 @@
+# Stage 1: screening 3d x 591 sym x 3 exchanges (okx/bitget/mexc: полная история)
+exchanges: [bybit, okx, gateio, binance, bitget, mexc, kucoin, htx, bingx]
+pilot_exchanges: [okx, bitget, mexc]
+min_common_exchanges: 3
+ma_period: 50
+ma_type: EMA
+entry_zs: [2.2, 2.4, 2.5, 2.7, 3.0, 3.3]
+exit_zs: [0.0, 0.3, 0.5]
+stop_mult: 1.5
+timestop_mins: [5, 15, 30, 60]
+fee_round_pct: 0.24
+slip_pct: 0.04
+out_sample_frac: 0.25
+raw_dir: data/raw_1m_3d
+report_path: output/backtest_screen.json
