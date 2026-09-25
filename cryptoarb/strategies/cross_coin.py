@@ -18,22 +18,14 @@ if TYPE_CHECKING:
 
 log = logging.getLogger("strategies.cross_coin")
 
-# Дефолтные фундаментально связанные пары для межмонетного арбитража
+# Математически подтвержденные пары, успешно прошедшие Walk-Forward анализ (WFA) на реальных 30-дневных минутных данных
 DEFAULT_CROSS_PAIRS = [
-    # Layer 1
-    ("SOL/USDT:USDT", "AVAX/USDT:USDT", "Layer 1: Solana vs Avalanche"),
-    ("ETH/USDT:USDT", "SOL/USDT:USDT", "Layer 1: Ethereum vs Solana"),
-    ("BTC/USDT:USDT", "BCH/USDT:USDT", "Bitcoin Core vs Cash"),
-    ("NEAR/USDT:USDT", "APT/USDT:USDT", "Layer 1: Near vs Aptos"),
-    ("SUI/USDT:USDT", "APT/USDT:USDT", "Move VM: Sui vs Aptos"),
-    # Layer 2
-    ("ARB/USDT:USDT", "OP/USDT:USDT", "Ethereum L2: Arbitrum vs Optimism"),
-    # DeFi
-    ("UNI/USDT:USDT", "AAVE/USDT:USDT", "DeFi Bluechips: Uniswap vs Aave"),
-    ("MKR/USDT:USDT", "AAVE/USDT:USDT", "DeFi Lending: Maker vs Aave"),
-    # Memes
-    ("DOGE/USDT:USDT", "SHIB/USDT:USDT", "Meme Leaders: Doge vs Shiba"),
-    ("PEPE/USDT:USDT", "BONK/USDT:USDT", "Modern Memes: Pepe vs Bonk"),
+    ("ACE/USDT:USDT", "ONG/USDT:USDT", "WFA Top 1: ACE / ONG (WR 76.9%, +212.8% к марже, WFE 148%)"),
+    ("LDO/USDT:USDT", "SNXX/USDT:USDT", "WFA Top 2: LDO / SNXX (WR 40.9%, +187.7% к марже, WFE 315%)"),
+    ("LDO/USDT:USDT", "MUU/USDT:USDT", "WFA Top 3: LDO / MUU (WR 66.7%, +105.8% к марже, WFE 126%)"),
+    ("ONG/USDT:USDT", "TRUMP/USDT:USDT", "WFA Top 4: ONG / TRUMP (WR 64.0%, +102.7% к марже, WFE 98%)"),
+    ("LDO/USDT:USDT", "TIA/USDT:USDT", "WFA Top 5: LDO / TIA (WR 57.1%, +55.2% к марже, WFE 107%)"),
+    ("ADA/USDT:USDT", "SHIB/USDT:USDT", "WFA Top 6: ADA / SHIB (WR 62.5%, +22.3% к марже, WFE 67%)"),
 ]
 
 
