@@ -80,9 +80,17 @@ class Emulator:
         # stats раздельные: arb / scalp / dir — каждая стратегия своя
         self.stats: Dict[str, dict] = {"arb": self._new_stats(), "scalp": self._new_stats(),
                                        "dir": self._new_stats()}
+        if storage is not None and hasattr(storage, "get_emulator_stats"):
+            loaded_stats = storage.get_emulator_stats()
+            for strat, st in loaded_stats.items():
+                if strat in self.stats:
+                    self.stats[strat].update(st)
+                else:
+                    self.stats[strat] = st
+
         self.closed_trades: deque = deque(maxlen=200)
         if storage is not None and hasattr(storage, "get_recent_trades"):
-            for t in storage.get_recent_trades(limit=50):
+            for t in storage.get_recent_trades(limit=100):
                 self.closed_trades.append({
                     "trade_id": t.get("trade_id", ""),
                     "symbol": t.get("symbol", ""),
@@ -92,13 +100,14 @@ class Emulator:
                     "open_ts": t.get("open_ts") or 0.0,
                     "close_ts": t.get("close_ts") or 0.0,
                     "holding_seconds": t.get("holding_seconds") or 0.0,
-                    "size_usdt": 0.0,
+                    "size_usdt": round(t.get("size_usdt") or 0.0, 2),
                     "price_pnl_usdt": round(t.get("price_pnl_usdt") or 0.0, 4),
                     "fees_usdt": round(t.get("fees_usdt") or 0.0, 4),
                     "funding_usdt": round(t.get("funding_usdt") or 0.0, 4),
                     "realized_pnl_usdt": round(t.get("realized_pnl_usdt") or 0.0, 4),
-                    "pnl_pct": 0.0,
-                    "reason": "db_history",
+                    "pnl_pct": round(t.get("pnl_pct") or 0.0, 3),
+                    "z_in": round(t.get("z_in") or 0.0, 2) if t.get("z_in") is not None else 0.0,
+                    "reason": t.get("reason") or "converged",
                 })
 
     @staticmethod
@@ -379,6 +388,10 @@ class Emulator:
             "price_pnl_usdt": price_pnl, "fees_usdt": total_fees, "funding_usdt": funding_usdt,
             "realized_pnl_usdt": realized_pnl, "holding_seconds": holding_sec,
             "orphan_leg": False, "status": "closed",
+            "size_usdt": pos.size_usdt,
+            "pnl_pct": round(realized_pnl / pos.size_usdt * 100.0, 3) if pos.size_usdt > 0 else 0.0,
+            "z_in": 0.0,
+            "reason": reason,
         })
         return realized_pnl
 
@@ -503,6 +516,10 @@ class Emulator:
             "price_pnl_usdt": price_pnl, "fees_usdt": total_fees, "funding_usdt": funding_usdt,
             "realized_pnl_usdt": realized_pnl, "holding_seconds": holding_sec,
             "orphan_leg": False, "status": "closed",
+            "size_usdt": pos.size_usdt,
+            "pnl_pct": round(realized_pnl / pos.size_usdt * 100.0, 3) if pos.size_usdt > 0 else 0.0,
+            "z_in": getattr(pos, "z_in", 0.0),
+            "reason": reason,
         })
         return realized_pnl
 
@@ -520,6 +537,7 @@ class Emulator:
             "next_funding_ts_long": p.next_funding_ts_long, "next_funding_ts_short": p.next_funding_ts_short,
             "entry_fees_usdt": p.entry_fees_usdt,
             "open_ts": p.open_ts,
+            "z_in": getattr(p, "z_in", 0.0),
             "holding_seconds": now - p.open_ts, "size_usdt": p.size_usdt,
         } for p in self.open_positions.values()]
 

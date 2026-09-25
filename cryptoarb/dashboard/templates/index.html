@@ -215,12 +215,15 @@
 
   <!-- Positions Panel -->
   <div class="panel" id="panel-positions">
+    <div class="toolbar" style="justify-content: space-between;">
+      <span class="muted" id="positionsSummary">Активные позиции в рынке (удержание ~1 мин до схождения Z)</span>
+    </div>
     <div class="table-wrap">
       <table>
         <thead><tr>
           <th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
           <th>Z входа</th><th>Текущий Z</th><th>Вход. спред %</th><th>Тек. спред %</th>
-          <th>Размер USDT</th><th>Тек. PnL USDT</th><th>Удержание</th><th>ID</th>
+          <th>Размер $</th><th>Тек. PnL USDT</th><th>Удержание</th><th>ID</th>
         </tr></thead>
         <tbody id="posBody"></tbody>
       </table>
@@ -236,7 +239,7 @@
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>Время закрытия</th><th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
+          <th>Дата / Время (YYYY-MM-DD)</th><th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
           <th>Z входа</th><th>Размер $</th><th>Удержание</th><th>PnL USDT</th><th>PnL %</th><th>Комиссии Σ</th><th>Причина</th>
         </tr></thead>
         <tbody id="tradesBody"></tbody>
@@ -299,6 +302,18 @@ function fmtDur(s) {
   if (m) return `${m}м ${sec}с`;
   return `${sec}с`;
 }
+function fmtDateTime(ts) {
+  if (!ts) return '—';
+  const d = new Date(ts * 1000);
+  const pad = n => String(n).padStart(2, '0');
+  const Y = d.getFullYear();
+  const M = pad(d.getMonth() + 1);
+  const D = pad(d.getDate());
+  const h = pad(d.getHours());
+  const m = pad(d.getMinutes());
+  const s = pad(d.getSeconds());
+  return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+}
 function cls(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : 'muted'; }
 function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
@@ -325,7 +340,7 @@ function render() {
   const maxZTxt = zCfg.max_z_info || '—';
   
   document.getElementById('cards').innerHTML = `
-    ${card('Позиций открыто', s.stats.open_positions, s.stats.open_positions > 0 ? 1 : 0)}
+    ${card('Позиций открыто', s.stats.open_positions, s.stats.open_positions > 0 ? 1 : 0, "document.querySelector('.tab[data-tab=\\'positions\\']').click()")}
     ${card('Стратегия Z-Score', `Вход ±${zCfg.entry_z || 4.0} / Выход ${zCfg.exit_z || 0.0}`, 'purple')}
     ${card('Max |Z| на рынке', maxZTxt, zCfg.max_abs_z >= 4.0 ? 'pos' : (zCfg.max_abs_z >= 2.5 ? 'yellow' : ''))}
     ${card('ARB: сделок', `${arb.closed} (WR ${arb.win_rate_pct}%)`)}
@@ -374,9 +389,23 @@ function render() {
   }
 
   // 2. Positions Table
+  const nPos = s.positions ? s.positions.length : 0;
+  const posTab = document.querySelector('.tab[data-tab="positions"]');
+  if (posTab) {
+    posTab.innerHTML = nPos > 0
+      ? `Позиции <span style="background:var(--green);color:#0d1117;font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;">${nPos}</span>`
+      : 'Позиции';
+  }
+  const posSumEl = document.getElementById('positionsSummary');
+  if (posSumEl) {
+    posSumEl.textContent = nPos > 0
+      ? `Открыто активных позиций: ${nPos} (динамический мониторинг стакана и PnL)`
+      : `В рынке сейчас нет активных позиций. Среднее удержание сделки ~65 сек, после чего прибыль фиксируется и сделка перемещается во вкладку «История сделок».`;
+  }
+
   const pb = document.getElementById('posBody');
-  if (!s.positions.length) {
-    pb.innerHTML = `<tr><td colspan="12" class="empty">Открытых позиций нет</td></tr>`;
+  if (!s.positions || !s.positions.length) {
+    pb.innerHTML = `<tr><td colspan="12" class="empty">Сейчас активных позиций нет. Закрытые сделки отображаются во вкладке «История сделок».</td></tr>`;
   } else {
     pb.innerHTML = s.positions.map(p => {
       const u = p.unrealized_pnl_usdt;
@@ -385,20 +414,24 @@ function render() {
       const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
       const curZ = p.cur_z == null ? '—' : (p.cur_z >= 0 ? '+' : '') + p.cur_z.toFixed(2);
       const curZCls = p.cur_z == null ? 'muted' : (Math.abs(p.cur_z) <= 0.3 ? 'pos' : 'purple');
+      const zinTxt = (p.z_in != null && p.z_in !== 0) ? ((p.z_in > 0 ? '+' : '') + Number(p.z_in).toFixed(2)) : '—';
+      const sz = (p.size_usdt != null && p.size_usdt > 0) ? ('$' + Number(p.size_usdt).toFixed(2)) : '—';
+      const strat = esc((p.strategy || 'arb').toUpperCase());
+      const stratCls = p.strategy === 'dir' ? 'dir' : 'pass';
       return `
         <tr>
-          <td><span class="badge pass">Z-ARB</span></td>
+          <td><span class="badge ${stratCls}">${strat}</span></td>
           <td class="sym">${esc(p.symbol)}</td>
           <td class="ex">${esc(p.exch_long)}</td>
           <td class="ex">${esc(p.exch_short)}</td>
-          <td class="num purple"><b>${p.z_in ? (p.z_in >= 0 ? '+' : '') + p.z_in.toFixed(2) : '—'}</b></td>
+          <td class="num purple"><b>${zinTxt}</b></td>
           <td class="num ${curZCls}"><b>${curZ}</b></td>
           <td class="num">${(p.entry_raw_spread_pct||0).toFixed(3)}%</td>
-          <td class="num ${cls(cur === '—' ? 0 : p.cur_spread_pct)}">${cur}%</td>
-          <td class="num">${p.size_usdt.toFixed(0)}</td>
+          <td class="num ${cls(cur === '—' ? 0 : p.cur_spread_pct)}">${cur === '—' ? '—' : cur + '%'}</td>
+          <td class="num">${sz}</td>
           <td class="num ${uCls}"><b>${uTxt}</b></td>
           <td class="num">${fmtDur(p.holding_seconds)}</td>
-          <td class="muted">${p.trade_id.slice(0,8)}</td>
+          <td class="muted">${(p.trade_id || '').slice(0,8)}</td>
         </tr>`;
     }).join('');
   }
@@ -421,14 +454,14 @@ function render() {
       const pnl = t.realized_pnl_usdt ?? 0;
       const pnlCls = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
       const pnlSign = pnl > 0 ? '+' : '';
-      const closeTime = t.close_ts ? new Date(t.close_ts * 1000).toLocaleTimeString('ru-RU') : '—';
-      const zinTxt = t.z_in != null && t.z_in !== 0 ? ((t.z_in > 0 ? '+' : '') + Number(t.z_in).toFixed(2)) : '—';
+      const closeTime = fmtDateTime(t.close_ts);
+      const zinTxt = (t.z_in != null && t.z_in !== 0) ? ((t.z_in > 0 ? '+' : '') + Number(t.z_in).toFixed(2)) : '—';
       const dur = fmtDur(t.holding_seconds || 0);
       const exL = t.exch_long || t.exchange || '—';
       const exS = t.exch_short || t.side || '—';
-      const sz = t.size_usdt ? `$${Math.round(t.size_usdt)}` : '—';
-      const fees = t.fees_usdt != null ? `-$${t.fees_usdt.toFixed(2)}` : '—';
-      const pnlPct = t.pnl_pct != null ? `${pnlSign}${t.pnl_pct.toFixed(2)}%` : '—';
+      const sz = (t.size_usdt != null && t.size_usdt > 0) ? ('$' + Number(t.size_usdt).toFixed(2)) : '—';
+      const fees = t.fees_usdt != null ? `-$${Math.abs(t.fees_usdt).toFixed(2)}` : '—';
+      const pnlPct = t.pnl_pct != null ? `${pnlSign}${Number(t.pnl_pct).toFixed(2)}%` : '—';
       return `<tr>
         <td class="muted">${closeTime}</td>
         <td><span class="badge ${t.strategy === 'arb' ? 'pass' : 'dir'}">${esc(t.strategy || 'arb')}</span></td>
@@ -483,13 +516,14 @@ function render() {
   }).join('') || `<li class="empty">Событий пока нет</li>`;
 }
 
-function card(label, value, signed) {
+function card(label, value, signed, onClick) {
   let c = '';
   if (signed === 'purple') c = 'purple';
   else if (signed === 'yellow') c = 'value'; // default or colored
   else if (signed !== undefined && typeof signed === 'number') c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
   else if (signed === 'pos') c = 'pos';
-  return `<div class="card"><div class="label">${label}</div><div class="value ${c}">${value}</div></div>`;
+  const clickAttr = onClick ? ` onclick="${onClick}" style="cursor:pointer;" title="Перейти к позиции"` : '';
+  return `<div class="card"${clickAttr}><div class="label">${label}</div><div class="value ${c}">${value}</div></div>`;
 }
 
 // Rules modal

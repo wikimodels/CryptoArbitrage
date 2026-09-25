@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS emulator_trades (
     entry_net_edge_pct REAL, exit_net_edge_pct REAL,
     price_pnl_usdt REAL, fees_usdt REAL, funding_usdt REAL,
     realized_pnl_usdt REAL, holding_seconds REAL,
-    orphan_leg INTEGER, status TEXT, strategy TEXT
+    orphan_leg INTEGER, status TEXT, strategy TEXT,
+    size_usdt REAL, pnl_pct REAL, z_in REAL, reason TEXT
 );
 
 CREATE TABLE IF NOT EXISTS scalp_stats (
@@ -59,11 +60,13 @@ class Storage:
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.execute("PRAGMA synchronous=NORMAL")
         self._conn.executescript(SCHEMA)
-        # миграция старых баз: колонка strategy
-        try:
-            self._conn.execute("ALTER TABLE emulator_trades ADD COLUMN strategy TEXT")
-        except Exception:
-            pass
+        # миграция старых баз
+        for col, ctype in [("strategy", "TEXT"), ("size_usdt", "REAL"),
+                           ("pnl_pct", "REAL"), ("z_in", "REAL"), ("reason", "TEXT")]:
+            try:
+                self._conn.execute(f"ALTER TABLE emulator_trades ADD COLUMN {col} {ctype}")
+            except Exception:
+                pass
         self._conn.commit()
         self._q: "queue.Queue" = queue.Queue(maxsize=100_000)
         self._last_retention = 0.0
@@ -91,6 +94,10 @@ class Storage:
             t.get("realized_pnl_usdt"), t.get("holding_seconds"),
             int(t.get("orphan_leg", False)), t.get("status"),
             t.get("strategy", "arb"),
+            t.get("size_usdt", 0.0),
+            t.get("pnl_pct", 0.0),
+            t.get("z_in", 0.0),
+            t.get("reason", ""),
         )))
 
     def save_scalp_stats(self, stats: dict) -> None:
@@ -124,7 +131,8 @@ class Storage:
             cur = self._conn.execute(
                 "SELECT trade_id, symbol, exch_long, exch_short, open_ts, close_ts, "
                 "entry_net_edge_pct, exit_net_edge_pct, price_pnl_usdt, fees_usdt, "
-                "funding_usdt, realized_pnl_usdt, holding_seconds, status, strategy "
+                "funding_usdt, realized_pnl_usdt, holding_seconds, status, strategy, "
+                "size_usdt, pnl_pct, z_in, reason "
                 "FROM emulator_trades WHERE status = 'closed' "
                 "ORDER BY close_ts DESC LIMIT ?",
                 (limit,)
@@ -132,6 +140,38 @@ class Storage:
             cols = [d[0] for d in cur.description]
             for row in cur.fetchall():
                 out.append(dict(zip(cols, row)))
+        except Exception:
+            pass
+        return out
+
+    def get_emulator_stats(self) -> dict[str, dict]:
+        """Агрегированная статистика по всем закрытым сделкам из БД."""
+        out: dict[str, dict] = {}
+        try:
+            cur = self._conn.execute(
+                "SELECT strategy, "
+                "COUNT(*), "
+                "SUM(CASE WHEN realized_pnl_usdt >= 0 THEN 1 ELSE 0 END), "
+                "SUM(CASE WHEN realized_pnl_usdt < 0 THEN 1 ELSE 0 END), "
+                "SUM(realized_pnl_usdt), "
+                "SUM(fees_usdt), "
+                "SUM(funding_usdt), "
+                "SUM(holding_seconds) "
+                "FROM emulator_trades WHERE status = 'closed' "
+                "GROUP BY strategy"
+            )
+            for strat, closed, wins, losses, pnl, fees, funding, holding in cur.fetchall():
+                out[strat or "arb"] = {
+                    "opened": closed or 0,
+                    "closed": closed or 0,
+                    "wins": wins or 0,
+                    "losses": losses or 0,
+                    "orphan_aborts": 0,
+                    "pnl_usdt": round(pnl or 0.0, 4),
+                    "fees_usdt": round(fees or 0.0, 4),
+                    "funding_usdt": round(funding or 0.0, 4),
+                    "holding_sec_sum": round(holding or 0.0, 2),
+                }
         except Exception:
             pass
         return out
@@ -168,7 +208,7 @@ class Storage:
                 buf_s = []
             if buf_t:
                 self._conn.executemany(
-                    "INSERT OR REPLACE INTO emulator_trades VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", buf_t)
+                    "INSERT OR REPLACE INTO emulator_trades VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", buf_t)
                 buf_t = []
             self._conn.commit()
 
