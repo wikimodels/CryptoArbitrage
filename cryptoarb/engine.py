@@ -22,6 +22,7 @@ from .market_state import MarketState
 from .risk import simulate_leg_fill
 from .strategies import build_strategies, BaseStrategy
 from .zscore_tracker import ZScoreTracker
+from .recalibration import RecalibrationService
 
 log = logging.getLogger("engine")
 
@@ -142,6 +143,19 @@ class Engine:
         self.funding_strat = self.strategies.get("funding_arb")
         self.z_tracker = getattr(self.z_strat, "tracker", None)
 
+        # Автономный сервис регулярной Walk-Forward рекалибровки пар
+        cc_recal = cfg.get("cross_coin", {}).get("recalibration", {})
+        if cc_recal.get("enabled", False):
+            self.recalibration_service = RecalibrationService(
+                interval_hours=float(cc_recal.get("interval_hours", 24.0)),
+                run_at_utc_hour=int(cc_recal.get("run_at_utc_hour", 0)),
+                top_screen_candidates=int(cc_recal.get("candidates", 15)),
+                max_active_pairs=int(cc_recal.get("top_pairs", 6)),
+                min_wfe_pct=float(cc_recal.get("min_wfe_pct", 50.0)),
+            )
+        else:
+            self.recalibration_service = None
+
     def _event(self, level: str, msg: str):
         self.events.appendleft({"ts": time.time(), "level": level, "msg": msg})
 
@@ -198,11 +212,18 @@ class Engine:
         self._tasks.append(asyncio.create_task(self._symbols_refresh_loop(), name="symbols-refresh"))
         self._tasks.append(asyncio.create_task(self._stream_watchdog(), name="stream-watchdog"))
         self._tasks.append(asyncio.create_task(self._candle_maintenance_loop(), name="candle-maintenance"))
+        # Запуск фонового сервиса суточной рекалибровки пар
+        if self.recalibration_service:
+            self.recalibration_service.start()
+
         self.loggers.system.write({"event": "startup", "exchanges": self.exchanges,
                                    "symbols": len(self.symbols)})
 
     async def stop(self):
         self._running = False
+        if self.recalibration_service:
+            self.recalibration_service.stop()
+
         for strat in self.strategies.values():
             try:
                 await strat.stop()

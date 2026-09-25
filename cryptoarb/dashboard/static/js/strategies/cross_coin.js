@@ -25,11 +25,14 @@ function renderCrossCoin(snapshot) {
     const topTxt = topPair ? `${topPair.coin_a}/${topPair.coin_b} (Z: ${topPair.z_score >= 0 ? '+' : ''}${topPair.z_score.toFixed(2)})` : '—';
     const topCls = topPair && topPair.abs_z >= entryZ ? 'pos' : (topPair && topPair.abs_z >= 1.8 ? 'yellow' : '');
     const sigCount = radar.filter(r => r.is_signal).length;
+    const lastRecal = ccData.last_recalibration && ccData.last_recalibration !== 'N/A'
+      ? ccData.last_recalibration.slice(11, 19) + ' UTC'
+      : 'Калибровано';
 
     ccCards.innerHTML = `
-      ${card('Связок в мониторинге', `${radar.length} пар (L1, L2, DeFi, Memes)`, 'purple')}
+      ${card('WFA Ротация пар', `${radar.length} проверенных пар`, 'purple')}
+      ${card('Рекалибровка WFA', lastRecal, 'cyan')}
       ${card('Порог входа Z', `|Z| ≥ ${entryZ.toFixed(1)} / Выход Z ≈ 0.0`, '')}
-      ${card('Максимальный Z-Score', topTxt, topCls)}
       ${card('Готовых сигналов', `${sigCount} связок`, sigCount > 0 ? 'pos' : 'muted')}
       ${card('Открытых позиций', `${positions.length} поз. (нотионал $10)`, positions.length > 0 ? 'yellow' : '')}
     `;
@@ -58,7 +61,9 @@ function renderCrossCoin(snapshot) {
     } else {
       tb.innerHTML = filtered.map(r => {
         let badge = '<span class="badge z-norm">NORM</span>';
-        if (r.abs_z >= entryZ) {
+        if (r.is_draining) {
+          badge = `<span class="badge" style="background:#dc2626;color:#fff;">DRAIN</span>`;
+        } else if (r.abs_z >= entryZ) {
           badge = `<span class="badge z-signal">🔥 SIGNAL</span>`;
         } else if (r.abs_z >= 1.8) {
           badge = `<span class="badge z-watch">⚡ WATCH</span>`;

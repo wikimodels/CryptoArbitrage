@@ -100,6 +100,14 @@ cross_coin:
   exit_z: 0.0
   # Размер позиции на ногу ($10 = $1 маржа с 10x плечом)
   position_size_usdt: 10.0
+  # Реестр проверенных пар после суточной Walk-Forward рекалибровки
+  registry_file: "output/active_cross_pairs.json"
+  recalibration:
+    enabled: true
+    interval_hours: 24.0
+    run_at_utc_hour: 0
+    top_pairs: 6
+    min_wfe_pct: 50.0
 
 # ---------------- Сканер ----------------
 scan:
