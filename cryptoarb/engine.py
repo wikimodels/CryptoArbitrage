@@ -158,6 +158,13 @@ class Engine:
         # Прогрев ZScoreTracker
         if self.zscore_enabled:
             try:
+                from .candle_updater import sync_candles
+                sync_candles(symbols=self.symbols, exchanges=self.exchanges,
+                             max_gap_minutes=90, retention_days=30)
+            except Exception as e:
+                log.warning("Автоматическая проверка свечей пропущена: %s", e)
+
+            try:
                 prewarmed = self.z_tracker.prewarm(self.symbols, self.exchanges, data_dir=Path("data/raw_1m_30d"))
                 self._event("system", f"ZScoreTracker прогрет: {prewarmed} пар")
             except Exception as e:
@@ -166,11 +173,12 @@ class Engine:
         # WS-стримы цен (с супервизором: мёртвый/молчащий стрим перезапускается)
         for name, conn in self.connectors.items():
             self._ws_tasks[name] = asyncio.create_task(self._price_stream(name, conn), name=f"ws-{name}")
-        # Funding + сканер + периодический рефреш символов + watchdog
+        # Funding + сканер + периодический рефреш символов + watchdog + ротация свечей
         self._tasks.append(asyncio.create_task(self._funding_loop(), name="funding"))
         self._tasks.append(asyncio.create_task(self._scanner_loop(), name="scanner"))
         self._tasks.append(asyncio.create_task(self._symbols_refresh_loop(), name="symbols-refresh"))
         self._tasks.append(asyncio.create_task(self._stream_watchdog(), name="stream-watchdog"))
+        self._tasks.append(asyncio.create_task(self._candle_maintenance_loop(), name="candle-maintenance"))
         self.loggers.system.write({"event": "startup", "exchanges": self.exchanges,
                                    "symbols": len(self.symbols)})
 
@@ -275,6 +283,18 @@ class Engine:
                 self.loggers.system.write({"event": "symbols_refreshed", "count": len(self.symbols)})
             except Exception as e:
                 self.loggers.errors.write({"event": "symbols_refresh_failed", "error": str(e)})
+
+    async def _candle_maintenance_loop(self):
+        """Периодическая фоновая ротация архива свечей раз в 12 часов."""
+        while self._running:
+            await asyncio.sleep(12 * 3600)
+            try:
+                from .candle_updater import sync_candles
+                await asyncio.to_thread(sync_candles, symbols=self.symbols,
+                                        exchanges=self.exchanges, force=False,
+                                        max_gap_minutes=180, retention_days=30)
+            except Exception as e:
+                log.debug("Фоновая ротация свечей: %s", e)
 
     def _symbols_for(self, name: str) -> list[str]:
         have = self.symbols_by_exchange.get(name, set())
