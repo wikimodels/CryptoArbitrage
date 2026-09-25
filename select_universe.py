@@ -21,9 +21,10 @@ from cryptoarb.backtest.universe import fetch_perp_symbols, fetch_volumes
 
 def select_universe(
     exchanges: list[str],
-    top_n: int = 150,
+    top_n: int = 250,
     min_volume: float = 100_000.0,
     max_volume: float = 50_000_000.0,
+    min_common_exchanges: int = 3,
     exclude_symbols: list[str] | None = None,
     output_file: Path | str = "output/top40_4ex.txt",
 ) -> list[tuple[str, float]]:
@@ -41,9 +42,15 @@ def select_universe(
                 log.error("[%s] Ошибка получения рынков: %s", ex, e)
                 symbols_by_ex[ex] = set()
 
-    # Пересечение: монеты, которые есть на ВСЕХ целевых биржах
-    common_symbols = sorted(set.intersection(*(symbols_by_ex[ex] for ex in exchanges)))
-    log.info("Общих монет на всех %d биржах: %d", len(exchanges), len(common_symbols))
+    # Монеты, которые есть как минимум на min_common_exchanges биржах
+    from collections import Counter
+    symbol_counter = Counter()
+    for ex in exchanges:
+        for s in symbols_by_ex[ex]:
+            symbol_counter[s] += 1
+
+    common_symbols = sorted(s for s, count in symbol_counter.items() if count >= min_common_exchanges)
+    log.info("Монет на >= %d из %d бирж: %d", min_common_exchanges, len(exchanges), len(common_symbols))
 
     log.info("Загрузка 24ч объемов торгов параллельно...")
     vols_by_ex: dict[str, dict[str, float]] = {}
@@ -67,7 +74,7 @@ def select_universe(
         if s_upper in exclude_set or base in exclude_set or f"{base}/USDT:USDT" in exclude_set:
             continue
         vs = [vols_by_ex[ex].get(s, 0.0) for ex in exchanges if vols_by_ex[ex].get(s, 0.0) > 0]
-        if len(vs) < len(exchanges):
+        if len(vs) < min_common_exchanges:
             continue
         med = float(statistics.median(vs))
         if min_volume <= med <= max_volume:
@@ -76,8 +83,8 @@ def select_universe(
     candidates.sort(key=lambda x: x[1], reverse=True)
     selected = candidates[:top_n]
 
-    log.info("Отобрано кандидатов в коридоре $%d - $%d: %d (берем топ-%d)",
-             int(min_volume), int(max_volume), len(candidates), len(selected))
+    log.info("Отобрано кандидатов в коридоре $%d - $%d (мин. %d бирж): %d (берем топ-%d)",
+             int(min_volume), int(max_volume), min_common_exchanges, len(candidates), len(selected))
 
     out_path = Path(output_file)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -90,7 +97,8 @@ def select_universe(
 
 def main():
     parser = argparse.ArgumentParser(description="Отбор топа монет для арбитража")
-    parser.add_argument("--top", type=int, default=150, help="Количество монет (по умолчанию 150)")
+    parser.add_argument("--top", type=int, default=250, help="Количество монет (по умолчанию 250)")
+    parser.add_argument("--min-exchanges", type=int, default=3, help="Минимум бирж для монеты (по умолчанию 3)")
     parser.add_argument("--min-vol", type=float, default=100_000, help="Мин. суточный объем USDT (по умолчанию 100000)")
     parser.add_argument("--max-vol", type=float, default=50_000_000, help="Макс. суточный объем USDT (по умолчанию 50000000)")
     parser.add_argument("--exclude", type=str, default="BTC/USDT:USDT,ETH/USDT:USDT,SOL/USDT:USDT", help="Символы или базы для исключения через запятую")
@@ -106,6 +114,7 @@ def main():
         top_n=args.top,
         min_volume=args.min_vol,
         max_volume=args.max_vol,
+        min_common_exchanges=args.min_exchanges,
         exclude_symbols=exclude_list,
         output_file=args.output,
     )

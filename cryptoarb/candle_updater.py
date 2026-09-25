@@ -196,15 +196,13 @@ def sync_candles(symbols: list[str] | None = None,
         log.warning("Список символов для синхронизации свечей пуст")
         return False
 
-    # Проверяем, есть ли монеты, для которых архивов еще нет
+    # Проверяем, есть ли новые монеты, для которых еще нет локальных архивов
     missing_files = False
-    for ex in target_exs:
-        for sym in target_symbols:
-            safe = sym.replace("/", "_").replace(":", "_")
-            if not (p_dir / ex / safe / "candles.parquet").exists():
-                missing_files = True
-                break
-        if missing_files:
+    for sym in target_symbols:
+        safe = sym.replace("/", "_").replace(":", "_")
+        exists_count = sum(1 for ex in target_exs if (p_dir / ex / safe / "candles.parquet").exists())
+        if exists_count == 0:
+            missing_files = True
             break
 
     if not force and not missing_files and newest_ts > 0 and gap_minutes < max_gap_minutes:
