@@ -78,7 +78,8 @@ class Emulator:
         self._last_open: dict[tuple[str, str, str], float] = {}
         self._last_loss: dict[tuple[str, str, str], float] = {}
         # stats раздельные: arb / scalp / dir — каждая стратегия своя
-        self.stats: Dict[str, dict] = {"arb": self._new_stats(), "scalp": self._new_stats(),
+        self.stats: Dict[str, dict] = {"arb": self._new_stats(), "arb_z4": self._new_stats(),
+                                       "arb_z35": self._new_stats(), "scalp": self._new_stats(),
                                        "dir": self._new_stats()}
         if storage is not None and hasattr(storage, "get_emulator_stats"):
             loaded_stats = storage.get_emulator_stats()
@@ -107,8 +108,20 @@ class Emulator:
                     "realized_pnl_usdt": round(t.get("realized_pnl_usdt") or 0.0, 4),
                     "pnl_pct": round(t.get("pnl_pct") or 0.0, 3),
                     "z_in": round(t.get("z_in") or 0.0, 2) if t.get("z_in") is not None else 0.0,
+                    "is_z4": abs(round(t.get("z_in") or 0.0, 2) if t.get("z_in") is not None else 0.0) >= 4.0,
                     "reason": t.get("reason") or "converged",
                 })
+            for ct in self.closed_trades:
+                if ct.get("strategy") == "arb":
+                    sub_k = "arb_z4" if ct.get("is_z4") else "arb_z35"
+                    sub_s = self.stats[sub_k]
+                    sub_s["closed"] += 1
+                    pnl = ct.get("realized_pnl_usdt", 0.0)
+                    sub_s["wins" if pnl >= 0 else "losses"] += 1
+                    sub_s["pnl_usdt"] += pnl
+                    sub_s["fees_usdt"] += ct.get("fees_usdt", 0.0)
+                    sub_s["funding_usdt"] += ct.get("funding_usdt", 0.0)
+                    sub_s["holding_sec_sum"] += ct.get("holding_seconds", 0.0)
 
     @staticmethod
     def _new_stats() -> dict:
@@ -497,12 +510,37 @@ class Emulator:
             "entry_price_long": pos.entry_price_long, "entry_price_short": pos.entry_price_short,
             "exit_price_long": exit_price_long, "exit_price_short": exit_price_short,
             "z_in": getattr(pos, "z_in", 0.0),
+            "is_z4": abs(float(getattr(pos, "z_in", 0.0) or 0.0)) >= 4.0,
             "reason": reason, "exit_net_edge_pct": current_net_edge_pct,
             "price_pnl_usdt": round(price_pnl, 4), "fees_usdt": round(total_fees, 4),
             "funding_usdt": round(funding_usdt, 4), "realized_pnl_usdt": round(realized_pnl, 4),
             "pnl_pct": round(realized_pnl / pos.size_usdt * 100.0, 3) if pos.size_usdt > 0 else 0.0,
         }
         self.closed_trades.appendleft(closed_rec)
+        if getattr(pos, "strategy", "arb") == "arb":
+            sub_k = "arb_z4" if closed_rec["is_z4"] else "arb_z35"
+            sub_s = self.stats[sub_k]
+            sub_s["closed"] += 1
+            sub_s["wins" if realized_pnl >= 0 else "losses"] += 1
+            sub_s["pnl_usdt"] += realized_pnl
+            sub_s["fees_usdt"] += total_fees
+            sub_s["funding_usdt"] += funding_usdt
+            sub_s["holding_sec_sum"] += holding_sec
+            try:
+                from pathlib import Path
+                import json
+                Path("logs").mkdir(exist_ok=True)
+                with open("logs/zscore_compare.jsonl", "a", encoding="utf-8") as f_cmp:
+                    f_cmp.write(json.dumps({
+                        "ts": now, "trade_id": trade_id, "symbol": pos.symbol,
+                        "strategy": pos.strategy, "exch_long": pos.exch_long, "exch_short": pos.exch_short,
+                        "z_in": getattr(pos, "z_in", 0.0), "is_z4": closed_rec["is_z4"],
+                        "size_usdt": pos.size_usdt, "realized_pnl_usdt": round(realized_pnl, 4),
+                        "fees_usdt": round(total_fees, 4), "holding_seconds": round(holding_sec, 1),
+                        "reason": reason,
+                    }) + "\n")
+            except Exception:
+                pass
 
         self.loggers.emulator_trades.write({
             "event": "close",
@@ -538,6 +576,7 @@ class Emulator:
             "entry_fees_usdt": p.entry_fees_usdt,
             "open_ts": p.open_ts,
             "z_in": getattr(p, "z_in", 0.0),
+            "is_z4": abs(float(getattr(p, "z_in", 0.0) or 0.0)) >= 4.0,
             "holding_seconds": now - p.open_ts, "size_usdt": p.size_usdt,
         } for p in self.open_positions.values()]
 

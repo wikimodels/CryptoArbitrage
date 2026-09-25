@@ -79,8 +79,8 @@
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
   .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
-  .card .value { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
-  .value.pos { color: var(--green); } .value.neg { color: var(--red); } .value.purple { color: var(--purple); }
+  .card .value { font-size: 20px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .value.pos { color: var(--green); } .value.neg { color: var(--red); } .value.purple { color: var(--purple); } .value.yellow { color: var(--yellow); }
 
   .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
   .tab {
@@ -107,7 +107,10 @@
   th {
     background: var(--surface2); color: var(--muted); font-weight: 600; font-size: 12px;
     position: sticky; top: 0; text-transform: uppercase; letter-spacing: .03em; cursor: pointer;
+    user-select: none;
   }
+  th:hover { color: var(--text); }
+  th .sort-icon { margin-left: 4px; font-size: 11px; opacity: 0.6; }
   tbody tr { border-top: 1px solid var(--border); }
   tbody tr:hover { background: var(--surface2); }
   .sym { font-weight: 600; }
@@ -124,6 +127,8 @@
   }
   .badge.z-watch { background: rgba(210,153,34,.2); color: var(--yellow); border: 1px solid rgba(210,153,34,.4); }
   .badge.z-norm { background: rgba(139,148,158,.12); color: var(--muted); }
+  .badge.z-tier4 { background: rgba(63,185,80,.2); color: #3fb950; border: 1px solid rgba(63,185,80,.4); }
+  .badge.z-tier35 { background: rgba(188,140,255,.2); color: var(--purple); border: 1px solid rgba(188,140,255,.4); }
   .ex { color: var(--blue); font-weight: 600; }
 
   .events { list-style: none; }
@@ -154,20 +159,20 @@
       <button class="modal__close" id="rulesClose">×</button>
     </div>
     <div class="modal__body">
-      <h3>СТАТИСТИЧЕСКИЙ ВХОД (Z-Score &ge; 4.0)</h3>
+      <h3>СТАТИСТИЧЕСКИЙ ВХОД (Z-Score &ge; 3.5)</h3>
       <table class="rules">
-        <tr><td>1</td><td><b>Статистический триггер:</b> |Z| &ge; 4.0 (отклонение от 24ч EMA на 4 сигмы). Рассчитывается в реалтайме по WebSocket.</td></tr>
+        <tr><td>1</td><td><b>Статистический триггер:</b> |Z| &ge; 3.5 (отклонение от 24ч EMA на 3.5 сигмы). Рассчитывается в реалтайме по WebSocket и минутным барам.</td></tr>
         <tr><td>2</td><td><b>Направление:</b> Z &gt; 0 &rarr; шорт дорогой биржи, лонг дешевой; Z &lt; 0 &rarr; лонг дешевой, шорт дорогой.</td></tr>
-        <tr><td>3</td><td><b>Анти-рассинхрон:</b> разница возраста котировок ног &le; 2.0 с, отсечка битых спредов &gt; 3%.</td></tr>
+        <tr><td>3</td><td><b>Анти-рассинхрон:</b> разница возраста котировок ног &le; 7.0 с (поддержка REST-опроса BingX), отсечка битых спредов &gt; 3%.</td></tr>
         <tr><td>4</td><td><b>Честный VWAP по стакану L2:</b> покупка и продажа моделируются проходом по реальным уровням книги заявок.</td></tr>
-        <tr><td>5</td><td><b>Маржа безопасности:</b> реальный спред по VWAP обязан быть больше 4 тейкерских комиссий + <b>0.25% чистой прибыли</b>.</td></tr>
+        <tr><td>5</td><td><b>Маржа безопасности:</b> реальный спред по VWAP обязан быть больше 4 тейкерских комиссий + <b>0.10% чистой прибыли</b>.</td></tr>
       </table>
 
       <h3>ВЫХОД И ЗАКРЫТИЕ ПОЗИЦИИ</h3>
       <ul>
-        <li><b>Схождение (converged):</b> Z-Score возвращается к 0.0 И расчетный PnL закрытия по реальным стаканам с учетом входных и выходных комиссий строго <b>&ge; 0</b>.</li>
+        <li><b>Схождение (converged):</b> Z-Score возвращается к 0.0 И расчетный PnL закрытия по реальным стаканам с учетом всех комиссий &ge; 0.</li>
         <li><b>Тайм-стоп (timestop):</b> если схождение не произошло за <b>30 минут</b> (1800 с) &rarr; закрытие по рынку для ликвидации временного риска.</li>
-        <li><b>Стоп-лосс (stop):</b> расширение аномалии до <b>|Z| &ge; 8.0</b> (2 &times; entry_z) &rarr; экстренный выход.</li>
+        <li><b>Стоп-лосс (stop):</b> расширение аномалии до <b>|Z| &ge; 7.0</b> (2 &times; entry_z) &rarr; экстренный выход.</li>
         <li><b>Максимальное удержание:</b> принудительный выход через 72 часа.</li>
       </ul>
 
@@ -189,6 +194,7 @@
     <div class="tab active" data-tab="zscore">Z-Score Радар</div>
     <div class="tab" data-tab="positions">Позиции</div>
     <div class="tab" data-tab="trades">История сделок</div>
+    <div class="tab" data-tab="coins">Монеты и биржи</div>
     <div class="tab" data-tab="spreads">Спреды</div>
     <div class="tab" data-tab="exchanges">Биржи</div>
     <div class="tab" data-tab="events">События</div>
@@ -198,7 +204,7 @@
   <div class="panel active" id="panel-zscore">
     <div class="toolbar">
       <input id="zFilter" placeholder="Фильтр по монете/бирже…" oninput="render()">
-      <label><input type="checkbox" id="onlyZSignals" onchange="render()"> только сигналы (|Z| &ge; 4.0)</label>
+      <label><input type="checkbox" id="onlyZSignals" onchange="render()"> только сигналы (|Z| &ge; 3.5)</label>
       <label><input type="checkbox" id="onlyZWatch" onchange="render()"> мониторинг (|Z| &ge; 2.5)</label>
     </div>
     <div class="table-wrap">
@@ -232,17 +238,45 @@
 
   <!-- Trades History Panel -->
   <div class="panel" id="panel-trades">
-    <div class="toolbar">
-      <input id="tradeFilter" placeholder="Фильтр по монете/бирже…" oninput="render()">
+    <div class="toolbar" style="justify-content: space-between;">
+      <div style="display:flex; gap:14px; align-items:center;">
+        <input id="tradeFilter" placeholder="Фильтр по монете/бирже…" oninput="render()">
+        <label><input type="checkbox" id="onlyZ4Trades" onchange="render()"> только сделки с |Z| &ge; 4.0 (гипотеза)</label>
+      </div>
       <span class="muted" id="tradeSummary"></span>
     </div>
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>Дата / Время (YYYY-MM-DD)</th><th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
-          <th>Z входа</th><th>Размер $</th><th>Удержание</th><th>PnL USDT</th><th>PnL %</th><th>Комиссии Σ</th><th>Причина</th>
+          <th>Дата / Время</th><th>Стратегия</th><th>Символ</th><th>LONG (купили)</th><th>SHORT (продали)</th>
+          <th>Z входа</th><th>Сигма</th><th>Размер $</th><th>Удержание</th><th>PnL USDT</th><th>PnL %</th><th>Комиссии Σ</th><th>Причина</th>
         </tr></thead>
         <tbody id="tradesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Coins & Exchanges Panel (NEW) -->
+  <div class="panel" id="panel-coins">
+    <div class="toolbar" style="justify-content: space-between;">
+      <div style="display:flex; gap:14px; align-items:center;">
+        <input id="coinFilter" placeholder="Поиск монеты или биржи…" oninput="renderCoins()">
+        <label><input type="checkbox" id="onlyCoinSignals" onchange="renderCoins()"> только сигналы (|Z| &ge; 3.5)</label>
+      </div>
+      <span class="muted" id="coinSummary">Всего в арбитраже: 100 монет</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th onclick="sortCoins('symbol')">Символ <span class="sort-icon" id="s-symbol">⇅</span></th>
+          <th onclick="sortCoins('base')">Тикер <span class="sort-icon" id="s-base">⇅</span></th>
+          <th onclick="sortCoins('exchanges')">Биржи в арбитраже <span class="sort-icon" id="s-exchanges">⇅</span></th>
+          <th onclick="sortCoins('pairs_count')">Активных пар <span class="sort-icon" id="s-pairs_count">⇅</span></th>
+          <th onclick="sortCoins('max_abs_z')">Текущий Max |Z| <span class="sort-icon" id="s-max_abs_z">⇅</span></th>
+          <th onclick="sortCoins('max_spread_pct')">Макс. спред % <span class="sort-icon" id="s-max_spread_pct">⇅</span></th>
+          <th onclick="sortCoins('status')">Статус <span class="sort-icon" id="s-status">⇅</span></th>
+        </tr></thead>
+        <tbody id="coinsBody"></tbody>
       </table>
     </div>
   </div>
@@ -285,6 +319,8 @@
 
 <script>
 let snapshot = null;
+let coinSortKey = 'symbol';
+let coinSortAsc = true;
 
 const tabs = document.querySelectorAll('.tab');
 tabs.forEach(t => t.onclick = () => {
@@ -292,6 +328,7 @@ tabs.forEach(t => t.onclick = () => {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   t.classList.add('active');
   document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  if (t.dataset.tab === 'coins') renderCoins();
 });
 
 function fmtDur(s) {
@@ -334,19 +371,22 @@ function render() {
   document.getElementById('mSymbols').textContent = 'symbols ' + s.symbols_total;
   
   const zCfg = s.zscore || {};
-  document.getElementById('mThreshold').textContent = `порог Z: ±${zCfg.entry_z || 4.0}`;
+  document.getElementById('mThreshold').textContent = `порог Z: ±${zCfg.entry_z || 3.5}`;
 
-  const arb = s.stats.arb || { closed: 0, win_rate_pct: 0, pnl_usdt: 0, fees_usdt: 0, funding_usdt: 0, orphan_aborts: 0 };
+  const arb = (s.stats && s.stats.arb) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0, fees_usdt: 0, funding_usdt: 0, orphan_aborts: 0 };
+  const arb4 = (s.stats && s.stats.arb_z4) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
+  const arb35 = (s.stats && s.stats.arb_z35) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
   const maxZTxt = zCfg.max_z_info || '—';
   
   document.getElementById('cards').innerHTML = `
     ${card('Позиций открыто', s.stats.open_positions, s.stats.open_positions > 0 ? 1 : 0, "document.querySelector('.tab[data-tab=\\'positions\\']').click()")}
-    ${card('Стратегия Z-Score', `Вход ±${zCfg.entry_z || 4.0} / Выход ${zCfg.exit_z || 0.0}`, 'purple')}
-    ${card('Max |Z| на рынке', maxZTxt, zCfg.max_abs_z >= 4.0 ? 'pos' : (zCfg.max_abs_z >= 2.5 ? 'yellow' : ''))}
-    ${card('ARB: сделок', `${arb.closed} (WR ${arb.win_rate_pct}%)`)}
-    ${card('ARB: PnL USDT', (arb.pnl_usdt >= 0 ? '+' : '') + arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
+    ${card('Стратегия Z-Score', `Вход ±${zCfg.entry_z || 3.5} / Выход ${zCfg.exit_z || 0.0}`, 'purple')}
+    ${card('Max |Z| на рынке', maxZTxt, zCfg.max_abs_z >= (zCfg.entry_z || 3.5) ? 'pos' : (zCfg.max_abs_z >= 2.5 ? 'yellow' : ''))}
+    ${card('Все сделки (Z ≥ 3.5)', `${arb.closed} (WR ${arb.win_rate_pct}%)`, arb.pnl_usdt)}
+    ${card('PnL USDT (все)', (arb.pnl_usdt >= 0 ? '+' : '') + arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
+    ${card('Z ≥ 4.0 (гипотеза)', `${arb4.closed} сд. (${arb4.pnl_usdt >= 0 ? '+' : ''}${arb4.pnl_usdt.toFixed(2)}$)`, arb4.pnl_usdt)}
+    ${card('Дельта 3.5 ≤ Z < 4.0', `${arb35.closed} сд. (${arb35.pnl_usdt >= 0 ? '+' : ''}${arb35.pnl_usdt.toFixed(2)}$)`, arb35.pnl_usdt)}
     ${card('Комиссии Σ', '-' + arb.fees_usdt.toFixed(2), -1)}
-    ${card('Funding Σ', arb.funding_usdt.toFixed(2), arb.funding_usdt)}
   `;
 
   // 1. Z-Score Radar Table
@@ -356,7 +396,7 @@ function render() {
 
   let zRows = zCfg.radar || [];
   if (zFilter) zRows = zRows.filter(r => (r.symbol + r.ex_a + r.ex_b).toLowerCase().includes(zFilter));
-  if (onlySignals) zRows = zRows.filter(r => r.abs_z >= (zCfg.entry_z || 4.0));
+  if (onlySignals) zRows = zRows.filter(r => r.abs_z >= (zCfg.entry_z || 3.5));
   else if (onlyWatch) zRows = zRows.filter(r => r.abs_z >= 2.5);
 
   const zb = document.getElementById('zBody');
@@ -365,12 +405,12 @@ function render() {
   } else {
     zb.innerHTML = zRows.map(r => {
       let badge = '<span class="badge z-norm">NORM</span>';
-      if (r.abs_z >= (zCfg.entry_z || 4.0)) {
+      if (r.abs_z >= (zCfg.entry_z || 3.5)) {
         badge = `<span class="badge z-signal">🔥 SIGNAL (${r.z > 0 ? 'SHORT A / LONG B' : 'LONG A / SHORT B'})</span>`;
       } else if (r.abs_z >= 2.5) {
         badge = '<span class="badge z-watch">⚡ WATCH</span>';
       }
-      const zCls = r.abs_z >= 4.0 ? 'pos' : (r.abs_z >= 2.5 ? 'purple' : 'muted');
+      const zCls = r.abs_z >= (zCfg.entry_z || 3.5) ? 'pos' : (r.abs_z >= 2.5 ? 'purple' : 'muted');
       return `
         <tr>
           <td class="sym">${esc(r.symbol)}</td>
@@ -439,16 +479,20 @@ function render() {
   // 3. Closed Trades Table
   const trBody = document.getElementById('tradesBody');
   const tFilter = (document.getElementById('tradeFilter')?.value || '').trim().toLowerCase();
+  const onlyZ4 = document.getElementById('onlyZ4Trades')?.checked;
   let closedTrades = s.closed_trades || [];
   if (tFilter) {
     closedTrades = closedTrades.filter(t => (t.symbol + (t.exch_long||'') + (t.exch_short||'') + (t.strategy||'') + (t.reason||'')).toLowerCase().includes(tFilter));
+  }
+  if (onlyZ4) {
+    closedTrades = closedTrades.filter(t => t.is_z4 || Math.abs(t.z_in || 0) >= 4.0);
   }
   const sumEl = document.getElementById('tradeSummary');
   if (sumEl) {
     sumEl.textContent = `Закрытых сделок: ${closedTrades.length}`;
   }
   if (!closedTrades.length) {
-    trBody.innerHTML = `<tr><td colspan="12" class="empty">Нет закрытых сделок</td></tr>`;
+    trBody.innerHTML = `<tr><td colspan="13" class="empty">Нет закрытых сделок, соответствующих фильтру</td></tr>`;
   } else {
     trBody.innerHTML = closedTrades.map(t => {
       const pnl = t.realized_pnl_usdt ?? 0;
@@ -456,6 +500,10 @@ function render() {
       const pnlSign = pnl > 0 ? '+' : '';
       const closeTime = fmtDateTime(t.close_ts);
       const zinTxt = (t.z_in != null && t.z_in !== 0) ? ((t.z_in > 0 ? '+' : '') + Number(t.z_in).toFixed(2)) : '—';
+      const isZ4 = t.is_z4 || Math.abs(t.z_in || 0) >= 4.0;
+      const sigmaBadge = isZ4
+        ? '<span class="badge z-tier4" title="Вход при |Z| >= 4.0">Z &ge; 4.0</span>'
+        : '<span class="badge z-tier35" title="Вход при 3.5 <= |Z| < 4.0">Z: 3.5–4.0</span>';
       const dur = fmtDur(t.holding_seconds || 0);
       const exL = t.exch_long || t.exchange || '—';
       const exS = t.exch_short || t.side || '—';
@@ -468,7 +516,8 @@ function render() {
         <td class="sym">${esc(t.symbol)}</td>
         <td class="ex">${esc(exL)}</td>
         <td class="ex">${esc(exS)}</td>
-        <td class="num">${zinTxt}</td>
+        <td class="num"><b>${zinTxt}</b></td>
+        <td>${sigmaBadge}</td>
         <td class="num">${sz}</td>
         <td class="num">${dur}</td>
         <td class="num ${pnlCls}"><b>${pnlSign}${pnl.toFixed(2)}</b></td>
@@ -479,10 +528,13 @@ function render() {
     }).join('');
   }
 
-  // 4. Spreads Table
+  // 4. Render Coins Tab
+  renderCoins();
+
+  // 5. Spreads Table
   const f = document.getElementById('filter').value.trim().toLowerCase();
   const onlyPass = document.getElementById('onlyPass').checked;
-  let rows = s.spreads;
+  let rows = s.spreads || [];
   if (f) rows = rows.filter(r => (r.symbol+r.exch_long+r.exch_short).toLowerCase().includes(f));
   if (onlyPass) rows = rows.filter(r => r.passed);
   const body = document.getElementById('spreadsBody');
@@ -501,25 +553,104 @@ function render() {
       <td>${r.suspect ? '<span class="badge suspect" title="dt='+r.leg_dt_sec+'s, top=$'+r.top_notional_usdt+'">⚠ SUSPECT</span>' : (r.passed?'<span class="badge pass">PASS</span>':'<span class="badge no">—</span>')}</td>
     </tr>`).join('');
 
-  // 4. Exchanges Table
-  document.getElementById('exBody').innerHTML = s.exchanges.map(e => `
+  // 6. Exchanges Table
+  document.getElementById('exBody').innerHTML = (s.exchanges || []).map(e => `
     <tr>
       <td class="sym">${esc(e.name)}</td>
       <td>${e.ws_alive?'<span class="badge pass">LIVE</span>':'<span class="badge no">OFF</span>'}</td>
       <td class="num">${e.fresh_symbols}</td>
     </tr>`).join('');
 
-  // 5. Events List
-  document.getElementById('eventsList').innerHTML = s.events.map(ev => {
+  // 7. Events List
+  document.getElementById('eventsList').innerHTML = (s.events || []).map(ev => {
     const t = new Date(ev.ts*1000).toLocaleTimeString('ru-RU');
     return `<li><span class="t">${t}</span><span class="lvl-${ev.level}">${esc(ev.msg)}</span></li>`;
   }).join('') || `<li class="empty">Событий пока нет</li>`;
 }
 
+function sortCoins(key) {
+  if (coinSortKey === key) {
+    coinSortAsc = !coinSortAsc;
+  } else {
+    coinSortKey = key;
+    coinSortAsc = true;
+  }
+  renderCoins();
+}
+
+function renderCoins() {
+  if (!snapshot) return;
+  const coins = snapshot.arbitrage_coins || [];
+  const q = (document.getElementById('coinFilter')?.value || '').trim().toLowerCase();
+  const onlySig = document.getElementById('onlyCoinSignals')?.checked;
+
+  let filtered = coins.slice();
+  if (q) {
+    filtered = filtered.filter(c => 
+      c.symbol.toLowerCase().includes(q) ||
+      c.base.toLowerCase().includes(q) ||
+      (c.exchanges || []).some(e => e.toLowerCase().includes(q))
+    );
+  }
+  if (onlySig) {
+    filtered = filtered.filter(c => c.status === 'SIGNAL');
+  }
+
+  // Update sort indicators
+  ['symbol', 'base', 'exchanges', 'pairs_count', 'max_abs_z', 'max_spread_pct', 'status'].forEach(k => {
+    const el = document.getElementById('s-' + k);
+    if (el) el.textContent = (coinSortKey === k) ? (coinSortAsc ? '▲' : '▼') : '⇅';
+  });
+
+  filtered.sort((a, b) => {
+    let va = a[coinSortKey];
+    let vb = b[coinSortKey];
+    if (coinSortKey === 'exchanges') {
+      va = (a.exchanges || []).join(',');
+      vb = (b.exchanges || []).join(',');
+    }
+    if (typeof va === 'string') {
+      return coinSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    }
+    return coinSortAsc ? (va - vb) : (vb - va);
+  });
+
+  const sumEl = document.getElementById('coinSummary');
+  if (sumEl) {
+    sumEl.textContent = `Отображается: ${filtered.length} из ${coins.length} монет`;
+  }
+
+  const tb = document.getElementById('coinsBody');
+  if (!filtered.length) {
+    tb.innerHTML = `<tr><td colspan="7" class="empty">Монеты не найдены</td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = filtered.map(c => {
+    const exBadges = (c.exchanges || []).map(e => `<span class="badge" style="background:#21262d;color:var(--blue);margin-right:4px;font-size:11px;">${esc(e.toUpperCase())}</span>`).join('');
+    let statusBadge = '<span class="badge z-norm">ACTIVE</span>';
+    if (c.status === 'SIGNAL') {
+      statusBadge = '<span class="badge z-signal">🔥 SIGNAL</span>';
+    } else if (c.status === 'WATCH') {
+      statusBadge = '<span class="badge z-watch">⚡ WATCH</span>';
+    }
+    const zCls = c.max_abs_z >= 3.5 ? 'pos' : (c.max_abs_z >= 2.5 ? 'purple' : 'muted');
+    return `<tr>
+      <td class="sym">${esc(c.symbol)}</td>
+      <td><b>${esc(c.base)}</b></td>
+      <td>${exBadges}</td>
+      <td class="num">${c.pairs_count}</td>
+      <td class="num ${zCls}"><b>${c.max_abs_z > 0 ? c.max_abs_z.toFixed(2) : '—'}</b></td>
+      <td class="num ${cls(c.max_spread_pct)}">${c.max_spread_pct > 0 ? '+' + c.max_spread_pct.toFixed(3) + '%' : '—'}</td>
+      <td>${statusBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
 function card(label, value, signed, onClick) {
   let c = '';
   if (signed === 'purple') c = 'purple';
-  else if (signed === 'yellow') c = 'value'; // default or colored
+  else if (signed === 'yellow') c = 'yellow';
   else if (signed !== undefined && typeof signed === 'number') c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
   else if (signed === 'pos') c = 'pos';
   const clickAttr = onClick ? ` onclick="${onClick}" style="cursor:pointer;" title="Перейти к позиции"` : '';

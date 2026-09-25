@@ -1029,12 +1029,27 @@ class Engine:
         n_scalp = sum(1 for p in positions if p.get("strategy") == "scalp")
         n_dir = sum(1 for p in positions if p.get("strategy") == "dir")
 
-        # Z-Score Радар для дашборда
+        # Z-Score Радар и список монет для дашборда
         z_radar = []
         max_abs_z = 0.0
         max_z_info = "—"
+        arb_coins_map: dict[str, dict] = {}
         if self.zscore_enabled:
             for (sym, ea, eb), state in self.z_tracker.states.items():
+                if sym not in arb_coins_map:
+                    arb_coins_map[sym] = {
+                        "symbol": sym,
+                        "base": sym.split("/")[0],
+                        "exchanges": set(),
+                        "pairs_count": 0,
+                        "max_abs_z": 0.0,
+                        "max_spread_pct": 0.0,
+                    }
+                arb_item = arb_coins_map[sym]
+                arb_item["exchanges"].add(ea)
+                arb_item["exchanges"].add(eb)
+                arb_item["pairs_count"] += 1
+
                 if state.ma is None or state.sd is None or state.sd <= 0:
                     continue
                 q = self.state.fresh_quotes(sym, [ea, eb])
@@ -1051,8 +1066,14 @@ class Engine:
                     max_abs_z = abs_z
                     max_z_info = f"{sym.split('/')[0]} ({z:+.2f})"
 
+                if abs_z > arb_item["max_abs_z"]:
+                    arb_item["max_abs_z"] = round(abs_z, 2)
+
                 ratio = mid_a / mid_b if mid_b > 0 else 1.0
                 spread = (mid_a - mid_b) / mid_b * 100.0 if mid_b > 0 else 0.0
+                if abs(spread) > arb_item["max_spread_pct"]:
+                    arb_item["max_spread_pct"] = round(abs(spread), 3)
+
                 fees = (qa.taker_fee + qb.taker_fee) * 2 * 100.0
                 z_radar.append({
                     "symbol": sym,
@@ -1068,6 +1089,19 @@ class Engine:
                     "is_signal": abs_z >= self.entry_z,
                 })
             z_radar.sort(key=lambda x: x["abs_z"], reverse=True)
+
+        arbitrage_coins = []
+        for sym, d in arb_coins_map.items():
+            arbitrage_coins.append({
+                "symbol": d["symbol"],
+                "base": d["base"],
+                "exchanges": sorted(d["exchanges"]),
+                "pairs_count": d["pairs_count"],
+                "max_abs_z": d["max_abs_z"],
+                "max_spread_pct": d["max_spread_pct"],
+                "status": "SIGNAL" if d["max_abs_z"] >= self.entry_z else ("WATCH" if d["max_abs_z"] >= 2.5 else "ACTIVE"),
+            })
+        arbitrage_coins.sort(key=lambda x: x["symbol"])
 
         # mark-to-market по открытым позициям: сколько было бы PnL,
         # если закрыть прямо сейчас по лучшим ценам (без walk-book)
@@ -1129,10 +1163,13 @@ class Engine:
             "spreads": spreads[:60],
             "positions": positions,
             "closed_trades": self.emulator.closed_trades_snapshot()[:100],
+            "arbitrage_coins": arbitrage_coins,
             "scalp_rank": self._scalp_scores()[:20],
             "watchlist": list(self._watchlist),
             "stats": {
                 "arb": snap_stats(emu_stats.get("arb", {}), n_arb),
+                "arb_z4": snap_stats(emu_stats.get("arb_z4", {}), sum(1 for p in positions if p.get("strategy") == "arb" and p.get("is_z4"))),
+                "arb_z35": snap_stats(emu_stats.get("arb_z35", {}), sum(1 for p in positions if p.get("strategy") == "arb" and not p.get("is_z4"))),
                 "scalp": snap_stats(emu_stats.get("scalp", {}), n_scalp),
                 "dir": snap_stats(emu_stats.get("dir", {}), n_dir),
                 "open_positions": len(positions),
