@@ -56,6 +56,10 @@ class MarketState:
             taker_fee=taker, maker_fee=maker,
         )
 
+    def get_quote(self, exchange: str, symbol: str) -> Optional[Quote]:
+        """Возвращает свежую котировку для конкретной биржи и символа."""
+        return self._build_quote(exchange, symbol, time.time())
+
     def fresh_quotes(self, symbol: str, exchanges: list[str]) -> dict[str, Quote]:
         now = time.time()
         out: dict[str, Quote] = {}

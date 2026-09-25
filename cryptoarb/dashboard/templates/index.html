@@ -198,7 +198,15 @@
         <tr><td>4</td><td><b>Фиксированный размер:</b> Нотионал $10.0 USDT ($1.0 USDT маржи с 10x плечом на ногу).</td></tr>
         <tr><td>5</td><td><b>Выход:</b> Удержание до 72 часов (9 выплат фандинга), инверсия ставок или защитный стоп при раздвижке цен &gt; 2%.</td></tr>
       </table>
-      <p class="note">Все параметры настраиваются в config.yaml в блоках zscore и funding_arb.</p>
+
+      <h3>МЕЖМОНЕТНЫЙ АРБИТРАЖ (CROSS-COIN PAIRS TRADING)</h3>
+      <table class="rules">
+        <tr><td>1</td><td><b>Механика:</b> Отслеживание отношения цен (Ratio = Price A / Price B) фундаментально связанных пар монет (SOL/AVAX, ETH/SOL, BTC/BCH, NEAR/APT, SUI/APT, ARB/OP, UNI/AAVE, MKR/AAVE, DOGE/SHIB, PEPE/BONK).</td></tr>
+        <tr><td>2</td><td><b>Статистический триггер:</b> Отклонение Ratio от скользящей средней на |Z| &ge; 2.5 сигмы.</td></tr>
+        <tr><td>3</td><td><b>Направление:</b> Z &gt; +2.5 &rarr; Шорт актива A, Лонг актива B; Z &lt; -2.5 &rarr; Лонг актива A, Шорт актива B.</td></tr>
+        <tr><td>4</td><td><b>Выход:</b> Возврат Ratio к среднему значению (|Z| &le; 0.0) либо защитный стоп-лосс.</td></tr>
+      </table>
+      <p class="note">Все параметры настраиваются в config.yaml в блоках zscore, funding_arb и cross_coin.</p>
     </div>
   </div>
 </div>
@@ -211,6 +219,7 @@
     <div class="tab" data-tab="positions" id="tab-positions">Арбитраж: Позиции</div>
     <div class="tab" data-tab="trades" id="tab-trades">Арбитраж: История</div>
     <div class="tab" data-tab="funding" id="tab-funding">Сбор фандинга</div>
+    <div class="tab" data-tab="crosscoin" id="tab-crosscoin">Межмонетный арбитраж</div>
     <div class="tab" data-tab="coins">Монеты и биржи</div>
     <div class="tab" data-tab="spreads">Спреды</div>
     <div class="tab" data-tab="exchanges">Биржи</div>
@@ -325,6 +334,35 @@
     </div>
   </div>
 
+  <!-- Cross-Coin Pairs Trading Panel -->
+  <div class="panel" id="panel-crosscoin">
+    <div class="cards" id="crossCoinCards" style="margin-bottom:18px;"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--purple);"></span>
+        Радар межмонетного арбитража (Cointegrated Pairs Trading)
+      </h3>
+      <span class="muted">10 фундаментально связанных пар (L1, L2, DeFi, Memes)</span>
+    </div>
+
+    <div class="toolbar" style="flex-wrap:wrap; gap:12px;">
+      <input id="crossCoinFilter" placeholder="Поиск по монете или сектору…" oninput="renderCrossCoin(window.currentSnapshot)">
+      <label><input type="checkbox" id="onlyCrossSignals" onchange="renderCrossCoin(window.currentSnapshot)"> только сигналы (|Z| &ge; 2.5)</label>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Связка монет</th><th>Сектор / Описание</th><th>Цена A ($)</th><th>Цена B ($)</th>
+          <th>Ratio (A / B)</th><th>Средний Ratio (Mean)</th><th>Z-Score</th><th>Баров (мин)</th>
+          <th>Торговое действие</th><th>Статус</th>
+        </tr></thead>
+        <tbody id="crossCoinBody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Positions Panel (Arbitrage Only) -->
   <div class="panel" id="panel-positions">
     <div class="toolbar" style="justify-content: space-between;">
@@ -423,595 +461,10 @@
   </div>
 </div>
 
-<script>
-let snapshot = null;
-let coinSortKey = 'symbol';
-let coinSortAsc = true;
-
-const tabs = document.querySelectorAll('.tab');
-tabs.forEach(t => t.onclick = () => {
-  tabs.forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  t.classList.add('active');
-  document.getElementById('panel-' + t.dataset.tab).classList.add('active');
-  if (t.dataset.tab === 'coins') renderCoins();
-  if (t.dataset.tab === 'funding') renderFunding();
-});
-
-function fmtTimer(sec) {
-  if (sec == null || sec < 0) return '—';
-  const h = Math.floor(sec / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  const s = Math.floor(sec % 60);
-  const pad = n => String(n).padStart(2, '0');
-  return `${pad(h)}:${pad(m)}:${pad(s)}`;
-}
-
-function fmtDur(s) {
-  if (s == null) return '—';
-  s = Math.floor(s);
-  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
-  if (h) return `${h}ч ${m}м`;
-  if (m) return `${m}м ${sec}с`;
-  return `${sec}с`;
-}
-function fmtDateTime(ts) {
-  if (!ts) return '—';
-  const d = new Date(ts * 1000);
-  const pad = n => String(n).padStart(2, '0');
-  const Y = d.getFullYear();
-  const M = pad(d.getMonth() + 1);
-  const D = pad(d.getDate());
-  const h = pad(d.getHours());
-  const m = pad(d.getMinutes());
-  const s = pad(d.getSeconds());
-  return `${Y}-${M}-${D} ${h}:${m}:${s}`;
-}
-function cls(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : 'muted'; }
-function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-
-function connect() {
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  const ws = new WebSocket(`${proto}://${location.host}/ws`);
-  ws.onopen = () => document.getElementById('liveDot').classList.add('live');
-  ws.onclose = () => { document.getElementById('liveDot').classList.remove('live'); setTimeout(connect, 2000); };
-  ws.onmessage = (e) => { snapshot = JSON.parse(e.data); render(); };
-}
-
-function render() {
-  if (!snapshot) return;
-  const s = snapshot;
-
-  document.getElementById('mUptime').textContent = 'uptime ' + fmtDur(s.uptime_sec);
-  document.getElementById('mScan').textContent = 'scan ' + (s.last_scan_age_sec==null?'—':(s.last_scan_age_sec.toFixed(1)+'с назад'));
-  document.getElementById('mSymbols').textContent = 'symbols ' + s.symbols_total;
-  
-  const zCfg = s.zscore || {};
-  document.getElementById('mThreshold').textContent = `порог Z: ±${zCfg.entry_z || 3.5}`;
-
-  const arb = (s.stats && s.stats.arb) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0, fees_usdt: 0, funding_usdt: 0, orphan_aborts: 0 };
-  const arb4 = (s.stats && s.stats.arb_z4) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
-  const arb35 = (s.stats && s.stats.arb_z35) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
-  const maxZTxt = zCfg.max_z_info || '—';
-  const fKpi = (s.funding_arb && s.funding_arb.kpi) || {};
-  const totFundEarned = fKpi.total_funding_earned_usdt || 0;
-  const arbPositions = (s.positions || []).filter(p => p.strategy !== 'funding');
-  const fundingPositions = (s.positions || []).filter(p => p.strategy === 'funding');
-  const nArbPos = arbPositions.length;
-  const nFundPos = fundingPositions.length;
-  
-  document.getElementById('cards').innerHTML = `
-    ${card('Арбитраж (активно)', `${nArbPos} поз.`, nArbPos > 0 ? 1 : 0, "document.querySelector('.tab[data-tab=\\'positions\\']').click()")}
-    ${card('Стратегия Z-Score', `Вход ±${zCfg.entry_z || 3.5} / Выход ${zCfg.exit_z || 0.0}`, 'purple')}
-    ${card('Max |Z| на рынке', maxZTxt, zCfg.max_abs_z >= (zCfg.entry_z || 3.5) ? 'pos' : (zCfg.max_abs_z >= 2.5 ? 'yellow' : ''))}
-    ${card('Арбитраж: сделки', `${arb.closed} (WR ${arb.win_rate_pct}%)`, arb.pnl_usdt, "document.querySelector('.tab[data-tab=\\'trades\\']').click()")}
-    ${card('PnL арбитража', (arb.pnl_usdt >= 0 ? '+' : '') + arb.pnl_usdt.toFixed(2), arb.pnl_usdt, "document.querySelector('.tab[data-tab=\\'trades\\']').click()")}
-    ${card('Z ≥ 4.0 (гипотеза)', `${arb4.closed} сд. (${arb4.pnl_usdt >= 0 ? '+' : ''}${arb4.pnl_usdt.toFixed(2)}$)`, arb4.pnl_usdt)}
-    ${card('Дельта 3.5 ≤ Z < 4.0', `${arb35.closed} сд. (${arb35.pnl_usdt >= 0 ? '+' : ''}${arb35.pnl_usdt.toFixed(2)}$)`, arb35.pnl_usdt)}
-    ${card('Сбор фандинга', `${nFundPos} связок (+$${totFundEarned.toFixed(2)})`, nFundPos > 0 ? 'yellow' : '', "document.querySelector('.tab[data-tab=\\'funding\\']').click()")}
-    ${card('Комиссии Σ (арб)', '-' + arb.fees_usdt.toFixed(2), -1)}
-  `;
-
-  // 1. Z-Score Radar Table
-  const zFilter = document.getElementById('zFilter').value.trim().toLowerCase();
-  const onlySignals = document.getElementById('onlyZSignals').checked;
-  const onlyWatch = document.getElementById('onlyZWatch').checked;
-
-  let zRows = zCfg.radar || [];
-  if (zFilter) zRows = zRows.filter(r => (r.symbol + r.ex_a + r.ex_b).toLowerCase().includes(zFilter));
-  if (onlySignals) zRows = zRows.filter(r => r.abs_z >= (zCfg.entry_z || 3.5));
-  else if (onlyWatch) zRows = zRows.filter(r => r.abs_z >= 2.5);
-
-  const zb = document.getElementById('zBody');
-  if (!zRows.length) {
-    zb.innerHTML = `<tr><td colspan="10" class="empty">Нет пар, соответствующих фильтру</td></tr>`;
-  } else {
-    zb.innerHTML = zRows.map(r => {
-      let badge = '<span class="badge z-norm">NORM</span>';
-      if (r.abs_z >= (zCfg.entry_z || 3.5)) {
-        badge = `<span class="badge z-signal">🔥 SIGNAL (${r.z > 0 ? 'SHORT A / LONG B' : 'LONG A / SHORT B'})</span>`;
-      } else if (r.abs_z >= 2.5) {
-        badge = '<span class="badge z-watch">⚡ WATCH</span>';
-      }
-      const zCls = r.abs_z >= (zCfg.entry_z || 3.5) ? 'pos' : (r.abs_z >= 2.5 ? 'purple' : 'muted');
-      return `
-        <tr>
-          <td class="sym">${esc(r.symbol)}</td>
-          <td class="ex">${esc(r.ex_a)}</td>
-          <td class="ex">${esc(r.ex_b)}</td>
-          <td class="num ${zCls}"><b>${r.z >= 0 ? '+' : ''}${r.z.toFixed(2)}</b></td>
-          <td class="num">${r.ratio.toFixed(5)}</td>
-          <td class="num muted">${r.ma.toFixed(5)}</td>
-          <td class="num muted">${r.sd.toFixed(5)}</td>
-          <td class="num ${cls(r.spread_pct)}">${r.spread_pct >= 0 ? '+' : ''}${r.spread_pct.toFixed(3)}%</td>
-          <td class="num neg">-${r.fees_pct.toFixed(3)}%</td>
-          <td>${badge}</td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  // 2. Positions Table (Pure Arbitrage Only)
-  const posTab = document.getElementById('tab-positions');
-  if (posTab) {
-    posTab.innerHTML = nArbPos > 0
-      ? `Арбитраж: Позиции <span style="background:var(--green);color:#0d1117;font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;">${nArbPos}</span>`
-      : 'Арбитраж: Позиции';
-  }
-  const posSumEl = document.getElementById('positionsSummary');
-  if (posSumEl) {
-    posSumEl.textContent = nArbPos > 0
-      ? `Открыто активных позиций арбитража: ${nArbPos} (динамический мониторинг стакана и схождения Z)`
-      : `В рынке сейчас нет активных арбитражных позиций. Сделки открываются при |Z| ≥ 4.0 и закрываются при сведении к средней (~65 сек). Сбор фандинга вынесен в отдельную вкладку.`;
-  }
-
-  const pb = document.getElementById('posBody');
-  if (!arbPositions.length) {
-    pb.innerHTML = `<tr><td colspan="11" class="empty">Сейчас активных позиций арбитража нет. Сделки открываются при отклонении |Z| &ge; 4.0 и закрываются при возврате к 0.0.</td></tr>`;
-  } else {
-    pb.innerHTML = arbPositions.map(p => {
-      const u = p.unrealized_pnl_usdt;
-      const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
-      const uTxt = u == null ? '—' : (u > 0 ? '+' : '') + u.toFixed(2);
-      const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
-      const curZ = p.cur_z == null ? '—' : (p.cur_z >= 0 ? '+' : '') + p.cur_z.toFixed(2);
-      const curZCls = p.cur_z == null ? 'muted' : (Math.abs(p.cur_z) <= 0.3 ? 'pos' : 'purple');
-      const zinTxt = (p.z_in != null && p.z_in !== 0) ? ((p.z_in > 0 ? '+' : '') + Number(p.z_in).toFixed(2)) : '—';
-      const sz = (p.size_usdt != null && p.size_usdt > 0) ? ('$' + Number(p.size_usdt).toFixed(2)) : '—';
-      return `
-        <tr>
-          <td class="sym">${esc(p.symbol)}</td>
-          <td class="ex">${esc(p.exch_long)}</td>
-          <td class="ex">${esc(p.exch_short)}</td>
-          <td class="num purple"><b>${zinTxt}</b></td>
-          <td class="num ${curZCls}"><b>${curZ}</b></td>
-          <td class="num">${(p.entry_raw_spread_pct||0).toFixed(3)}%</td>
-          <td class="num ${cls(cur === '—' ? 0 : p.cur_spread_pct)}">${cur === '—' ? '—' : cur + '%'}</td>
-          <td class="num">${sz}</td>
-          <td class="num ${uCls}"><b>${uTxt}</b></td>
-          <td class="num">${fmtDur(p.holding_seconds)}</td>
-          <td class="muted">${(p.trade_id || '').slice(0,8)}</td>
-        </tr>`;
-    }).join('');
-  }
-
-  // 3. Closed Trades Table (Pure Arbitrage Only)
-  const trBody = document.getElementById('tradesBody');
-  const tFilter = (document.getElementById('tradeFilter')?.value || '').trim().toLowerCase();
-  const onlyZ4 = document.getElementById('onlyZ4Trades')?.checked;
-  let closedArbTrades = (s.closed_trades || []).filter(t => t.strategy !== 'funding');
-  if (tFilter) {
-    closedArbTrades = closedArbTrades.filter(t => (t.symbol + (t.exch_long||'') + (t.exch_short||'') + (t.reason||'')).toLowerCase().includes(tFilter));
-  }
-  if (onlyZ4) {
-    closedArbTrades = closedArbTrades.filter(t => t.is_z4 || Math.abs(t.z_in || 0) >= 4.0);
-  }
-  const sumEl = document.getElementById('tradeSummary');
-  if (sumEl) {
-    sumEl.textContent = `Закрытых сделок арбитража: ${closedArbTrades.length}`;
-  }
-  if (!closedArbTrades.length) {
-    trBody.innerHTML = `<tr><td colspan="12" class="empty">Нет закрытых сделок арбитража, соответствующих фильтру</td></tr>`;
-  } else {
-    trBody.innerHTML = closedArbTrades.map(t => {
-      const pnl = t.realized_pnl_usdt ?? 0;
-      const pnlCls = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
-      const pnlSign = pnl > 0 ? '+' : '';
-      const closeTime = fmtDateTime(t.close_ts);
-      const zinTxt = (t.z_in != null && t.z_in !== 0) ? ((t.z_in > 0 ? '+' : '') + Number(t.z_in).toFixed(2)) : '—';
-      const isZ4 = t.is_z4 || Math.abs(t.z_in || 0) >= 4.0;
-      const sigmaBadge = isZ4
-        ? '<span class="badge z-tier4" title="Вход при |Z| >= 4.0">Z &ge; 4.0</span>'
-        : '<span class="badge z-tier35" title="Вход при 3.5 <= |Z| < 4.0">Z: 3.5–4.0</span>';
-      const dur = fmtDur(t.holding_seconds || 0);
-      const exL = t.exch_long || t.exchange || '—';
-      const exS = t.exch_short || t.side || '—';
-      const sz = (t.size_usdt != null && t.size_usdt > 0) ? ('$' + Number(t.size_usdt).toFixed(2)) : '—';
-      const fees = t.fees_usdt != null ? `-$${Math.abs(t.fees_usdt).toFixed(2)}` : '—';
-      const pnlPct = t.pnl_pct != null ? `${pnlSign}${Number(t.pnl_pct).toFixed(2)}%` : '—';
-      return `<tr>
-        <td class="muted">${closeTime}</td>
-        <td class="sym">${esc(t.symbol)}</td>
-        <td class="ex">${esc(exL)}</td>
-        <td class="ex">${esc(exS)}</td>
-        <td class="num"><b>${zinTxt}</b></td>
-        <td>${sigmaBadge}</td>
-        <td class="num">${sz}</td>
-        <td class="num">${dur}</td>
-        <td class="num ${pnlCls}"><b>${pnlSign}${pnl.toFixed(2)}</b></td>
-        <td class="num ${pnlCls}">${pnlPct}</td>
-        <td class="num neg">${fees}</td>
-        <td><span class="muted">${esc(t.reason || 'close')}</span></td>
-      </tr>`;
-    }).join('');
-  }
-
-  // 4. Render Coins Tab
-  renderCoins();
-
-  // 5. Spreads Table
-  const f = document.getElementById('filter').value.trim().toLowerCase();
-  const onlyPass = document.getElementById('onlyPass').checked;
-  let rows = s.spreads || [];
-  if (f) rows = rows.filter(r => (r.symbol+r.exch_long+r.exch_short).toLowerCase().includes(f));
-  if (onlyPass) rows = rows.filter(r => r.passed);
-  const body = document.getElementById('spreadsBody');
-  if (!rows.length) { body.innerHTML = `<tr><td colspan="10" class="empty">Нет данных</td></tr>`; }
-  else body.innerHTML = rows.map(r => `
-    <tr>
-      <td class="sym">${esc(r.symbol)}</td>
-      <td class="ex">${esc(r.exch_long)}</td>
-      <td class="ex">${esc(r.exch_short)}</td>
-      <td class="num ${cls(r.raw_spread_pct)}">${r.raw_spread_pct.toFixed(3)}</td>
-      <td class="num ${cls(r.funding_edge_pct)}">${r.funding_edge_pct.toFixed(3)}</td>
-      <td class="num neg">-${r.fees_pct.toFixed(3)}</td>
-      <td class="num neg">-${r.slippage_pct.toFixed(3)}</td>
-      <td class="num neg">-${(r.width_pct ?? 0).toFixed(3)}</td>
-      <td class="num ${cls(r.net_edge_pct)}"><b>${r.net_edge_pct.toFixed(3)}</b></td>
-      <td>${r.suspect ? '<span class="badge suspect" title="dt='+r.leg_dt_sec+'s, top=$'+r.top_notional_usdt+'">⚠ SUSPECT</span>' : (r.passed?'<span class="badge pass">PASS</span>':'<span class="badge no">—</span>')}</td>
-    </tr>`).join('');
-
-  // 6. Exchanges Table
-  document.getElementById('exBody').innerHTML = (s.exchanges || []).map(e => `
-    <tr>
-      <td class="sym">${esc(e.name)}</td>
-      <td>${e.ws_alive?'<span class="badge pass">LIVE</span>':'<span class="badge no">OFF</span>'}</td>
-      <td class="num">${e.fresh_symbols}</td>
-    </tr>`).join('');
-
-  // 7. Events List
-  document.getElementById('eventsList').innerHTML = (s.events || []).map(ev => {
-    const t = new Date(ev.ts*1000).toLocaleTimeString('ru-RU');
-    return `<li><span class="t">${t}</span><span class="lvl-${ev.level}">${esc(ev.msg)}</span></li>`;
-  }).join('') || `<li class="empty">Событий пока нет</li>`;
-
-  // 8. Render Funding Arbitrage Tab
-  renderFunding();
-}
-
-function renderFunding() {
-  if (!snapshot) return;
-  const fData = snapshot.funding_arb || {};
-  const kpi = fData.kpi || {};
-  const opps = fData.opportunities || [];
-  const matrix = fData.matrix || [];
-  const positions = (snapshot.positions || []).filter(p => p.strategy === 'funding');
-
-  // 1. Update tab badge
-  const fTab = document.getElementById('tab-funding');
-  if (fTab) {
-    fTab.innerHTML = positions.length > 0
-      ? `Сбор фандинга <span style="background:var(--yellow);color:#0d1117;font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;">${positions.length}</span>`
-      : 'Сбор фандинга';
-  }
-
-  // 2. Render KPI cards inside funding tab
-  const fc = document.getElementById('fundingCards');
-  if (fc) {
-    const bestTxt = kpi.best_opportunity ? `${kpi.best_opportunity.symbol.split('/')[0]} (${kpi.best_opportunity.diff_8h_pct >= 0 ? '+' : ''}${kpi.best_opportunity.diff_8h_pct.toFixed(2)}%)` : '—';
-    const totEarned = kpi.total_funding_earned_usdt || 0;
-    const dayDrip = kpi.daily_dripping_income_usdt || 0;
-    const p8hDrip = kpi.payment_8h_dripping_income_usdt || 0;
-    const openPos = kpi.open_positions_count || 0;
-    const openMargin = kpi.open_margin_usdt || 0;
-    const openNotional = kpi.open_notional_usdt || 0;
-    const closedTr = kpi.closed_trades_count || 0;
-    const winRate = kpi.win_rate_pct || 0;
-    const closedPnl = kpi.closed_pnl_usdt || 0;
-
-    fc.innerHTML = `
-      ${card('Накапало фандинга Σ', (totEarned >= 0 ? '+' : '') + '$' + totEarned.toFixed(4), totEarned > 0 ? 'pos' : '')}
-      ${card('Капает в сутки (24ч)', (dayDrip >= 0 ? '+' : '') + '$' + dayDrip.toFixed(4), dayDrip > 0 ? 'pos' : '')}
-      ${card('Капает за выплату (8ч)', (p8hDrip >= 0 ? '+' : '') + '$' + p8hDrip.toFixed(4), p8hDrip > 0 ? 'pos' : '')}
-      ${card('Позиции фандинга', `${openPos} шт. (залог $${openMargin.toFixed(0)} / объем $${openNotional.toFixed(0)})`, openPos > 0 ? 'yellow' : '')}
-      ${card('Сделок закрыто (WR)', `${closedTr} сд. (${winRate}% WR | ${closedPnl >= 0 ? '+' : ''}$${closedPnl.toFixed(2)})`, closedPnl >= 0 ? 'pos' : 'neg')}
-      ${card('Лучшая дельта рынка', bestTxt, 'purple')}
-    `;
-  }
-
-  // 3. Render Active Funding Positions
-  const posCountEl = document.getElementById('fundingPosCount');
-  if (posCountEl) {
-    posCountEl.textContent = `Активно: ${positions.length} поз. (суммарный залог: $${(positions.length * 1.0).toFixed(0)} USDT | объем $${(positions.length * 10.0).toFixed(0)} USDT)`;
-  }
-  const fPosBody = document.getElementById('fundingPosBody');
-  if (fPosBody) {
-    if (!positions.length) {
-      fPosBody.innerHTML = `<tr><td colspan="13" class="empty">Сейчас нет открытых позиций по сбору фандинга. Система автоматически открывает сделки при разнице ставок &ge; 0.08% и расхождении цен &le; 0.20%.</td></tr>`;
-    } else {
-      fPosBody.innerHTML = positions.map(p => {
-        const diffRate = ((p.funding_rate_short || 0) - (p.funding_rate_long || 0)) * 100.0;
-        const apr = diffRate * 3 * 365.0;
-        const curSp = p.cur_spread_pct == null ? '—' : (p.cur_spread_pct >= 0 ? '+' : '') + p.cur_spread_pct.toFixed(3) + '%';
-        const u = p.unrealized_pnl_usdt;
-        const uTxt = u == null ? '—' : (u >= 0 ? '+' : '') + '$' + u.toFixed(2);
-        const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
-        const accrued = p.funding_accrued_usdt || 0;
-        const nextTimer = p.next_payment_in_sec != null ? fmtTimer(p.next_payment_in_sec) : '—';
-
-        return `<tr>
-          <td class="sym">${esc(p.symbol)}</td>
-          <td class="ex">${esc(p.exch_short)} <span class="muted" style="font-size:11px;">(${((p.funding_rate_short||0)*100).toFixed(3)}%)</span></td>
-          <td class="ex">${esc(p.exch_long)} <span class="muted" style="font-size:11px;">(${((p.funding_rate_long||0)*100).toFixed(3)}%)</span></td>
-          <td class="num pos"><b>+${diffRate.toFixed(3)}%</b></td>
-          <td class="num purple"><b>+${apr.toFixed(1)}%</b></td>
-          <td class="num">$${(p.size_usdt||10).toFixed(0)} <span class="muted" style="font-size:11px;">(залог $1)</span></td>
-          <td class="num"><b>${p.funding_payments_count || 0}</b></td>
-          <td class="num yellow"><span style="font-family:monospace; font-size:13px; font-weight:600;">⏱ ${nextTimer}</span></td>
-          <td class="num pos"><b>+$${accrued.toFixed(4)}</b></td>
-          <td class="num ${cls(p.cur_spread_pct)}">${curSp}</td>
-          <td class="num ${uCls}"><b>${uTxt}</b></td>
-          <td class="num">${fmtDur(p.holding_seconds)}</td>
-          <td class="muted">${(p.trade_id || '').slice(0, 8)}</td>
-        </tr>`;
-      }).join('');
-    }
-  }
-
-  // 3b. Render Closed Funding Trades
-  const closedFunding = (snapshot.closed_trades || []).filter(t => t.strategy === 'funding');
-  const fClosedCountEl = document.getElementById('fundingClosedCount');
-  if (fClosedCountEl) {
-    fClosedCountEl.textContent = `Закрыто: ${closedFunding.length} связок`;
-  }
-  const fTradesBody = document.getElementById('fundingTradesBody');
-  if (fTradesBody) {
-    if (!closedFunding.length) {
-      fTradesBody.innerHTML = `<tr><td colspan="11" class="empty">Пока нет закрытых связок по фандингу. Связки удерживаются до 72 часов (9 выплат) либо закрываются при инверсии ставок.</td></tr>`;
-    } else {
-      fTradesBody.innerHTML = closedFunding.map(t => {
-        const pnl = t.realized_pnl_usdt ?? 0;
-        const pnlCls = pnl > 0 ? 'pos' : pnl < 0 ? 'neg' : '';
-        const pnlSign = pnl > 0 ? '+' : '';
-        const closeTime = fmtDateTime(t.close_ts);
-        const dur = fmtDur(t.holding_seconds || 0);
-        const exS = t.exch_short || '—';
-        const exL = t.exch_long || '—';
-        const sz = (t.size_usdt != null && t.size_usdt > 0) ? ('$' + Number(t.size_usdt).toFixed(2)) : '$10.00';
-        const fundEarned = t.funding_usdt != null ? (t.funding_usdt >= 0 ? '+' : '') + '$' + t.funding_usdt.toFixed(4) : '$0.0000';
-        const fees = t.fees_usdt != null ? `-$${Math.abs(t.fees_usdt).toFixed(2)}` : '—';
-        return `<tr>
-          <td class="muted">${closeTime}</td>
-          <td class="sym">${esc(t.symbol)}</td>
-          <td class="ex">${esc(exS)}</td>
-          <td class="ex">${esc(exL)}</td>
-          <td class="num">${sz}</td>
-          <td class="num">${dur}</td>
-          <td class="num"><b>${t.funding_payments_count || 0}</b></td>
-          <td class="num pos"><b>${fundEarned}</b></td>
-          <td class="num neg">${fees}</td>
-          <td class="num ${pnlCls}"><b>${pnlSign}${pnl.toFixed(2)}</b></td>
-          <td><span class="muted">${esc(t.reason || 'close')}</span></td>
-        </tr>`;
-      }).join('');
-    }
-  }
-
-  // 4. Render Funding Opportunities Table
-  const filterQ = (document.getElementById('fundingFilter')?.value || '').trim().toLowerCase();
-  const minDelta = parseFloat(document.getElementById('fundingMinDelta')?.value || '0.0');
-  const safeSpread = document.getElementById('fundingSafeSpread')?.checked;
-  const onlySignals = document.getElementById('fundingOnlySignals')?.checked;
-
-  let filteredOpps = opps.slice();
-  if (filterQ) {
-    filteredOpps = filteredOpps.filter(o => 
-      o.symbol.toLowerCase().includes(filterQ) ||
-      o.base.toLowerCase().includes(filterQ) ||
-      o.exch_short.toLowerCase().includes(filterQ) ||
-      o.exch_long.toLowerCase().includes(filterQ)
-    );
-  }
-  if (minDelta > 0) {
-    filteredOpps = filteredOpps.filter(o => o.diff_8h_pct >= minDelta);
-  }
-  if (safeSpread) {
-    filteredOpps = filteredOpps.filter(o => Math.abs(o.raw_spread_pct) <= 0.20);
-  }
-  if (onlySignals) {
-    filteredOpps = filteredOpps.filter(o => o.passed);
-  }
-
-  const oppsCountEl = document.getElementById('fundingOppsCount');
-  if (oppsCountEl) {
-    oppsCountEl.textContent = `Отображается: ${filteredOpps.length} из ${opps.length} связок`;
-  }
-
-  const fOppsBody = document.getElementById('fundingOppsBody');
-  if (fOppsBody) {
-    if (!filteredOpps.length) {
-      fOppsBody.innerHTML = `<tr><td colspan="9" class="empty">Нет возможностей арбитража фандинга по заданным фильтрам</td></tr>`;
-    } else {
-      fOppsBody.innerHTML = filteredOpps.map(o => {
-        let statusBadge = '<span class="badge no">WATCH</span>';
-        if (o.is_open) {
-          statusBadge = '<span class="badge funding-open">В ПОЗИЦИИ</span>';
-        } else if (o.passed) {
-          statusBadge = '<span class="badge funding-sig">⚡ СИГНАЛ</span>';
-        }
-        const net3dCls = o.net_3d_usdt > 0 ? 'pos' : (o.net_3d_usdt < 0 ? 'neg' : 'muted');
-
-        return `<tr>
-          <td class="sym">${esc(o.symbol)}</td>
-          <td class="ex">${esc(o.exch_short)} <span class="muted" style="font-size:11px;">(${o.rate_short_8h_pct >= 0 ? '+' : ''}${o.rate_short_8h_pct.toFixed(3)}%)</span></td>
-          <td class="ex">${esc(o.exch_long)} <span class="muted" style="font-size:11px;">(${o.rate_long_8h_pct >= 0 ? '+' : ''}${o.rate_long_8h_pct.toFixed(3)}%)</span></td>
-          <td class="num pos"><b>+${o.diff_8h_pct.toFixed(3)}%</b></td>
-          <td class="num purple"><b>+${o.apr_pct.toFixed(1)}%</b></td>
-          <td class="num ${cls(o.raw_spread_pct)}">${o.raw_spread_pct >= 0 ? '+' : ''}${o.raw_spread_pct.toFixed(3)}%</td>
-          <td class="num pos">+$${o.inc_8h_usdt.toFixed(4)}</td>
-          <td class="num ${net3dCls}"><b>${o.net_3d_usdt >= 0 ? '+' : ''}$${o.net_3d_usdt.toFixed(4)}</b> <span class="muted" style="font-size:11px;">(+${((o.net_3d_usdt/1.0)*100).toFixed(0)}% к марже $1)</span></td>
-          <td>${statusBadge}</td>
-        </tr>`;
-      }).join('');
-    }
-  }
-
-  // 5. Render Heatmap Matrix
-  renderFundingMatrix();
-}
-
-function renderFundingMatrix() {
-  if (!snapshot) return;
-  const fData = snapshot.funding_arb || {};
-  const matrix = fData.matrix || [];
-  const q = (document.getElementById('matrixFilter')?.value || '').trim().toLowerCase();
-
-  let filtered = matrix.slice();
-  if (q) {
-    filtered = filtered.filter(m => m.symbol.toLowerCase().includes(q) || m.base.toLowerCase().includes(q));
-  }
-
-  const mCountEl = document.getElementById('matrixCount');
-  if (mCountEl) {
-    mCountEl.textContent = `Монет в матрице: ${filtered.length} из ${matrix.length}`;
-  }
-
-  const mb = document.getElementById('matrixBody');
-  if (!mb) return;
-  if (!filtered.length) {
-    mb.innerHTML = `<tr><td colspan="12" class="empty">Монеты не найдены</td></tr>`;
-    return;
-  }
-
-  const exchangesList = ['bitget', 'bingx', 'mexc', 'okx', 'bybit', 'gateio', 'binance', 'kucoin', 'htx'];
-
-  mb.innerHTML = filtered.map(m => {
-    const exTds = exchangesList.map(ex => {
-      const r = m.rates ? m.rates[ex] : undefined;
-      if (r === undefined) return '<td class="muted" style="text-align:center;">—</td>';
-      let cClass = 'heat-zero';
-      if (r >= 0.05) cClass = 'heat-high';
-      else if (r > 0.01) cClass = 'heat-pos';
-      else if (r < 0) cClass = 'heat-neg';
-      return `<td><span class="heat-cell ${cClass}">${r >= 0 ? '+' : ''}${r.toFixed(3)}%</span></td>`;
-    }).join('');
-
-    return `<tr>
-      <td class="sym">${esc(m.symbol)}</td>
-      <td><b>${esc(m.base)}</b></td>
-      ${exTds}
-      <td class="num pos"><b>+${m.delta.toFixed(3)}%</b></td>
-    </tr>`;
-  }).join('');
-}
-
-function sortCoins(key) {
-  if (coinSortKey === key) {
-    coinSortAsc = !coinSortAsc;
-  } else {
-    coinSortKey = key;
-    coinSortAsc = true;
-  }
-  renderCoins();
-}
-
-function renderCoins() {
-  if (!snapshot) return;
-  const coins = snapshot.arbitrage_coins || [];
-  const q = (document.getElementById('coinFilter')?.value || '').trim().toLowerCase();
-  const onlySig = document.getElementById('onlyCoinSignals')?.checked;
-
-  let filtered = coins.slice();
-  if (q) {
-    filtered = filtered.filter(c => 
-      c.symbol.toLowerCase().includes(q) ||
-      c.base.toLowerCase().includes(q) ||
-      (c.exchanges || []).some(e => e.toLowerCase().includes(q))
-    );
-  }
-  if (onlySig) {
-    filtered = filtered.filter(c => c.status === 'SIGNAL');
-  }
-
-  // Update sort indicators
-  ['symbol', 'base', 'exchanges', 'pairs_count', 'max_abs_z', 'max_spread_pct', 'status'].forEach(k => {
-    const el = document.getElementById('s-' + k);
-    if (el) el.textContent = (coinSortKey === k) ? (coinSortAsc ? '▲' : '▼') : '⇅';
-  });
-
-  filtered.sort((a, b) => {
-    let va = a[coinSortKey];
-    let vb = b[coinSortKey];
-    if (coinSortKey === 'exchanges') {
-      va = (a.exchanges || []).join(',');
-      vb = (b.exchanges || []).join(',');
-    }
-    if (typeof va === 'string') {
-      return coinSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
-    }
-    return coinSortAsc ? (va - vb) : (vb - va);
-  });
-
-  const sumEl = document.getElementById('coinSummary');
-  if (sumEl) {
-    sumEl.textContent = `Отображается: ${filtered.length} из ${coins.length} монет`;
-  }
-
-  const tb = document.getElementById('coinsBody');
-  if (!filtered.length) {
-    tb.innerHTML = `<tr><td colspan="7" class="empty">Монеты не найдены</td></tr>`;
-    return;
-  }
-
-  tb.innerHTML = filtered.map(c => {
-    const exBadges = (c.exchanges || []).map(e => `<span class="badge" style="background:#21262d;color:var(--blue);margin-right:4px;font-size:11px;">${esc(e.toUpperCase())}</span>`).join('');
-    let statusBadge = '<span class="badge z-norm">ACTIVE</span>';
-    if (c.status === 'SIGNAL') {
-      statusBadge = '<span class="badge z-signal">🔥 SIGNAL</span>';
-    } else if (c.status === 'WATCH') {
-      statusBadge = '<span class="badge z-watch">⚡ WATCH</span>';
-    }
-    const zCls = c.max_abs_z >= 3.5 ? 'pos' : (c.max_abs_z >= 2.5 ? 'purple' : 'muted');
-    return `<tr>
-      <td class="sym">${esc(c.symbol)}</td>
-      <td><b>${esc(c.base)}</b></td>
-      <td>${exBadges}</td>
-      <td class="num">${c.pairs_count}</td>
-      <td class="num ${zCls}"><b>${c.max_abs_z > 0 ? c.max_abs_z.toFixed(2) : '—'}</b></td>
-      <td class="num ${cls(c.max_spread_pct)}">${c.max_spread_pct > 0 ? '+' + c.max_spread_pct.toFixed(3) + '%' : '—'}</td>
-      <td>${statusBadge}</td>
-    </tr>`;
-  }).join('');
-}
-
-function card(label, value, signed, onClick) {
-  let c = '';
-  if (signed === 'purple') c = 'purple';
-  else if (signed === 'yellow') c = 'yellow';
-  else if (signed !== undefined && typeof signed === 'number') c = signed > 0 ? 'pos' : signed < 0 ? 'neg' : '';
-  else if (signed === 'pos') c = 'pos';
-  const clickAttr = onClick ? ` onclick="${onClick}" style="cursor:pointer;" title="Перейти к позиции"` : '';
-  return `<div class="card"${clickAttr}><div class="label">${label}</div><div class="value ${c}">${value}</div></div>`;
-}
-
-// Rules modal
-const modal = document.getElementById('rulesModal');
-document.getElementById('infoBtn').onclick = () => modal.classList.add('open');
-document.getElementById('rulesClose').onclick = () => modal.classList.remove('open');
-modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
-
-connect();
-</script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/strategies/zscore.js"></script>
+<script src="/static/js/strategies/funding.js"></script>
+<script src="/static/js/strategies/cross_coin.js"></script>
+<script src="/static/js/app.js"></script>
 </body>
 </html>

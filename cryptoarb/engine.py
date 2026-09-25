@@ -20,6 +20,7 @@ from .calc import compute_net_edge, NetEdgeResult
 from .connectors import CCXTConnector
 from .market_state import MarketState
 from .risk import simulate_leg_fill
+from .strategies import build_strategies, BaseStrategy
 from .zscore_tracker import ZScoreTracker
 
 log = logging.getLogger("engine")
@@ -135,6 +136,12 @@ class Engine:
         self.last_scan_ts = 0.0
         self._running = False
 
+        # Модульный реестр торговых стратегий (Strategy Pattern)
+        self.strategies = build_strategies(self, cfg)
+        self.z_strat = self.strategies.get("zscore")
+        self.funding_strat = self.strategies.get("funding_arb")
+        self.z_tracker = getattr(self.z_strat, "tracker", None)
+
     def _event(self, level: str, msg: str):
         self.events.appendleft({"ts": time.time(), "level": level, "msg": msg})
 
@@ -165,7 +172,7 @@ class Engine:
         self.state.set_fee_lookup(self._fee_lookup)
         await self._refresh_symbols()
 
-        # Прогрев ZScoreTracker
+        # Прогрев ZScoreTracker и синхронизация свечей
         if self.zscore_enabled:
             try:
                 from .candle_updater import sync_candles
@@ -174,11 +181,13 @@ class Engine:
             except Exception as e:
                 log.warning("Автоматическая проверка свечей пропущена: %s", e)
 
-            try:
-                prewarmed = self.z_tracker.prewarm(self.symbols, self.exchanges, data_dir=Path("data/raw_1m_30d"))
-                self._event("system", f"ZScoreTracker прогрет: {prewarmed} пар")
-            except Exception as e:
-                log.warning("Ошибка прогрева ZScoreTracker: %s", e)
+        # Старт всех модульных стратегий
+        for name, strat in self.strategies.items():
+            if strat.enabled:
+                try:
+                    await strat.start()
+                except Exception as e:
+                    log.warning("Ошибка старта стратегии %s: %s", name, e)
 
         # WS-стримы цен (с супервизором: мёртвый/молчащий стрим перезапускается)
         for name, conn in self.connectors.items():
@@ -194,6 +203,11 @@ class Engine:
 
     async def stop(self):
         self._running = False
+        for strat in self.strategies.values():
+            try:
+                await strat.stop()
+            except Exception:
+                pass
         # финальный сброс скальп-статистики перед остановкой
         if self._scalp_stats:
             try:
@@ -213,9 +227,12 @@ class Engine:
     def _on_price_update(self, exchange: str, symbol: str, bid: float, ask: float,
                           bid_size: float, ask_size: float):
         self.state.update_price(exchange, symbol, bid, ask, bid_size, ask_size)
-        if self.zscore_enabled and bid > 0 and ask > 0:
+        if bid > 0 and ask > 0:
             mid = (bid + ask) / 2.0
-            self.z_tracker.on_tick(symbol, exchange, mid, time.time())
+            now = time.time()
+            for strat in self.strategies.values():
+                if strat.enabled:
+                    strat.on_price_tick(symbol, exchange, mid, now)
 
     # -------------------- symbols --------------------
 
@@ -494,9 +511,9 @@ class Engine:
                 except Exception:
                     pass
             # Периодическое сканирование арбитража фандинга (раз в 10с)
-            if self.funding_arb_enabled and self.last_scan_ts - self._last_funding_scan_ts > 10.0:
+            if self.funding_strat and self.funding_strat.enabled and self.last_scan_ts - self.funding_strat.last_scan_ts > 10.0:
                 try:
-                    await self._scan_funding_arbitrage()
+                    await self.funding_strat.scan_opportunities()
                 except Exception as e:
                     log.warning("Ошибка сканирования фандинг-арбитража: %s", e)
             await asyncio.sleep(max(0.0, self.scan_interval - elapsed))
@@ -509,12 +526,15 @@ class Engine:
             if len(quotes) < 2:
                 continue
 
-            # 1) Проверка выходов по открытым позициям этого символа
-            await self._check_exits(symbol, quotes, now)
+            # 1) Проверка выходов по всем стратегиям
+            for strat in self.strategies.values():
+                if strat.enabled:
+                    await strat.check_exits(symbol, quotes, now)
 
-            # 2) Проверка Z-Score арбитража (основная стратегия)
-            if self.zscore_enabled:
-                await self._scan_zscore_symbol(symbol, quotes, now)
+            # 2) Сканирование точек входа по всем стратегиям
+            for strat in self.strategies.values():
+                if strat.enabled:
+                    await strat.on_scan_symbol(symbol, quotes, now)
 
             # 3) Быстрый предфильтр: лучшая пара по сырому спреду (legacy скальп/dir)
             if not (self.scalp_enabled or self.dir_enabled):
@@ -1283,99 +1303,7 @@ class Engine:
                 payment_8h_dripping_sum += inc_8h_pos
                 daily_dripping_sum += inc_8h_pos * 3.0
 
-        # Сбор фандинга: сканирование возможностей и тепловой матрицы
-        funding_opps = []
-        funding_matrix: dict[str, dict] = {}
-
-        for sym in self.symbols:
-            quotes = self.state.fresh_quotes(sym, self.exchanges)
-            for ex, q in quotes.items():
-                if q.funding_rate is not None:
-                    funding_matrix.setdefault(sym, {})[ex] = round(q.funding_rate * 100.0, 4)
-
-            if len(quotes) < 2:
-                continue
-
-            for (e1, q1), (e2, q2) in itertools.combinations(quotes.items(), 2):
-                if q1.funding_rate is None or q2.funding_rate is None:
-                    continue
-                if q1.funding_rate >= q2.funding_rate:
-                    es, el = e1, e2
-                    qs, ql = q1, q2
-                else:
-                    es, el = e2, e1
-                    qs, ql = q2, q1
-
-                diff_8h_pct = (qs.funding_rate - ql.funding_rate) * 100.0
-                apr_pct = diff_8h_pct * 3 * 365.0
-                raw_spread = (qs.best_bid - ql.best_ask) / ql.best_ask * 100.0 if ql.best_ask > 0 else 0.0
-
-                pos_size = self.funding_position_size
-                inc_8h = pos_size * (diff_8h_pct / 100.0)
-                inc_24h = inc_8h * 3.0
-                inc_3d = inc_8h * 9.0
-                fees_4x = (ql.taker_fee + qs.taker_fee) * 2 * pos_size
-                net_3d = inc_3d - fees_4x
-
-                is_open = any(p.get("symbol") == sym and p.get("exch_short") == es and p.get("exch_long") == el and p.get("strategy") == "funding" for p in positions)
-
-                funding_opps.append({
-                    "symbol": sym,
-                    "base": sym.split("/")[0],
-                    "exch_short": es,
-                    "exch_long": el,
-                    "rate_short_8h_pct": round(qs.funding_rate * 100.0, 4),
-                    "rate_long_8h_pct": round(ql.funding_rate * 100.0, 4),
-                    "diff_8h_pct": round(diff_8h_pct, 4),
-                    "apr_pct": round(apr_pct, 1),
-                    "raw_spread_pct": round(raw_spread, 3),
-                    "inc_8h_usdt": round(inc_8h, 4),
-                    "inc_24h_usdt": round(inc_24h, 4),
-                    "inc_3d_usdt": round(inc_3d, 4),
-                    "net_3d_usdt": round(net_3d, 4),
-                    "is_open": is_open,
-                    "passed": diff_8h_pct >= self.funding_min_diff_8h_pct and abs(raw_spread) <= self.funding_max_raw_spread_pct,
-                })
-
-        funding_opps.sort(key=lambda x: x["diff_8h_pct"], reverse=True)
-
-        matrix_rows = []
-        for sym, rates in funding_matrix.items():
-            if len(rates) >= 2:
-                vals = list(rates.values())
-                delta = max(vals) - min(vals)
-                matrix_rows.append({
-                    "symbol": sym,
-                    "base": sym.split("/")[0],
-                    "rates": rates,
-                    "max_rate": max(vals),
-                    "min_rate": min(vals),
-                    "delta": round(delta, 4),
-                })
-        matrix_rows.sort(key=lambda x: x["delta"], reverse=True)
-
-        closed_funding_trades = emu_stats.get("funding", {}).get("closed", 0)
-        closed_funding_pnl = emu_stats.get("funding", {}).get("pnl_usdt", 0.0)
-        closed_funding_funding_usdt = emu_stats.get("funding", {}).get("funding_usdt", 0.0)
-        total_funding_earned_usdt = closed_funding_funding_usdt + total_open_funding_accrued
-        funding_wr = round(emu_stats.get("funding", {}).get("wins", 0) / closed_funding_trades * 100.0, 1) if closed_funding_trades else 0.0
-
-        funding_kpi = {
-            "total_funding_earned_usdt": round(total_funding_earned_usdt, 4),
-            "daily_dripping_income_usdt": round(daily_dripping_sum, 4),
-            "payment_8h_dripping_income_usdt": round(payment_8h_dripping_sum, 4),
-            "open_positions_count": n_funding,
-            "open_margin_usdt": round(n_funding * (self.funding_position_size / 10.0), 2),
-            "open_notional_usdt": round(n_funding * self.funding_position_size, 2),
-            "closed_trades_count": closed_funding_trades,
-            "win_rate_pct": funding_wr,
-            "closed_pnl_usdt": round(closed_funding_pnl, 4),
-            "best_opportunity": funding_opps[0] if funding_opps else None,
-            "min_diff_8h_pct": self.funding_min_diff_8h_pct,
-            "max_raw_spread_pct": self.funding_max_raw_spread_pct,
-            "position_size_usdt": self.funding_position_size,
-        }
-
+        # Срезы фандинга и Z-Score формируются модульными стратегиями
         fresh_counts = self.state.fresh_count_by_exchange(self.exchanges)
 
         return {
@@ -1389,21 +1317,9 @@ class Engine:
             ],
             "symbols_total": len(self.symbols),
             "min_threshold_pct": self.min_threshold,
-            "zscore": {
-                "enabled": self.zscore_enabled,
-                "entry_z": self.entry_z,
-                "exit_z": self.exit_z,
-                "timestop_sec": self.timestop_sec,
-                "min_profit_margin_pct": self.min_profit_margin_pct,
-                "max_abs_z": round(max_abs_z, 2),
-                "max_z_info": max_z_info,
-                "radar": z_radar[:60],
-            },
-            "funding_arb": {
-                "kpi": funding_kpi,
-                "opportunities": funding_opps[:100],
-                "matrix": matrix_rows[:150],
-            },
+            "zscore": self.z_strat.snapshot() if self.z_strat else {},
+            "funding_arb": self.funding_strat.snapshot() if self.funding_strat else {},
+            "cross_coin": self.strategies["cross_coin"].snapshot() if "cross_coin" in self.strategies else {},
             "spreads": spreads[:60],
             "positions": positions,
             "closed_trades": self.emulator.closed_trades_snapshot()[:100],
