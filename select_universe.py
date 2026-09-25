@@ -21,9 +21,10 @@ from cryptoarb.backtest.universe import fetch_perp_symbols, fetch_volumes
 
 def select_universe(
     exchanges: list[str],
-    top_n: int = 100,
+    top_n: int = 150,
     min_volume: float = 100_000.0,
-    max_volume: float = 10_000_000.0,
+    max_volume: float = 50_000_000.0,
+    exclude_symbols: list[str] | None = None,
     output_file: Path | str = "output/top40_4ex.txt",
 ) -> list[tuple[str, float]]:
     log.info("Загрузка активных контрактов с бирж: %s...", exchanges)
@@ -57,8 +58,14 @@ def select_universe(
                 log.error("[%s] Ошибка получения объемов: %s", ex, e)
                 vols_by_ex[ex] = {}
 
+    exclude_set = {x.strip().upper() for x in (exclude_symbols or []) if x.strip()}
+
     candidates: list[tuple[str, float, list[float]]] = []
     for s in common_symbols:
+        s_upper = s.upper()
+        base = s.split("/")[0].upper()
+        if s_upper in exclude_set or base in exclude_set or f"{base}/USDT:USDT" in exclude_set:
+            continue
         vs = [vols_by_ex[ex].get(s, 0.0) for ex in exchanges if vols_by_ex[ex].get(s, 0.0) > 0]
         if len(vs) < len(exchanges):
             continue
@@ -83,20 +90,23 @@ def select_universe(
 
 def main():
     parser = argparse.ArgumentParser(description="Отбор топа монет для арбитража")
-    parser.add_argument("--top", type=int, default=100, help="Количество монет (по умолчанию 100)")
+    parser.add_argument("--top", type=int, default=150, help="Количество монет (по умолчанию 150)")
     parser.add_argument("--min-vol", type=float, default=100_000, help="Мин. суточный объем USDT (по умолчанию 100000)")
-    parser.add_argument("--max-vol", type=float, default=10_000_000, help="Макс. суточный объем USDT (по умолчанию 10000000)")
+    parser.add_argument("--max-vol", type=float, default=50_000_000, help="Макс. суточный объем USDT (по умолчанию 50000000)")
+    parser.add_argument("--exclude", type=str, default="BTC/USDT:USDT,ETH/USDT:USDT,SOL/USDT:USDT", help="Символы или базы для исключения через запятую")
     parser.add_argument("--exchanges", type=str, default="okx,bitget,mexc,bingx", help="Список бирж через запятую")
     parser.add_argument("--output", type=str, default="output/top40_4ex.txt", help="Путь к файлу со списком")
 
     args = parser.parse_args()
     exchanges = [e.strip() for e in args.exchanges.split(",") if e.strip()]
+    exclude_list = [e.strip() for e in args.exclude.split(",") if e.strip()]
 
     selected = select_universe(
         exchanges=exchanges,
         top_n=args.top,
         min_volume=args.min_vol,
         max_volume=args.max_vol,
+        exclude_symbols=exclude_list,
         output_file=args.output,
     )
 

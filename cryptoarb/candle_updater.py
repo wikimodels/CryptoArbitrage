@@ -183,17 +183,12 @@ def sync_candles(symbols: list[str] | None = None,
     newest_ts = get_newest_archive_ts(p_dir, target_exs)
     gap_minutes = (now_ms - newest_ts) / (60 * 1000) if newest_ts > 0 else 999999
 
-    if not force and newest_ts > 0 and gap_minutes < max_gap_minutes:
-        log.info("Архив 1m свечей свежий (отставание %.1f мин < %d мин) — мгновенный старт",
-                 gap_minutes, max_gap_minutes)
-        return False
-
     # Загружаем целевые символы (из файла top-40 или переданного списка)
     top_path = Path(top40_file)
     if top_path.exists():
         target_symbols = [l.strip() for l in open(top_path, encoding="utf-8") if l.strip()]
     elif symbols:
-        target_symbols = list(symbols)[:40]
+        target_symbols = list(symbols)
     else:
         target_symbols = []
 
@@ -201,8 +196,24 @@ def sync_candles(symbols: list[str] | None = None,
         log.warning("Список символов для синхронизации свечей пуст")
         return False
 
-    log.info("Архив 1m свечей отстает на %.1f мин (порог %d мин). Автоматическая докачка...",
-             gap_minutes, max_gap_minutes)
+    # Проверяем, есть ли монеты, для которых архивов еще нет
+    missing_files = False
+    for ex in target_exs:
+        for sym in target_symbols:
+            safe = sym.replace("/", "_").replace(":", "_")
+            if not (p_dir / ex / safe / "candles.parquet").exists():
+                missing_files = True
+                break
+        if missing_files:
+            break
+
+    if not force and not missing_files and newest_ts > 0 and gap_minutes < max_gap_minutes:
+        log.info("Архив 1m свечей свежий (отставание %.1f мин < %d мин, все файлы на месте) — мгновенный старт",
+                 gap_minutes, max_gap_minutes)
+        return False
+
+    log.info("Синхронизация свечей (отставание %.1f мин, новые монеты: %s). Автоматическая докачка...",
+             gap_minutes, missing_files)
     t0 = time.time()
 
     with ThreadPoolExecutor(max_workers=len(target_exs)) as executor:

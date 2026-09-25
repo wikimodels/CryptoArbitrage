@@ -1,7 +1,7 @@
 {
-  "generated_ts": 1790331598.362422,
+  "generated_ts": 1790337018.37211,
   "min_common_exchanges": 2,
-  "total_symbols": 996,
+  "total_symbols": 993,
   "symbols": [
     {
       "symbol": "0G/USDT:USDT",
@@ -2197,21 +2197,6 @@
       "n_exchanges": 7
     },
     {
-      "symbol": "BTC/USDT:USDT",
-      "exchanges": [
-        "binance",
-        "bingx",
-        "bitget",
-        "bybit",
-        "gateio",
-        "htx",
-        "kucoin",
-        "mexc",
-        "okx"
-      ],
-      "n_exchanges": 9
-    },
-    {
       "symbol": "BTR/USDT:USDT",
       "exchanges": [
         "binance",
@@ -3718,21 +3703,6 @@
     },
     {
       "symbol": "ETC/USDT:USDT",
-      "exchanges": [
-        "binance",
-        "bingx",
-        "bitget",
-        "bybit",
-        "gateio",
-        "htx",
-        "kucoin",
-        "mexc",
-        "okx"
-      ],
-      "n_exchanges": 9
-    },
-    {
-      "symbol": "ETH/USDT:USDT",
       "exchanges": [
         "binance",
         "bingx",
@@ -9287,21 +9257,6 @@
       "n_exchanges": 4
     },
     {
-      "symbol": "SOL/USDT:USDT",
-      "exchanges": [
-        "binance",
-        "bingx",
-        "bitget",
-        "bybit",
-        "gateio",
-        "htx",
-        "kucoin",
-        "mexc",
-        "okx"
-      ],
-      "n_exchanges": 9
-    },
-    {
       "symbol": "SOLAYER/USDT:USDT",
       "exchanges": [
         "bybit",
@@ -11795,14 +11750,14 @@
     }
   ],
   "coverage": {
-    "bybit": 753,
-    "okx": 472,
-    "gateio": 863,
-    "binance": 722,
-    "bitget": 754,
-    "mexc": 691,
-    "kucoin": 667,
-    "htx": 345,
-    "bingx": 547
+    "bybit": 750,
+    "okx": 469,
+    "gateio": 860,
+    "binance": 719,
+    "bitget": 751,
+    "mexc": 688,
+    "kucoin": 664,
+    "htx": 342,
+    "bingx": 544
   }
 }
