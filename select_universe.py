@@ -26,7 +26,7 @@ def select_universe(
     max_volume: float = 50_000_000.0,
     min_common_exchanges: int = 3,
     exclude_symbols: list[str] | None = None,
-    output_file: Path | str = "output/top40_4ex.txt",
+    output_file: Path | str = "output/top.txt",
 ) -> list[tuple[str, float]]:
     log.info("Загрузка активных контрактов с бирж: %s...", exchanges)
     symbols_by_ex: dict[str, set[str]] = {}
@@ -103,7 +103,7 @@ def main():
     parser.add_argument("--max-vol", type=float, default=50_000_000, help="Макс. суточный объем USDT (по умолчанию 50000000)")
     parser.add_argument("--exclude", type=str, default="BTC/USDT:USDT,ETH/USDT:USDT,SOL/USDT:USDT", help="Символы или базы для исключения через запятую")
     parser.add_argument("--exchanges", type=str, default="okx,bitget,mexc,bingx", help="Список бирж через запятую")
-    parser.add_argument("--output", type=str, default="output/top40_4ex.txt", help="Путь к файлу со списком")
+    parser.add_argument("--output", type=str, default="output/top.txt", help="Путь к файлу со списком")
 
     args = parser.parse_args()
     exchanges = [e.strip() for e in args.exchanges.split(",") if e.strip()]

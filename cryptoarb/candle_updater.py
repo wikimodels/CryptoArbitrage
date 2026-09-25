@@ -26,7 +26,8 @@ from cryptoarb.connectors.ccxt_connector import CCXT_ID_MAP
 log = logging.getLogger("candles")
 
 DEFAULT_ROOT = Path("data/raw_1m_30d")
-DEFAULT_TOP40 = Path("output/top40_4ex.txt")
+DEFAULT_TOP = Path("output/top.txt")
+DEFAULT_TOP40 = DEFAULT_TOP if DEFAULT_TOP.exists() else Path("output/top40_4ex.txt")
 DEFAULT_EXCHANGES = ["okx", "bitget", "mexc", "bingx"]
 
 

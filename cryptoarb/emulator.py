@@ -77,10 +77,10 @@ class Emulator:
         self.open_positions: dict[str, VirtualPosition] = {}
         self._last_open: dict[tuple[str, str, str], float] = {}
         self._last_loss: dict[tuple[str, str, str], float] = {}
-        # stats раздельные: arb / scalp / dir — каждая стратегия своя
+        # stats раздельные: arb / scalp / dir / funding — каждая стратегия своя
         self.stats: Dict[str, dict] = {"arb": self._new_stats(), "arb_z4": self._new_stats(),
                                        "arb_z35": self._new_stats(), "scalp": self._new_stats(),
-                                       "dir": self._new_stats()}
+                                       "dir": self._new_stats(), "funding": self._new_stats()}
         if storage is not None and hasattr(storage, "get_emulator_stats"):
             loaded_stats = storage.get_emulator_stats()
             for strat, st in loaded_stats.items():
@@ -263,6 +263,8 @@ class Emulator:
         начисление (старое поведение, помечено как приближение)."""
         interval_sec = max(interval_h, 1e-6) * 3600.0
         if next_ts and next_ts > 0:
+            if next_ts > 1e11:
+                next_ts /= 1000.0
             if close_ts <= next_ts:
                 return 0.0
             return float(int((close_ts - next_ts) // interval_sec) + 1)

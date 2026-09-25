@@ -254,7 +254,6 @@ class CCXTConnector(ExchangeConnector):
 
         await asyncio.gather(*(one(s) for s in symbols))
         return out
-
     @staticmethod
     def _parse_funding(fr: dict) -> tuple[float, float, Optional[float]]:
         rate = float(fr.get("fundingRate") or 0.0)
@@ -274,7 +273,10 @@ class CCXTConnector(ExchangeConnector):
                     interval_h = float(s)
             except Exception:
                 pass
-        return (rate, interval_h, float(next_ts) if next_ts else None)
+        ts_val = float(next_ts) if next_ts else None
+        if ts_val and ts_val > 1e11:
+            ts_val /= 1000.0
+        return (rate, interval_h, ts_val)
 
     # -------------------- ORDER BOOK (REST on demand) --------------------
 

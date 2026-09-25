@@ -103,6 +103,16 @@ class Engine:
         self._last_scalp_persist = 0.0
         # открытые спайки: (symbol, pair) -> (ts, spread) — ждут сходимости
         self._open_spikes: Dict[tuple[str, tuple[str, str]], tuple[float, float]] = {}
+
+        # ---- Сбор фандинга (Funding Arbitrage) ----
+        fa = cfg.get("funding_arb", {})
+        self.funding_arb_enabled = bool(fa.get("enabled", True))
+        self.funding_min_diff_8h_pct = float(fa.get("min_funding_diff_8h_pct", 0.08))
+        self.funding_max_raw_spread_pct = float(fa.get("max_raw_spread_pct", 0.20))
+        self.funding_position_size = float(fa.get("position_size_usdt", 10.0))
+        self.funding_max_hold_hours = float(fa.get("max_holding_hours", 72.0))
+        self.funding_spread_stop_pct = float(fa.get("spread_stop_pct", 2.0))
+        self._last_funding_scan_ts = 0.0
         # персистентность: подхватываем накопленную статистику из SQLite
         if storage is not None:
             loaded = storage.load_scalp_stats()
@@ -377,7 +387,77 @@ class Engine:
                     self.state.update_funding(name, mapping)
                 except Exception as e:
                     self.loggers.errors.write({"event": "funding_refresh_failed", "exchange": name, "error": str(e)})
+            if self.funding_arb_enabled:
+                try:
+                    await self._scan_funding_arbitrage()
+                except Exception as e:
+                    log.warning("Ошибка сканирования фандинг-арбитража: %s", e)
             await asyncio.sleep(interval)
+
+    async def _scan_funding_arbitrage(self):
+        if not self.funding_arb_enabled or not self.emulator_enabled:
+            return
+        now = time.time()
+        self._last_funding_scan_ts = now
+
+        for sym in self.symbols:
+            quotes = self.state.fresh_quotes(sym, self.exchanges)
+            if len(quotes) < 2:
+                continue
+
+            for (e1, q1), (e2, q2) in itertools.combinations(quotes.items(), 2):
+                if q1.funding_rate is None or q2.funding_rate is None:
+                    continue
+
+                if q1.funding_rate >= q2.funding_rate:
+                    ex_short, q_short = e1, q1
+                    ex_long, q_long = e2, q2
+                else:
+                    ex_short, q_short = e2, q2
+                    ex_long, q_long = e1, q1
+
+                rate_diff_8h_pct = (q_short.funding_rate - q_long.funding_rate) * 100.0
+                if rate_diff_8h_pct < self.funding_min_diff_8h_pct:
+                    continue
+
+                if q_long.best_ask <= 0 or q_short.best_bid <= 0:
+                    continue
+                raw_spread_pct = (q_short.best_bid - q_long.best_ask) / q_long.best_ask * 100.0
+                if abs(raw_spread_pct) > self.funding_max_raw_spread_pct:
+                    continue
+
+                key = (sym, ex_long, ex_short)
+                if self.emulator._cooldown_active(key, now):
+                    continue
+
+                ob_long = await self._get_ob(ex_long, sym)
+                ob_short = await self._get_ob(ex_short, sym)
+                if not ob_long or not ob_short:
+                    continue
+
+                fill_long = simulate_leg_fill(ob_long, "buy", self.funding_position_size)
+                fill_short = simulate_leg_fill(ob_short, "sell", self.funding_position_size)
+                if not (fill_long.filled and fill_short.filled):
+                    continue
+
+                fee_pct = (q_long.taker_fee + q_short.taker_fee) * 2 * 100.0
+                res = NetEdgeResult(
+                    symbol=sym, exch_long=ex_long, exch_short=ex_short,
+                    raw_spread_pct=raw_spread_pct, funding_edge_pct=rate_diff_8h_pct,
+                    fees_pct=fee_pct, slippage_pct=0.0, width_pct=0.0,
+                    net_edge_pct=rate_diff_8h_pct, passed_threshold=True,
+                )
+
+                opened = self.emulator.try_open(
+                    res, q_long, q_short, ob_long, ob_short,
+                    strategy="funding", size_usdt=self.funding_position_size,
+                )
+                if opened:
+                    self._event(
+                        "signal",
+                        f"💰 СБОР ФАНДИНГА: {sym} SHORT {ex_short} ({q_short.funding_rate*100:+.3f}%) / "
+                        f"LONG {ex_long} ({q_long.funding_rate*100:+.3f}%) Δ={rate_diff_8h_pct:+.3f}% (8ч) | ${self.funding_position_size:.0f} поз."
+                    )
 
     # -------------------- order book (cached) --------------------
 
@@ -413,6 +493,12 @@ class Engine:
                     self.storage.save_scalp_stats(self._scalp_stats)
                 except Exception:
                     pass
+            # Периодическое сканирование арбитража фандинга (раз в 10с)
+            if self.funding_arb_enabled and self.last_scan_ts - self._last_funding_scan_ts > 10.0:
+                try:
+                    await self._scan_funding_arbitrage()
+                except Exception as e:
+                    log.warning("Ошибка сканирования фандинг-арбитража: %s", e)
             await asyncio.sleep(max(0.0, self.scan_interval - elapsed))
 
     async def _scan_once(self):
@@ -908,6 +994,43 @@ class Engine:
                                                 0.0, reason="scalp_timeout", ob_long=ob_l, ob_short=ob_s)
                     continue
 
+            # ---- СБОР ФАНДИНГА: удержание 72ч / инверсия ставок / стоп-лосс спреда ----
+            if strategy == "funding":
+                hold_hours = (now - pos.open_ts) / 3600.0
+                ql = quotes.get(pos.exch_long)
+                qs = quotes.get(pos.exch_short)
+
+                # 1. Завершение планового горизонта удержания (по умолчанию 72ч = 9 начислений)
+                if hold_hours >= self.funding_max_hold_hours:
+                    if ql and qs:
+                        ob_l = await self._get_ob(pos.exch_long, symbol)
+                        ob_s = await self._get_ob(pos.exch_short, symbol)
+                        self.emulator.try_close(trade_id, ql, qs, 0.0,
+                                                reason="funding_max_hold", ob_long=ob_l, ob_short=ob_s)
+                    continue
+
+                if not ql or not qs:
+                    continue
+
+                # 2. Инверсия ставок фандинга: ставка на шорте упала ниже лонга
+                if qs.funding_rate < ql.funding_rate:
+                    ob_l = await self._get_ob(pos.exch_long, symbol)
+                    ob_s = await self._get_ob(pos.exch_short, symbol)
+                    self.emulator.try_close(trade_id, ql, qs, 0.0,
+                                            reason="funding_flipped", ob_long=ob_l, ob_short=ob_s)
+                    continue
+
+                # 3. Защитный стоп-лосс при сильной раздвижке спреда (> 2.0%)
+                if ql.best_ask > 0:
+                    spread_now = abs((qs.best_bid - ql.best_ask) / ql.best_ask * 100.0)
+                    if spread_now > self.funding_spread_stop_pct:
+                        ob_l = await self._get_ob(pos.exch_long, symbol)
+                        ob_s = await self._get_ob(pos.exch_short, symbol)
+                        self.emulator.try_close(trade_id, ql, qs, spread_now,
+                                                reason="funding_spread_stop", ob_long=ob_l, ob_short=ob_s)
+                        continue
+                continue
+
             # ---- ПОЗИЦИОННЫЙ Z-SCORE АРБИТРАЖ: ждём РЕАЛЬНО прибыльного закрытия ----
             hold_sec = now - pos.open_ts
             if hold_sec / 3600.0 >= self.max_holding_h:
@@ -1028,6 +1151,7 @@ class Engine:
         n_arb = sum(1 for p in positions if p.get("strategy") == "arb")
         n_scalp = sum(1 for p in positions if p.get("strategy") == "scalp")
         n_dir = sum(1 for p in positions if p.get("strategy") == "dir")
+        n_funding = sum(1 for p in positions if p.get("strategy") == "funding")
 
         # Z-Score Радар и список монет для дашборда
         z_radar = []
@@ -1103,13 +1227,20 @@ class Engine:
             })
         arbitrage_coins.sort(key=lambda x: x["symbol"])
 
-        # mark-to-market по открытым позициям: сколько было бы PnL,
-        # если закрыть прямо сейчас по лучшим ценам (без walk-book)
+        # mark-to-market по открытым позициям + капающий фандинг
+        total_open_funding_accrued = 0.0
+        daily_dripping_sum = 0.0
+        payment_8h_dripping_sum = 0.0
+
         for p in positions:
             p["z_in"] = round(float(p.get("z_in") or 0.0), 2)
             p["cur_z"] = None
             p["cur_spread_pct"] = None
             p["unrealized_pnl_usdt"] = None
+            p["funding_payments_count"] = 0
+            p["funding_accrued_usdt"] = 0.0
+            p["next_payment_in_sec"] = None
+
             q = self.state.fresh_quotes(p["symbol"], self.exchanges)
             ql = q.get(p["exch_long"])
             qs = q.get(p["exch_short"])
@@ -1136,6 +1267,114 @@ class Engine:
             p["cur_spread_pct"] = round(cur, 3)
             p["unrealized_pnl_usdt"] = round(
                 price_pnl - p["entry_fees_usdt"] - exit_fees + funding, 2)
+            p["funding_payments_count"] = int(max(n_s, n_l))
+            p["funding_accrued_usdt"] = round(funding, 4)
+
+            next_ts = p.get("next_funding_ts_short") or p.get("next_funding_ts_long")
+            if next_ts:
+                if next_ts > 1e11:
+                    next_ts /= 1000.0
+                p["next_payment_in_sec"] = max(0, int(next_ts - now))
+
+            if p.get("strategy") == "funding":
+                total_open_funding_accrued += funding
+                diff_pct = (p.get("funding_rate_short", 0.0) - p.get("funding_rate_long", 0.0)) * 100.0
+                inc_8h_pos = p["size_usdt"] * (diff_pct / 100.0)
+                payment_8h_dripping_sum += inc_8h_pos
+                daily_dripping_sum += inc_8h_pos * 3.0
+
+        # Сбор фандинга: сканирование возможностей и тепловой матрицы
+        funding_opps = []
+        funding_matrix: dict[str, dict] = {}
+
+        for sym in self.symbols:
+            quotes = self.state.fresh_quotes(sym, self.exchanges)
+            for ex, q in quotes.items():
+                if q.funding_rate is not None:
+                    funding_matrix.setdefault(sym, {})[ex] = round(q.funding_rate * 100.0, 4)
+
+            if len(quotes) < 2:
+                continue
+
+            for (e1, q1), (e2, q2) in itertools.combinations(quotes.items(), 2):
+                if q1.funding_rate is None or q2.funding_rate is None:
+                    continue
+                if q1.funding_rate >= q2.funding_rate:
+                    es, el = e1, e2
+                    qs, ql = q1, q2
+                else:
+                    es, el = e2, e1
+                    qs, ql = q2, q1
+
+                diff_8h_pct = (qs.funding_rate - ql.funding_rate) * 100.0
+                apr_pct = diff_8h_pct * 3 * 365.0
+                raw_spread = (qs.best_bid - ql.best_ask) / ql.best_ask * 100.0 if ql.best_ask > 0 else 0.0
+
+                pos_size = self.funding_position_size
+                inc_8h = pos_size * (diff_8h_pct / 100.0)
+                inc_24h = inc_8h * 3.0
+                inc_3d = inc_8h * 9.0
+                fees_4x = (ql.taker_fee + qs.taker_fee) * 2 * pos_size
+                net_3d = inc_3d - fees_4x
+
+                is_open = any(p.get("symbol") == sym and p.get("exch_short") == es and p.get("exch_long") == el and p.get("strategy") == "funding" for p in positions)
+
+                funding_opps.append({
+                    "symbol": sym,
+                    "base": sym.split("/")[0],
+                    "exch_short": es,
+                    "exch_long": el,
+                    "rate_short_8h_pct": round(qs.funding_rate * 100.0, 4),
+                    "rate_long_8h_pct": round(ql.funding_rate * 100.0, 4),
+                    "diff_8h_pct": round(diff_8h_pct, 4),
+                    "apr_pct": round(apr_pct, 1),
+                    "raw_spread_pct": round(raw_spread, 3),
+                    "inc_8h_usdt": round(inc_8h, 4),
+                    "inc_24h_usdt": round(inc_24h, 4),
+                    "inc_3d_usdt": round(inc_3d, 4),
+                    "net_3d_usdt": round(net_3d, 4),
+                    "is_open": is_open,
+                    "passed": diff_8h_pct >= self.funding_min_diff_8h_pct and abs(raw_spread) <= self.funding_max_raw_spread_pct,
+                })
+
+        funding_opps.sort(key=lambda x: x["diff_8h_pct"], reverse=True)
+
+        matrix_rows = []
+        for sym, rates in funding_matrix.items():
+            if len(rates) >= 2:
+                vals = list(rates.values())
+                delta = max(vals) - min(vals)
+                matrix_rows.append({
+                    "symbol": sym,
+                    "base": sym.split("/")[0],
+                    "rates": rates,
+                    "max_rate": max(vals),
+                    "min_rate": min(vals),
+                    "delta": round(delta, 4),
+                })
+        matrix_rows.sort(key=lambda x: x["delta"], reverse=True)
+
+        closed_funding_trades = emu_stats.get("funding", {}).get("closed", 0)
+        closed_funding_pnl = emu_stats.get("funding", {}).get("pnl_usdt", 0.0)
+        closed_funding_funding_usdt = emu_stats.get("funding", {}).get("funding_usdt", 0.0)
+        total_funding_earned_usdt = closed_funding_funding_usdt + total_open_funding_accrued
+        funding_wr = round(emu_stats.get("funding", {}).get("wins", 0) / closed_funding_trades * 100.0, 1) if closed_funding_trades else 0.0
+
+        funding_kpi = {
+            "total_funding_earned_usdt": round(total_funding_earned_usdt, 4),
+            "daily_dripping_income_usdt": round(daily_dripping_sum, 4),
+            "payment_8h_dripping_income_usdt": round(payment_8h_dripping_sum, 4),
+            "open_positions_count": n_funding,
+            "open_margin_usdt": round(n_funding * (self.funding_position_size / 10.0), 2),
+            "open_notional_usdt": round(n_funding * self.funding_position_size, 2),
+            "closed_trades_count": closed_funding_trades,
+            "win_rate_pct": funding_wr,
+            "closed_pnl_usdt": round(closed_funding_pnl, 4),
+            "best_opportunity": funding_opps[0] if funding_opps else None,
+            "min_diff_8h_pct": self.funding_min_diff_8h_pct,
+            "max_raw_spread_pct": self.funding_max_raw_spread_pct,
+            "position_size_usdt": self.funding_position_size,
+        }
 
         fresh_counts = self.state.fresh_count_by_exchange(self.exchanges)
 
@@ -1160,6 +1399,11 @@ class Engine:
                 "max_z_info": max_z_info,
                 "radar": z_radar[:60],
             },
+            "funding_arb": {
+                "kpi": funding_kpi,
+                "opportunities": funding_opps[:100],
+                "matrix": matrix_rows[:150],
+            },
             "spreads": spreads[:60],
             "positions": positions,
             "closed_trades": self.emulator.closed_trades_snapshot()[:100],
@@ -1172,6 +1416,7 @@ class Engine:
                 "arb_z35": snap_stats(emu_stats.get("arb_z35", {}), sum(1 for p in positions if p.get("strategy") == "arb" and not p.get("is_z4"))),
                 "scalp": snap_stats(emu_stats.get("scalp", {}), n_scalp),
                 "dir": snap_stats(emu_stats.get("dir", {}), n_dir),
+                "funding": snap_stats(emu_stats.get("funding", {}), n_funding),
                 "open_positions": len(positions),
             },
             "events": list(self.events)[:40],

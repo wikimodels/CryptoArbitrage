@@ -129,6 +129,14 @@
   .badge.z-norm { background: rgba(139,148,158,.12); color: var(--muted); }
   .badge.z-tier4 { background: rgba(63,185,80,.2); color: #3fb950; border: 1px solid rgba(63,185,80,.4); }
   .badge.z-tier35 { background: rgba(188,140,255,.2); color: var(--purple); border: 1px solid rgba(188,140,255,.4); }
+  .badge.funding { background: rgba(210,153,34,.25); color: #d29922; border: 1px solid rgba(210,153,34,.5); }
+  .badge.funding-sig { background: rgba(63,185,80,.25); color: #3fb950; border: 1px solid #3fb950; }
+  .badge.funding-open { background: rgba(88,166,255,.2); color: #58a6ff; border: 1px solid rgba(88,166,255,.4); }
+  .heat-cell { padding: 3px 6px; border-radius: 4px; font-weight: 600; text-align: right; display: inline-block; min-width: 58px; font-size: 12px; }
+  .heat-pos { background: rgba(63,185,80,.18); color: #3fb950; }
+  .heat-high { background: rgba(63,185,80,.35); color: #56d364; font-weight: 700; border: 1px solid rgba(63,185,80,.5); }
+  .heat-zero { background: rgba(139,148,158,.1); color: var(--muted); }
+  .heat-neg { background: rgba(248,81,73,.2); color: #f85149; }
   .ex { color: var(--blue); font-weight: 600; }
 
   .events { list-style: none; }
@@ -182,7 +190,15 @@
         <li><b>Проскальзывание:</b> реальный VWAP по глубине 20 уровней стакана.</li>
         <li><b>Фандинг:</b> точный календарный учет по временным меткам начислений.</li>
       </ul>
-      <p class="note">Все параметры настраиваются в config.yaml в блоке zscore.</p>
+      <h3>СБОР ФАНДИНГА (FUNDING ARBITRAGE)</h3>
+      <table class="rules">
+        <tr><td>1</td><td><b>Механика:</b> Лонг на бирже с низкой/отрицательной ставкой фандинга, Шорт на бирже с высокой ставкой. Разница ставок начисляется каждые 8 часов прямо на баланс.</td></tr>
+        <tr><td>2</td><td><b>Дельта-нейтральность:</b> Позиции строго 1:1 по объему, рыночный риск изменения цены монеты равен 0.</td></tr>
+        <tr><td>3</td><td><b>Условия входа:</b> Чистая дельта ставки &ge; 0.08% за 8ч (от 87.6% годовых APR) и сырое расхождение цен &le; 0.20%.</td></tr>
+        <tr><td>4</td><td><b>Фиксированный размер:</b> Нотионал $10.0 USDT ($1.0 USDT маржи с 10x плечом на ногу).</td></tr>
+        <tr><td>5</td><td><b>Выход:</b> Удержание до 72 часов (9 выплат фандинга), инверсия ставок или защитный стоп при раздвижке цен &gt; 2%.</td></tr>
+      </table>
+      <p class="note">Все параметры настраиваются в config.yaml в блоках zscore и funding_arb.</p>
     </div>
   </div>
 </div>
@@ -192,6 +208,7 @@
 
   <div class="tabs">
     <div class="tab active" data-tab="zscore">Z-Score Радар</div>
+    <div class="tab" data-tab="funding" id="tab-funding">Сбор фандинга</div>
     <div class="tab" data-tab="positions">Позиции</div>
     <div class="tab" data-tab="trades">История сделок</div>
     <div class="tab" data-tab="coins">Монеты и биржи</div>
@@ -215,6 +232,78 @@
           <th>Спред Mid %</th><th>4x Taker %</th><th>Статус</th>
         </tr></thead>
         <tbody id="zBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Funding Arbitrage Panel (Сбор фандинга) -->
+  <div class="panel" id="panel-funding">
+    <div class="cards" id="fundingCards" style="margin-bottom:18px;"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--green);"></span>
+        Капающие позиции по фандингу (удержание до 72ч / $10 нотионал / плечо 10x)
+      </h3>
+      <span class="muted" id="fundingPosCount">Активно: 0 позиций</span>
+    </div>
+    <div class="table-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>SHORT (получаем)</th><th>LONG (платим)</th><th>Дельта 8ч %</th><th>Годовой APR</th>
+          <th>Позиция</th><th>Выплат</th><th>До след. выплаты</th><th>Накапало $</th><th>Спред цен %</th><th>Чистый PnL $</th><th>Удержание</th><th>ID</th>
+        </tr></thead>
+        <tbody id="fundingPosBody"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        ⚡ Радар арбитража фандинга (лучшие связки бирж)
+      </h3>
+      <span class="muted" id="fundingOppsCount">Найдено связок: 0</span>
+    </div>
+    <div class="toolbar" style="flex-wrap:wrap; gap:12px;">
+      <input id="fundingFilter" placeholder="Поиск по монете или бирже…" oninput="renderFunding()">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="muted" style="font-size:12px;">Мин. дельта 8ч:</span>
+        <select id="fundingMinDelta" onchange="renderFunding()" style="background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:6px 10px; border-radius:6px; font-size:13px; outline:none;">
+          <option value="0.0">Все ставки (&ge; 0.00%)</option>
+          <option value="0.05">&ge; 0.05% (54.7% APR)</option>
+          <option value="0.08" selected>&ge; 0.08% (87.6% APR) [Система]</option>
+          <option value="0.10">&ge; 0.10% (109.5% APR)</option>
+          <option value="0.15">&ge; 0.15% (164.2% APR)</option>
+        </select>
+      </div>
+      <label><input type="checkbox" id="fundingSafeSpread" checked onchange="renderFunding()"> спред цен &le; 0.20% (безопасные)</label>
+      <label><input type="checkbox" id="fundingOnlySignals" onchange="renderFunding()"> только системные сигналы</label>
+    </div>
+    <div class="table-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>SHORT (где выше)</th><th>LONG (где ниже)</th><th>Дельта 8ч %</th><th>Чистый APR %</th>
+          <th>Спред цен %</th><th>Выплата за 8ч</th><th>Чистыми за 3 дня (9 выплат - комиссии)</th><th>Статус</th>
+        </tr></thead>
+        <tbody id="fundingOppsBody"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        📊 Тепловая матрица ставок фандинга по биржам (% за 8ч)
+      </h3>
+      <span class="muted" id="matrixCount">250 монет</span>
+    </div>
+    <div class="toolbar">
+      <input id="matrixFilter" placeholder="Поиск монеты в матрице…" oninput="renderFundingMatrix()">
+      <span class="muted" style="font-size:12px;">Цвета: <span style="color:var(--green); font-weight:600;">зеленый (&gt; +0.05%)</span>, <span style="color:var(--muted);">нейтральный (~0.01%)</span>, <span style="color:var(--red); font-weight:600;">красный (&lt; 0.00%)</span></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Символ</th><th>Тикер</th><th>Bitget</th><th>BingX</th><th>MEXC</th><th>OKX</th><th>Bybit</th><th>Gate.io</th><th>Binance</th><th>KuCoin</th><th>HTX</th><th>Разброс (Max Δ %)</th>
+        </tr></thead>
+        <tbody id="matrixBody"></tbody>
       </table>
     </div>
   </div>
@@ -329,7 +418,17 @@ tabs.forEach(t => t.onclick = () => {
   t.classList.add('active');
   document.getElementById('panel-' + t.dataset.tab).classList.add('active');
   if (t.dataset.tab === 'coins') renderCoins();
+  if (t.dataset.tab === 'funding') renderFunding();
 });
+
+function fmtTimer(sec) {
+  if (sec == null || sec < 0) return '—';
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = Math.floor(sec % 60);
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
 
 function fmtDur(s) {
   if (s == null) return '—';
@@ -377,6 +476,8 @@ function render() {
   const arb4 = (s.stats && s.stats.arb_z4) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
   const arb35 = (s.stats && s.stats.arb_z35) || { closed: 0, win_rate_pct: 0, pnl_usdt: 0 };
   const maxZTxt = zCfg.max_z_info || '—';
+  const fKpi = (s.funding_arb && s.funding_arb.kpi) || {};
+  const totFundEarned = fKpi.total_funding_earned_usdt || 0;
   
   document.getElementById('cards').innerHTML = `
     ${card('Позиций открыто', s.stats.open_positions, s.stats.open_positions > 0 ? 1 : 0, "document.querySelector('.tab[data-tab=\\'positions\\']').click()")}
@@ -386,6 +487,7 @@ function render() {
     ${card('PnL USDT (все)', (arb.pnl_usdt >= 0 ? '+' : '') + arb.pnl_usdt.toFixed(2), arb.pnl_usdt)}
     ${card('Z ≥ 4.0 (гипотеза)', `${arb4.closed} сд. (${arb4.pnl_usdt >= 0 ? '+' : ''}${arb4.pnl_usdt.toFixed(2)}$)`, arb4.pnl_usdt)}
     ${card('Дельта 3.5 ≤ Z < 4.0', `${arb35.closed} сд. (${arb35.pnl_usdt >= 0 ? '+' : ''}${arb35.pnl_usdt.toFixed(2)}$)`, arb35.pnl_usdt)}
+    ${card('Накапало фандинга', (totFundEarned >= 0 ? '+' : '') + '$' + totFundEarned.toFixed(2), totFundEarned > 0 ? 'pos' : '', "document.querySelector('.tab[data-tab=\\'funding\\']').click()")}
     ${card('Комиссии Σ', '-' + arb.fees_usdt.toFixed(2), -1)}
   `;
 
@@ -452,12 +554,13 @@ function render() {
       const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
       const uTxt = u == null ? '—' : (u > 0 ? '+' : '') + u.toFixed(2);
       const cur = p.cur_spread_pct == null ? '—' : p.cur_spread_pct.toFixed(3);
-      const curZ = p.cur_z == null ? '—' : (p.cur_z >= 0 ? '+' : '') + p.cur_z.toFixed(2);
-      const curZCls = p.cur_z == null ? 'muted' : (Math.abs(p.cur_z) <= 0.3 ? 'pos' : 'purple');
-      const zinTxt = (p.z_in != null && p.z_in !== 0) ? ((p.z_in > 0 ? '+' : '') + Number(p.z_in).toFixed(2)) : '—';
+      const isFunding = p.strategy === 'funding';
+      const curZ = isFunding ? (p.next_payment_in_sec != null ? `⏱ ${fmtTimer(p.next_payment_in_sec)}` : '—') : (p.cur_z == null ? '—' : (p.cur_z >= 0 ? '+' : '') + p.cur_z.toFixed(2));
+      const curZCls = isFunding ? 'yellow' : (p.cur_z == null ? 'muted' : (Math.abs(p.cur_z) <= 0.3 ? 'pos' : 'purple'));
+      const zinTxt = isFunding ? '—' : ((p.z_in != null && p.z_in !== 0) ? ((p.z_in > 0 ? '+' : '') + Number(p.z_in).toFixed(2)) : '—');
       const sz = (p.size_usdt != null && p.size_usdt > 0) ? ('$' + Number(p.size_usdt).toFixed(2)) : '—';
       const strat = esc((p.strategy || 'arb').toUpperCase());
-      const stratCls = p.strategy === 'dir' ? 'dir' : 'pass';
+      const stratCls = p.strategy === 'dir' ? 'dir' : (isFunding ? 'funding' : 'pass');
       return `
         <tr>
           <td><span class="badge ${stratCls}">${strat}</span></td>
@@ -566,6 +669,196 @@ function render() {
     const t = new Date(ev.ts*1000).toLocaleTimeString('ru-RU');
     return `<li><span class="t">${t}</span><span class="lvl-${ev.level}">${esc(ev.msg)}</span></li>`;
   }).join('') || `<li class="empty">Событий пока нет</li>`;
+
+  // 8. Render Funding Arbitrage Tab
+  renderFunding();
+}
+
+function renderFunding() {
+  if (!snapshot) return;
+  const fData = snapshot.funding_arb || {};
+  const kpi = fData.kpi || {};
+  const opps = fData.opportunities || [];
+  const matrix = fData.matrix || [];
+  const positions = (snapshot.positions || []).filter(p => p.strategy === 'funding');
+
+  // 1. Update tab badge
+  const fTab = document.getElementById('tab-funding');
+  if (fTab) {
+    fTab.innerHTML = positions.length > 0
+      ? `Сбор фандинга <span style="background:var(--yellow);color:#0d1117;font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;">${positions.length}</span>`
+      : 'Сбор фандинга';
+  }
+
+  // 2. Render KPI cards inside funding tab
+  const fc = document.getElementById('fundingCards');
+  if (fc) {
+    const bestTxt = kpi.best_opportunity ? `${kpi.best_opportunity.symbol.split('/')[0]} (${kpi.best_opportunity.diff_8h_pct >= 0 ? '+' : ''}${kpi.best_opportunity.diff_8h_pct.toFixed(2)}%)` : '—';
+    const totEarned = kpi.total_funding_earned_usdt || 0;
+    const dayDrip = kpi.daily_dripping_income_usdt || 0;
+    const p8hDrip = kpi.payment_8h_dripping_income_usdt || 0;
+    const openPos = kpi.open_positions_count || 0;
+    const openMargin = kpi.open_margin_usdt || 0;
+    const openNotional = kpi.open_notional_usdt || 0;
+    const closedTr = kpi.closed_trades_count || 0;
+    const winRate = kpi.win_rate_pct || 0;
+    const closedPnl = kpi.closed_pnl_usdt || 0;
+
+    fc.innerHTML = `
+      ${card('Накапало фандинга Σ', (totEarned >= 0 ? '+' : '') + '$' + totEarned.toFixed(4), totEarned > 0 ? 'pos' : '')}
+      ${card('Капает в сутки (24ч)', (dayDrip >= 0 ? '+' : '') + '$' + dayDrip.toFixed(4), dayDrip > 0 ? 'pos' : '')}
+      ${card('Капает за выплату (8ч)', (p8hDrip >= 0 ? '+' : '') + '$' + p8hDrip.toFixed(4), p8hDrip > 0 ? 'pos' : '')}
+      ${card('Позиции фандинга', `${openPos} шт. (залог $${openMargin.toFixed(0)} / объем $${openNotional.toFixed(0)})`, openPos > 0 ? 'yellow' : '')}
+      ${card('Сделок закрыто (WR)', `${closedTr} сд. (${winRate}% WR | ${closedPnl >= 0 ? '+' : ''}$${closedPnl.toFixed(2)})`, closedPnl >= 0 ? 'pos' : 'neg')}
+      ${card('Лучшая дельта рынка', bestTxt, 'purple')}
+    `;
+  }
+
+  // 3. Render Active Funding Positions
+  const posCountEl = document.getElementById('fundingPosCount');
+  if (posCountEl) {
+    posCountEl.textContent = `Активно: ${positions.length} поз. (суммарный залог: $${(positions.length * 1.0).toFixed(0)} USDT | объем $${(positions.length * 10.0).toFixed(0)} USDT)`;
+  }
+  const fPosBody = document.getElementById('fundingPosBody');
+  if (fPosBody) {
+    if (!positions.length) {
+      fPosBody.innerHTML = `<tr><td colspan="13" class="empty">Сейчас нет открытых позиций по сбору фандинга. Система автоматически открывает сделки при разнице ставок &ge; 0.08% и расхождении цен &le; 0.20%.</td></tr>`;
+    } else {
+      fPosBody.innerHTML = positions.map(p => {
+        const diffRate = ((p.funding_rate_short || 0) - (p.funding_rate_long || 0)) * 100.0;
+        const apr = diffRate * 3 * 365.0;
+        const curSp = p.cur_spread_pct == null ? '—' : (p.cur_spread_pct >= 0 ? '+' : '') + p.cur_spread_pct.toFixed(3) + '%';
+        const u = p.unrealized_pnl_usdt;
+        const uTxt = u == null ? '—' : (u >= 0 ? '+' : '') + '$' + u.toFixed(2);
+        const uCls = u == null ? 'muted' : (u > 0 ? 'pos' : u < 0 ? 'neg' : 'muted');
+        const accrued = p.funding_accrued_usdt || 0;
+        const nextTimer = p.next_payment_in_sec != null ? fmtTimer(p.next_payment_in_sec) : '—';
+
+        return `<tr>
+          <td class="sym">${esc(p.symbol)}</td>
+          <td class="ex">${esc(p.exch_short)} <span class="muted" style="font-size:11px;">(${((p.funding_rate_short||0)*100).toFixed(3)}%)</span></td>
+          <td class="ex">${esc(p.exch_long)} <span class="muted" style="font-size:11px;">(${((p.funding_rate_long||0)*100).toFixed(3)}%)</span></td>
+          <td class="num pos"><b>+${diffRate.toFixed(3)}%</b></td>
+          <td class="num purple"><b>+${apr.toFixed(1)}%</b></td>
+          <td class="num">$${(p.size_usdt||10).toFixed(0)} <span class="muted" style="font-size:11px;">(залог $1)</span></td>
+          <td class="num"><b>${p.funding_payments_count || 0}</b></td>
+          <td class="num yellow"><span style="font-family:monospace; font-size:13px; font-weight:600;">⏱ ${nextTimer}</span></td>
+          <td class="num pos"><b>+$${accrued.toFixed(4)}</b></td>
+          <td class="num ${cls(p.cur_spread_pct)}">${curSp}</td>
+          <td class="num ${uCls}"><b>${uTxt}</b></td>
+          <td class="num">${fmtDur(p.holding_seconds)}</td>
+          <td class="muted">${(p.trade_id || '').slice(0, 8)}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // 4. Render Funding Opportunities Table
+  const filterQ = (document.getElementById('fundingFilter')?.value || '').trim().toLowerCase();
+  const minDelta = parseFloat(document.getElementById('fundingMinDelta')?.value || '0.0');
+  const safeSpread = document.getElementById('fundingSafeSpread')?.checked;
+  const onlySignals = document.getElementById('fundingOnlySignals')?.checked;
+
+  let filteredOpps = opps.slice();
+  if (filterQ) {
+    filteredOpps = filteredOpps.filter(o => 
+      o.symbol.toLowerCase().includes(filterQ) ||
+      o.base.toLowerCase().includes(filterQ) ||
+      o.exch_short.toLowerCase().includes(filterQ) ||
+      o.exch_long.toLowerCase().includes(filterQ)
+    );
+  }
+  if (minDelta > 0) {
+    filteredOpps = filteredOpps.filter(o => o.diff_8h_pct >= minDelta);
+  }
+  if (safeSpread) {
+    filteredOpps = filteredOpps.filter(o => Math.abs(o.raw_spread_pct) <= 0.20);
+  }
+  if (onlySignals) {
+    filteredOpps = filteredOpps.filter(o => o.passed);
+  }
+
+  const oppsCountEl = document.getElementById('fundingOppsCount');
+  if (oppsCountEl) {
+    oppsCountEl.textContent = `Отображается: ${filteredOpps.length} из ${opps.length} связок`;
+  }
+
+  const fOppsBody = document.getElementById('fundingOppsBody');
+  if (fOppsBody) {
+    if (!filteredOpps.length) {
+      fOppsBody.innerHTML = `<tr><td colspan="9" class="empty">Нет возможностей арбитража фандинга по заданным фильтрам</td></tr>`;
+    } else {
+      fOppsBody.innerHTML = filteredOpps.map(o => {
+        let statusBadge = '<span class="badge no">WATCH</span>';
+        if (o.is_open) {
+          statusBadge = '<span class="badge funding-open">В ПОЗИЦИИ</span>';
+        } else if (o.passed) {
+          statusBadge = '<span class="badge funding-sig">⚡ СИГНАЛ</span>';
+        }
+        const net3dCls = o.net_3d_usdt > 0 ? 'pos' : (o.net_3d_usdt < 0 ? 'neg' : 'muted');
+
+        return `<tr>
+          <td class="sym">${esc(o.symbol)}</td>
+          <td class="ex">${esc(o.exch_short)} <span class="muted" style="font-size:11px;">(${o.rate_short_8h_pct >= 0 ? '+' : ''}${o.rate_short_8h_pct.toFixed(3)}%)</span></td>
+          <td class="ex">${esc(o.exch_long)} <span class="muted" style="font-size:11px;">(${o.rate_long_8h_pct >= 0 ? '+' : ''}${o.rate_long_8h_pct.toFixed(3)}%)</span></td>
+          <td class="num pos"><b>+${o.diff_8h_pct.toFixed(3)}%</b></td>
+          <td class="num purple"><b>+${o.apr_pct.toFixed(1)}%</b></td>
+          <td class="num ${cls(o.raw_spread_pct)}">${o.raw_spread_pct >= 0 ? '+' : ''}${o.raw_spread_pct.toFixed(3)}%</td>
+          <td class="num pos">+$${o.inc_8h_usdt.toFixed(4)}</td>
+          <td class="num ${net3dCls}"><b>${o.net_3d_usdt >= 0 ? '+' : ''}$${o.net_3d_usdt.toFixed(4)}</b> <span class="muted" style="font-size:11px;">(+${((o.net_3d_usdt/1.0)*100).toFixed(0)}% к марже $1)</span></td>
+          <td>${statusBadge}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // 5. Render Heatmap Matrix
+  renderFundingMatrix();
+}
+
+function renderFundingMatrix() {
+  if (!snapshot) return;
+  const fData = snapshot.funding_arb || {};
+  const matrix = fData.matrix || [];
+  const q = (document.getElementById('matrixFilter')?.value || '').trim().toLowerCase();
+
+  let filtered = matrix.slice();
+  if (q) {
+    filtered = filtered.filter(m => m.symbol.toLowerCase().includes(q) || m.base.toLowerCase().includes(q));
+  }
+
+  const mCountEl = document.getElementById('matrixCount');
+  if (mCountEl) {
+    mCountEl.textContent = `Монет в матрице: ${filtered.length} из ${matrix.length}`;
+  }
+
+  const mb = document.getElementById('matrixBody');
+  if (!mb) return;
+  if (!filtered.length) {
+    mb.innerHTML = `<tr><td colspan="12" class="empty">Монеты не найдены</td></tr>`;
+    return;
+  }
+
+  const exchangesList = ['bitget', 'bingx', 'mexc', 'okx', 'bybit', 'gateio', 'binance', 'kucoin', 'htx'];
+
+  mb.innerHTML = filtered.map(m => {
+    const exTds = exchangesList.map(ex => {
+      const r = m.rates ? m.rates[ex] : undefined;
+      if (r === undefined) return '<td class="muted" style="text-align:center;">—</td>';
+      let cClass = 'heat-zero';
+      if (r >= 0.05) cClass = 'heat-high';
+      else if (r > 0.01) cClass = 'heat-pos';
+      else if (r < 0) cClass = 'heat-neg';
+      return `<td><span class="heat-cell ${cClass}">${r >= 0 ? '+' : ''}${r.toFixed(3)}%</span></td>`;
+    }).join('');
+
+    return `<tr>
+      <td class="sym">${esc(m.symbol)}</td>
+      <td><b>${esc(m.base)}</b></td>
+      ${exTds}
+      <td class="num pos"><b>+${m.delta.toFixed(3)}%</b></td>
+    </tr>`;
+  }).join('');
 }
 
 function sortCoins(key) {

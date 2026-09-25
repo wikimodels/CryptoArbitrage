@@ -15,7 +15,8 @@ from collections import defaultdict
 import polars as pl
 
 DATA_DB = Path("data/scanner.db")
-TOP150_FILE = Path("output/top40_4ex.txt")
+TOP_FILE = Path("output/top.txt") if Path("output/top.txt").exists() else Path("output/top40_4ex.txt")
+TOP150_FILE = TOP_FILE
 CANDLES_DIR = Path("data/raw_1m_30d")
 
 
