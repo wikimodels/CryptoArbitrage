@@ -1,7 +1,7 @@
-﻿"""Universe: ??? ????? ?? config.yaml + ??? USDT-????? ????? ccxt markets.
+"""Universe: все пары из config.yaml + все USDT-свопы через ccxt markets.
 
-?????????????? CCXT_ID_MAP ?? ?????? ?????????? — ??? ?? ???????,
-?? ?? ??????? (swap + linear + USDT + active is not False).
+Используется CCXT_ID_MAP из нашего коннектора.
+Фильтр: (swap + linear + quote == 'USDT' + active is not False).
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from cryptoarb.connectors.ccxt_connector import CCXT_ID_MAP
 
 
 def fetch_perp_symbols(exchange_id: str) -> tuple[list[str], dict[str, tuple[float, float]]]:
-    """?????????? ccxt: ?????? ?????? + (taker, maker) ?? ???????."""
+    """Возвращает ccxt: список символов + (taker, maker) по каждому."""
     ccxt_id = CCXT_ID_MAP.get(exchange_id, exchange_id)
     cls = getattr(ccxt, ccxt_id)
     client = cls({"enableRateLimit": True, "timeout": 30000,
@@ -62,7 +62,11 @@ def fetch_volumes(exchange_id: str) -> dict[str, float]:
     for sym, t in tickers.items():
         if not isinstance(t, dict):
             continue
-        v = t.get("quoteVolume") or 0.0
+        v = t.get("quoteVolume")
+        if not v:
+            base_vol = t.get("baseVolume") or 0.0
+            price = t.get("last") or (t.get("close") or 0.0)
+            v = float(base_vol) * float(price)
         try:
             out[sym] = float(v)
         except (TypeError, ValueError):
@@ -93,4 +97,3 @@ def pick_by_volume(symbols: list[str], by_ex: dict[str, list[str]],
     picked.sort(key=lambda x: x[1])
     print(f"[vol] picked {len(picked)} symbols in [{vmin:.0f}, {vmax:.0f}] USDT/day")
     return picked
-

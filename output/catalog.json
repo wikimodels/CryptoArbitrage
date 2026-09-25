@@ -1,7 +1,7 @@
 {
-  "generated_ts": 1790318096.4487698,
+  "generated_ts": 1790326996.2688093,
   "min_common_exchanges": 2,
-  "total_symbols": 998,
+  "total_symbols": 995,
   "symbols": [
     {
       "symbol": "0G/USDT:USDT",
@@ -242,10 +242,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "AAOI/USDT:USDT",
@@ -254,11 +253,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "AAPL/USDT:USDT",
@@ -267,11 +265,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "AAPU/USDT:USDT",
@@ -290,12 +287,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ABNB/USDT:USDT",
@@ -313,11 +309,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "ACH/USDT:USDT",
@@ -368,12 +363,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ADBE/USDT:USDT",
@@ -382,31 +376,28 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ADI/USDT:USDT",
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "AEHR/USDT:USDT",
       "exchanges": [
         "bitget",
         "bybit",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "AEON/USDT:USDT",
@@ -476,10 +467,9 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "AGRIPPA/USDT:USDT",
@@ -594,12 +584,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "AKT/USDT:USDT",
@@ -620,11 +609,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ALCH/USDT:USDT",
@@ -647,12 +635,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ALICE/USDT:USDT",
@@ -729,11 +716,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "AMC/USDT:USDT",
@@ -741,10 +727,9 @@
         "binance",
         "bitget",
         "bybit",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "AMD/USDT:USDT",
@@ -752,11 +737,10 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "AMDSTOCK/USDT:USDT",
@@ -771,10 +755,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "AMKR/USDT:USDT",
@@ -810,10 +793,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "ANET/USDT:USDT",
@@ -821,10 +803,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "ANIME/USDT:USDT",
@@ -867,21 +848,19 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "APD/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "APE/USDT:USDT",
@@ -927,11 +906,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "APM/USDT:USDT",
@@ -947,10 +925,9 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "APPSTOCK/USDT:USDT",
@@ -968,12 +945,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "APT/USDT:USDT",
@@ -983,12 +959,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "AR/USDT:USDT",
@@ -1012,12 +987,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ARC/USDT:USDT",
@@ -1095,11 +1069,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ARPA/USDT:USDT",
@@ -1134,11 +1107,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ASR/USDT:USDT",
@@ -1161,12 +1133,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ASTR/USDT:USDT",
@@ -1188,20 +1159,18 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ASX/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "AT/USDT:USDT",
@@ -1239,12 +1208,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "AUCTION/USDT:USDT",
@@ -1293,12 +1261,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "AVGO/USDT:USDT",
@@ -1307,11 +1274,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "AVNT/USDT:USDT",
@@ -1321,12 +1287,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "AWE/USDT:USDT",
@@ -1374,11 +1339,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "AZTEC/USDT:USDT",
@@ -1451,10 +1415,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "BABY/USDT:USDT",
@@ -1475,10 +1438,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "BAN/USDT:USDT",
@@ -1539,11 +1501,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "BARD/USDT:USDT",
@@ -1642,10 +1603,9 @@
       "exchanges": [
         "binance",
         "bybit",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "BCH/USDT:USDT",
@@ -1655,12 +1615,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "BDX/USDT:USDT",
@@ -1677,11 +1636,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BEAM/USDT:USDT",
@@ -1709,12 +1667,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "BEL/USDT:USDT",
@@ -1800,12 +1757,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "BIO/USDT:USDT",
@@ -1849,19 +1805,17 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "BKNG/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "BLAST/USDT:USDT",
@@ -1936,11 +1890,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BMT/USDT:USDT",
@@ -1962,12 +1915,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "BNC/USDT:USDT",
@@ -1975,10 +1927,9 @@
         "binance",
         "bitget",
         "bybit",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "BNT/USDT:USDT",
@@ -2008,12 +1959,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "BONER/USDT:USDT",
@@ -2028,10 +1978,9 @@
       "symbol": "BONK/USDT:USDT",
       "exchanges": [
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "BOT/USDT:USDT",
@@ -2040,11 +1989,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BOTZ/USDT:USDT",
@@ -2071,11 +2019,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "BRETT/USDT:USDT",
@@ -2121,11 +2068,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BROCCOLI/USDT:USDT",
@@ -2177,11 +2123,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BSV/USDT:USDT",
@@ -2204,12 +2149,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "BTR/USDT:USDT",
@@ -2218,11 +2162,10 @@
         "bingx",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BTW/USDT:USDT",
@@ -2232,11 +2175,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "BUD/USDT:USDT",
@@ -2263,11 +2205,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "BYD/USDT:USDT",
@@ -2276,10 +2217,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "BZ/USDT:USDT",
@@ -2364,12 +2304,11 @@
         "bingx",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CAT/USDT:USDT",
@@ -2407,10 +2346,9 @@
       "symbol": "CATSTOCK/USDT:USDT",
       "exchanges": [
         "bybit",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "CBRS/USDT:USDT",
@@ -2419,11 +2357,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CC/USDT:USDT",
@@ -2519,10 +2456,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "CGPT/USDT:USDT",
@@ -2593,12 +2529,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "CIEN/USDT:USDT",
@@ -2607,20 +2542,18 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CIFR/USDT:USDT",
       "exchanges": [
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "CKB/USDT:USDT",
@@ -2677,10 +2610,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "CMCSA/USDT:USDT",
@@ -2729,11 +2661,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "COIN/USDT:USDT",
@@ -2777,10 +2708,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "COOKIE/USDT:USDT",
@@ -2817,11 +2747,10 @@
       "exchanges": [
         "binance",
         "bitget",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "COPPERINU/USDT:USDT",
@@ -2858,11 +2787,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "COTI/USDT:USDT",
@@ -2930,11 +2858,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CRM/USDT:USDT",
@@ -2943,11 +2870,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CRO/USDT:USDT",
@@ -2995,11 +2921,10 @@
         "binance",
         "bitget",
         "bybit",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "CRWV/USDT:USDT",
@@ -3008,11 +2933,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CSCO/USDT:USDT",
@@ -3021,11 +2945,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CSOPSAMSUNG2L/USDT:USDT",
@@ -3033,12 +2956,11 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CSOPSKHYNIX2L/USDT:USDT",
@@ -3046,12 +2968,11 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CTC/USDT:USDT",
@@ -3137,10 +3058,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "CXMT/USDT:USDT",
@@ -3149,10 +3069,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "CYBER/USDT:USDT",
@@ -3174,11 +3093,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "CYS/USDT:USDT",
@@ -3201,12 +3119,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "DATA/USDT:USDT",
@@ -3235,10 +3152,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "DEBIT/USDT:USDT",
@@ -3268,11 +3184,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "DELTA/USDT:USDT",
@@ -3324,10 +3239,9 @@
       "exchanges": [
         "binance",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "DJT/USDT:USDT",
@@ -3335,10 +3249,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "DKNG/USDT:USDT",
@@ -3347,11 +3260,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "DODO/USDT:USDT",
@@ -3369,12 +3281,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "DOGS/USDT:USDT",
@@ -3423,12 +3334,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "DOT/USDT:USDT",
@@ -3438,12 +3348,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "DRAM/USDT:USDT",
@@ -3452,12 +3361,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "DRIFT/USDT:USDT",
@@ -3516,10 +3424,9 @@
       "exchanges": [
         "binance",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "EDEN/USDT:USDT",
@@ -3624,12 +3531,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ENJ/USDT:USDT",
@@ -3732,12 +3638,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ETH/USDT:USDT",
@@ -3747,12 +3652,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ETHBTC/USDT:USDT",
@@ -3770,12 +3674,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ETHW/USDT:USDT",
@@ -3796,21 +3699,19 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "EURUSD/USDT:USDT",
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "EVAA/USDT:USDT",
@@ -3832,12 +3733,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "EWT/USDT:USDT",
@@ -3846,11 +3746,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "EWY/USDT:USDT",
@@ -3859,12 +3758,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "EWZ/USDT:USDT",
@@ -3873,12 +3771,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "EYE/USDT:USDT",
@@ -3910,12 +3807,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "FATCOIN/USDT:USDT",
@@ -3930,10 +3826,9 @@
       "symbol": "FCX/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "FET/USDT:USDT",
@@ -4005,11 +3900,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "FLEX/USDT:USDT",
@@ -4017,10 +3911,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "FLNC/USDT:USDT",
@@ -4029,11 +3922,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "FLOCK/USDT:USDT",
@@ -4055,12 +3947,11 @@
         "bingx",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "FLORKBSC/USDT:USDT",
@@ -4226,10 +4117,9 @@
         "binance",
         "bitget",
         "bybit",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "G/USDT:USDT",
@@ -4275,10 +4165,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "GDX/USDT:USDT",
@@ -4287,20 +4176,18 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "GE/USDT:USDT",
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "GENIUS/USDT:USDT",
@@ -4330,19 +4217,17 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "GFS/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "GGLL/USDT:USDT",
@@ -4358,10 +4243,9 @@
       "exchanges": [
         "binance",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "GIGADEVICE/USDT:USDT",
@@ -4390,10 +4274,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "GLD/USDT:USDT",
@@ -4423,11 +4306,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "GME/USDT:USDT",
@@ -4435,11 +4317,10 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "GMESTOCK/USDT:USDT",
@@ -4503,11 +4384,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "GP/USDT:USDT",
@@ -4524,11 +4404,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "GPS/USDT:USDT",
@@ -4538,12 +4417,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "GRAM/USDT:USDT",
@@ -4552,12 +4430,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "GRASS/USDT:USDT",
@@ -4620,10 +4497,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "GSTOCK/USDT:USDT",
@@ -4648,10 +4524,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "GUA/USDT:USDT",
@@ -4754,11 +4629,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "HBAR/USDT:USDT",
@@ -4768,12 +4642,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "HD/USDT:USDT",
@@ -4781,10 +4654,9 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "HEI/USDT:USDT",
@@ -4816,11 +4688,10 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "HIVE/USDT:USDT",
@@ -4836,21 +4707,12 @@
       "n_exchanges": 7
     },
     {
-      "symbol": "HK0625/USDT:USDT",
-      "exchanges": [
-        "binance",
-        "htx"
-      ],
-      "n_exchanges": 2
-    },
-    {
       "symbol": "HK0700/USDT:USDT",
       "exchanges": [
         "binance",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "HK0992/USDT:USDT",
@@ -4864,10 +4726,9 @@
       "symbol": "HK1810/USDT:USDT",
       "exchanges": [
         "binance",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "HK50/USDT:USDT",
@@ -4971,11 +4832,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "HUMA/USDT:USDT",
@@ -4998,10 +4858,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "HYPE/USDT:USDT",
@@ -5011,12 +4870,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "HYPER/USDT:USDT",
@@ -5037,11 +4895,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "IBB/USDT:USDT",
@@ -5057,10 +4914,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "IBM/USDT:USDT",
@@ -5069,11 +4925,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ICNT/USDT:USDT",
@@ -5096,12 +4951,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ID/USDT:USDT",
@@ -5191,11 +5045,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "INIT/USDT:USDT",
@@ -5252,12 +5105,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "INX/USDT:USDT",
@@ -5292,11 +5144,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "IOST/USDT:USDT",
@@ -5345,11 +5196,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "IRYS/USDT:USDT",
@@ -5371,10 +5221,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "IWM/USDT:USDT",
@@ -5383,12 +5232,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "JASMY/USDT:USDT",
@@ -5421,10 +5269,9 @@
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "JELLYJELLY/USDT:USDT",
@@ -5459,10 +5306,9 @@
       "exchanges": [
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "JOE/USDT:USDT",
@@ -5479,11 +5325,10 @@
       "symbol": "JP225/USDT:USDT",
       "exchanges": [
         "bitget",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "JPM/USDT:USDT",
@@ -5492,10 +5337,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "JST/USDT:USDT",
@@ -5505,10 +5349,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "JTO/USDT:USDT",
@@ -5541,12 +5384,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "KAIA/USDT:USDT",
@@ -5657,11 +5499,10 @@
       "exchanges": [
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "KITE/USDT:USDT",
@@ -5684,11 +5525,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "KMNO/USDT:USDT",
@@ -5723,11 +5563,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "KODEX200/USDT:USDT",
@@ -5735,10 +5574,9 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "KOMA/USDT:USDT",
@@ -5758,22 +5596,20 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "KR200/USDT:USDT",
       "exchanges": [
         "bitget",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "KSM/USDT:USDT",
@@ -5796,12 +5632,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "KUAISHOU/USDT:USDT",
@@ -5810,10 +5645,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "KWEB/USDT:USDT",
@@ -5845,12 +5679,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "LAOPU/USDT:USDT",
@@ -5909,11 +5742,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "LIGHT/USDT:USDT",
@@ -5931,10 +5763,9 @@
       "symbol": "LIN/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "LINEA/USDT:USDT",
@@ -5958,12 +5789,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "LISTA/USDT:USDT",
@@ -5984,12 +5814,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "LITE/USDT:USDT",
@@ -5998,11 +5827,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "LLY/USDT:USDT",
@@ -6011,20 +5839,18 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "LMT/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "LONGXIA/USDT:USDT",
@@ -6081,11 +5907,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "LSK/USDT:USDT",
@@ -6095,10 +5920,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "LTC/USDT:USDT",
@@ -6108,12 +5932,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "LUMIA/USDT:USDT",
@@ -6161,11 +5984,10 @@
       "symbol": "LUNR/USDT:USDT",
       "exchanges": [
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "LYN/USDT:USDT",
@@ -6186,12 +6008,11 @@
         "binance",
         "bitget",
         "bybit",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "M/USDT:USDT",
@@ -6286,11 +6107,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "MARSCOIN/USDT:USDT",
@@ -6300,11 +6120,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "MASK/USDT:USDT",
@@ -6361,10 +6180,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "ME/USDT:USDT",
@@ -6401,10 +6219,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "MELANIA/USDT:USDT",
@@ -6423,10 +6240,9 @@
       "symbol": "MELI/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "MEME/USDT:USDT",
@@ -6476,11 +6292,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "METIS/USDT:USDT",
@@ -6548,11 +6363,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "MINIMAXHKD/USDT:USDT",
@@ -6613,10 +6427,9 @@
       "symbol": "MO/USDT:USDT",
       "exchanges": [
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "MOCA/USDT:USDT",
@@ -6679,11 +6492,10 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "MORPHO/USDT:USDT",
@@ -6741,10 +6553,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "MRNA/USDT:USDT",
@@ -6753,10 +6564,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "MRVL/USDT:USDT",
@@ -6765,11 +6575,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "MSFT/USDT:USDT",
@@ -6778,11 +6587,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "MSFU/USDT:USDT",
@@ -6790,10 +6598,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "MSTR/USDT:USDT",
@@ -6838,11 +6645,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "MUBARAK/USDT:USDT",
@@ -6852,12 +6658,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "MUFG/USDT:USDT",
@@ -6883,12 +6688,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "MVLL/USDT:USDT",
@@ -6897,12 +6701,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "MYX/USDT:USDT",
@@ -6912,11 +6715,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "NAORIS/USDT:USDT",
@@ -6944,10 +6746,9 @@
       "exchanges": [
         "binance",
         "bitget",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "NAVER/USDT:USDT",
@@ -6956,10 +6757,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "NBIS/USDT:USDT",
@@ -6968,11 +6768,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "NEAR/USDT:USDT",
@@ -6982,12 +6781,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "NEIRO/USDT:USDT",
@@ -7038,10 +6836,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "NEWT/USDT:USDT",
@@ -7070,11 +6867,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "NG/USDT:USDT",
@@ -7106,11 +6902,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "NIULAI/USDT:USDT",
@@ -7126,10 +6921,9 @@
       "symbol": "NKE/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "NMR/USDT:USDT",
@@ -7158,11 +6952,10 @@
       "exchanges": [
         "binance",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "NOKSTOCK/USDT:USDT",
@@ -7204,11 +6997,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "NPC/USDT:USDT",
@@ -7233,11 +7025,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "NVDL/USDT:USDT",
@@ -7246,11 +7037,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "NVO/USDT:USDT",
@@ -7258,10 +7048,9 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "NXPC/USDT:USDT",
@@ -7329,11 +7118,10 @@
         "bingx",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "OKLO/USDT:USDT",
@@ -7352,10 +7140,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "OL/USDT:USDT",
@@ -7386,12 +7173,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ONDS/USDT:USDT",
@@ -7400,11 +7186,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ONE/USDT:USDT",
@@ -7427,10 +7212,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ONT/USDT:USDT",
@@ -7454,12 +7238,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "OPEN/USDT:USDT",
@@ -7478,12 +7261,11 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "OPENLEDGER/USDT:USDT",
@@ -7549,11 +7331,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ORDER/USDT:USDT",
@@ -7577,12 +7358,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "OTC/USDT:USDT",
@@ -7598,11 +7378,10 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "OUST/USDT:USDT",
@@ -7610,10 +7389,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "PAID/USDT:USDT",
@@ -7638,10 +7416,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "PARTI/USDT:USDT",
@@ -7663,10 +7440,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "PAXG/USDT:USDT",
@@ -7676,21 +7452,19 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "PAYP/USDT:USDT",
       "exchanges": [
         "binance",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "PDD/USDT:USDT",
@@ -7699,10 +7473,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "PEAQ/USDT:USDT",
@@ -7732,10 +7505,9 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "PENGSTOCK/USDT:USDT",
@@ -7753,12 +7525,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "PEOPLE/USDT:USDT",
@@ -7768,34 +7539,31 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "PEP/USDT:USDT",
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "PEPE/USDT:USDT",
       "exchanges": [
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "PHA/USDT:USDT",
@@ -7861,12 +7629,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "PIXEL/USDT:USDT",
@@ -7966,10 +7733,9 @@
       "symbol": "POLYMARKET/USDT:USDT",
       "exchanges": [
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "POLYX/USDT:USDT",
@@ -7992,12 +7758,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "POPCAT/USDT:USDT",
@@ -8020,11 +7785,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "PORTAL/USDT:USDT",
@@ -8159,11 +7923,10 @@
         "bingx",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "PUMPBTC/USDT:USDT",
@@ -8201,11 +7964,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "PYPL/USDT:USDT",
@@ -8214,10 +7976,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "PYTH/USDT:USDT",
@@ -8253,11 +8014,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "QLD/USDT:USDT",
@@ -8295,10 +8055,9 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "QQQ/USDT:USDT",
@@ -8307,11 +8066,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "QTUM/USDT:USDT",
@@ -8334,12 +8092,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "RARE/USDT:USDT",
@@ -8370,12 +8127,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "RAY/USDT:USDT",
@@ -8383,12 +8139,11 @@
         "bingx",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "RDDT/USDT:USDT",
@@ -8397,11 +8152,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "RDW/USDT:USDT",
@@ -8409,11 +8163,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "RE/USDT:USDT",
@@ -8466,10 +8219,9 @@
       "symbol": "REGN/USDT:USDT",
       "exchanges": [
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "RENDER/USDT:USDT",
@@ -8555,12 +8307,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "RIVN/USDT:USDT",
@@ -8568,11 +8319,10 @@
         "binance",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "RKLB/USDT:USDT",
@@ -8581,11 +8331,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "RLC/USDT:USDT",
@@ -8780,11 +8529,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SAMSUNGEM/USDT:USDT",
@@ -8793,10 +8541,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "SAND/USDT:USDT",
@@ -8920,11 +8667,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SHEIN/USDT:USDT",
@@ -8932,10 +8678,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "SHEINHKD/USDT:USDT",
@@ -8964,22 +8709,20 @@
       "exchanges": [
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "SHLD/USDT:USDT",
       "exchanges": [
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "SHOP/USDT:USDT",
@@ -8988,10 +8731,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "SHROOM/USDT:USDT",
@@ -9044,11 +8786,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SKHY/USDT:USDT",
@@ -9057,11 +8798,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SKHYNIX/USDT:USDT",
@@ -9070,11 +8810,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SKL/USDT:USDT",
@@ -9097,11 +8836,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SKUU/USDT:USDT",
@@ -9110,11 +8848,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SKY/USDT:USDT",
@@ -9137,11 +8874,10 @@
         "bingx",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SLP/USDT:USDT",
@@ -9176,11 +8912,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SMH/USDT:USDT",
@@ -9189,21 +8924,19 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SMIC/USDT:USDT",
       "exchanges": [
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "SNDK/USDT:USDT",
@@ -9212,11 +8945,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SNOW/USDT:USDT",
@@ -9225,10 +8957,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "SNT/USDT:USDT",
@@ -9259,12 +8990,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SOCK/USDT:USDT",
@@ -9285,22 +9015,13 @@
       "n_exchanges": 4
     },
     {
-      "symbol": "SOFISTOCK/USDT:USDT",
-      "exchanges": [
-        "htx",
-        "mexc"
-      ],
-      "n_exchanges": 2
-    },
-    {
       "symbol": "SOFTBANK/USDT:USDT",
       "exchanges": [
         "bitget",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "SOL/USDT:USDT",
@@ -9310,12 +9031,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "SOLAYER/USDT:USDT",
@@ -9368,11 +9088,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SOON/USDT:USDT",
@@ -9408,12 +9127,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SOXS/USDT:USDT",
@@ -9422,12 +9140,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SOXX/USDT:USDT",
@@ -9435,10 +9152,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "SPACE/USDT:USDT",
@@ -9468,10 +9184,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "SPCX/USDT:USDT",
@@ -9480,11 +9195,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "SPELL/USDT:USDT",
@@ -9547,10 +9261,9 @@
       "symbol": "SPX500/USDT:USDT",
       "exchanges": [
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "SPY/USDT:USDT",
@@ -9559,12 +9272,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SQD/USDT:USDT",
@@ -9586,12 +9298,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SSPC/USDT:USDT",
@@ -9670,11 +9381,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "STG/USDT:USDT",
@@ -9724,11 +9434,10 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "STRK/USDT:USDT",
@@ -9771,10 +9480,9 @@
       "exchanges": [
         "binance",
         "bybit",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "SUE/USDT:USDT",
@@ -9793,12 +9501,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "SUN/USDT:USDT",
@@ -9808,11 +9515,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "SUPER/USDT:USDT",
@@ -9835,12 +9541,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "SWARMS/USDT:USDT",
@@ -9969,12 +9674,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "TBT/USDT:USDT",
@@ -9983,10 +9687,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "TEAM/USDT:USDT",
@@ -9995,10 +9698,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "TEM/USDT:USDT",
@@ -10007,10 +9709,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "TENCENT/USDT:USDT",
@@ -10019,10 +9720,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "TENCENTHKD/USDT:USDT",
@@ -10040,11 +9740,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "THE/USDT:USDT",
@@ -10081,12 +9780,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "TLM/USDT:USDT",
@@ -10106,10 +9804,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "TM/USDT:USDT",
@@ -10126,11 +9823,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "TMX/USDT:USDT",
@@ -10201,12 +9897,11 @@
         "binance",
         "bitget",
         "bybit",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "TRADOOR/USDT:USDT",
@@ -10268,11 +9963,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "TRUST/USDT:USDT",
@@ -10309,12 +10003,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "TSEM/USDT:USDT",
@@ -10322,10 +10015,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "TSLA/USDT:USDT",
@@ -10346,11 +10038,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "TSM/USDT:USDT",
@@ -10359,11 +10050,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "TST/USDT:USDT",
@@ -10389,11 +10079,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "TURBO/USDT:USDT",
@@ -10428,21 +10117,19 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "TWLO/USDT:USDT",
       "exchanges": [
         "bitget",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "TWT/USDT:USDT",
@@ -10462,10 +10149,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "TZA/USDT:USDT",
@@ -10474,10 +10160,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "UAI/USDT:USDT",
@@ -10500,12 +10185,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "UBER/USDT:USDT",
@@ -10514,10 +10198,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "UBIK/USDT:USDT",
@@ -10547,10 +10230,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "okx"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "UNI/USDT:USDT",
@@ -10560,12 +10242,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "UNITREE/USDT:USDT",
@@ -10574,11 +10255,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "UP/USDT:USDT",
@@ -10596,11 +10276,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "US/USDT:USDT",
@@ -10630,11 +10309,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "USD1/USDT:USDT",
@@ -10670,10 +10348,9 @@
       "symbol": "USDJPY/USDT:USDT",
       "exchanges": [
         "bitget",
-        "bybit",
-        "htx"
+        "bybit"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "USELESS/USDT:USDT",
@@ -10683,26 +10360,17 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "USO/USDT:USDT",
       "exchanges": [
         "mexc",
         "okx"
-      ],
-      "n_exchanges": 2
-    },
-    {
-      "symbol": "USOIL/USDT:USDT",
-      "exchanges": [
-        "htx",
-        "mexc"
       ],
       "n_exchanges": 2
     },
@@ -10738,12 +10406,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "V/USDT:USDT",
@@ -10752,10 +10419,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "VALE/USDT:USDT",
@@ -10809,11 +10475,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "VET/USDT:USDT",
@@ -10857,11 +10522,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "VRTXSTOCK/USDT:USDT",
@@ -10877,10 +10541,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "VTHO/USDT:USDT",
@@ -10979,11 +10642,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "WEN/USDT:USDT",
@@ -10999,10 +10661,9 @@
       "symbol": "WENSTOCK/USDT:USDT",
       "exchanges": [
         "bybit",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "WET/USDT:USDT",
@@ -11026,12 +10687,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "WLD/USDT:USDT",
@@ -11041,12 +10701,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "WLFI/USDT:USDT",
@@ -11069,11 +10728,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "WOO/USDT:USDT",
@@ -11105,11 +10763,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "XAI/USDT:USDT",
@@ -11144,11 +10801,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "XAUT/USDT:USDT",
@@ -11158,11 +10814,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "XBI/USDT:USDT",
@@ -11171,11 +10826,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "XCN/USDT:USDT",
@@ -11239,12 +10893,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "XLF/USDT:USDT",
@@ -11260,10 +10913,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "XLM/USDT:USDT",
@@ -11273,12 +10925,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "XLU/USDT:USDT",
@@ -11286,10 +10937,9 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "mexc"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "XLV/USDT:USDT",
@@ -11309,11 +10959,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "XNY/USDT:USDT",
@@ -11333,11 +10982,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 6
+      "n_exchanges": 5
     },
     {
       "symbol": "XPD/USDT:USDT",
@@ -11345,12 +10993,11 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "XPIN/USDT:USDT",
@@ -11373,12 +11020,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "XPT/USDT:USDT",
@@ -11386,12 +11032,11 @@
         "binance",
         "bitget",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "XRP/USDT:USDT",
@@ -11401,12 +11046,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "XTZ/USDT:USDT",
@@ -11549,12 +11193,11 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc",
         "okx"
       ],
-      "n_exchanges": 9
+      "n_exchanges": 8
     },
     {
       "symbol": "ZEN/USDT:USDT",
@@ -11614,11 +11257,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ZHIPUHKD/USDT:USDT",
@@ -11635,11 +11277,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ZIL/USDT:USDT",
@@ -11676,11 +11317,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "mexc"
       ],
-      "n_exchanges": 8
+      "n_exchanges": 7
     },
     {
       "symbol": "ZKP/USDT:USDT",
@@ -11703,11 +11343,10 @@
         "bitget",
         "bybit",
         "gateio",
-        "htx",
         "kucoin",
         "okx"
       ],
-      "n_exchanges": 7
+      "n_exchanges": 6
     },
     {
       "symbol": "ZORA/USDT:USDT",
@@ -11757,10 +11396,9 @@
         "binance",
         "bitget",
         "bybit",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 5
+      "n_exchanges": 4
     },
     {
       "symbol": "ZZZ/USDT:USDT",
@@ -11775,50 +11413,45 @@
       "exchanges": [
         "binance",
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "币安人生/USDT:USDT",
       "exchanges": [
         "binance",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 3
+      "n_exchanges": 2
     },
     {
       "symbol": "牛来/USDT:USDT",
       "exchanges": [
         "binance",
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     },
     {
       "symbol": "龙虾/USDT:USDT",
       "exchanges": [
         "binance",
         "bitget",
-        "gateio",
-        "htx"
+        "gateio"
       ],
-      "n_exchanges": 4
+      "n_exchanges": 3
     }
   ],
   "coverage": {
     "bybit": 753,
     "okx": 472,
     "gateio": 863,
-    "binance": 722,
+    "binance": 721,
     "bitget": 754,
-    "mexc": 693,
+    "mexc": 691,
     "kucoin": 667,
-    "htx": 345,
     "bingx": 549
   }
 }
