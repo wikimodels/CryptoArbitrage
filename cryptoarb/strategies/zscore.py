@@ -128,8 +128,8 @@ class ZScoreStrategy(BaseStrategy):
                     self.engine._event("skip", f"Z-Score {symbol} {ex_long}->{ex_short} не хватает ликвидности на ${dyn_size:.0f}")
                 continue
 
-            exec_long = fill_long.vwap_price
-            exec_short = fill_short.vwap_price
+            exec_long = fill_long.fill_price
+            exec_short = fill_short.fill_price
             real_spread_pct = (exec_short - exec_long) / exec_long * 100.0 if exec_long > 0 else -999.0
 
             # 7. Четыре комиссии тейкера

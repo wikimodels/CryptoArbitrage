@@ -190,7 +190,7 @@ class FundingArbitrageStrategy(BaseStrategy):
             inc_24h = inc_8h * 3.0
             daily_dripping_sum += inc_24h
             payment_8h_dripping_sum += inc_8h
-            total_open_funding_accrued += (p.funding_accrued_usdt or 0.0)
+            total_open_funding_accrued += float(getattr(p, "funding_accrued_usdt", 0.0) or 0.0)
 
         # Сканирование возможностей для радара и матрицы
         for sym in self.engine.symbols:

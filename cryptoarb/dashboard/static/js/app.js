@@ -63,7 +63,7 @@ function renderApp() {
   if (mSc) mSc.textContent = 'scan ' + (s.last_scan_age_sec == null ? '—' : (s.last_scan_age_sec.toFixed(1) + 'с назад'));
 
   const mSym = document.getElementById('mSymbols');
-  if (mSym) mSym.textContent = 'symbols ' + s.symbols_total;
+  if (mSym) mSym.textContent = 'symbols ' + (s.symbols_total != null ? s.symbols_total : '—');
   
   const zCfg = s.zscore || {};
   const mTh = document.getElementById('mThreshold');

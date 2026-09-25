@@ -49,6 +49,7 @@ class VirtualPosition:
     z_in: float = 0.0
     side: str = "long"     # arb: всегда long (нога A); dir: long|short
     status: str = "open"
+    funding_accrued_usdt: float = 0.0
 
 
 class Emulator:
