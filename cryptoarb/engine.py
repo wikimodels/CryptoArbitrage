@@ -1341,6 +1341,7 @@ class Engine:
             "zscore": self.z_strat.snapshot() if self.z_strat else {},
             "funding_arb": self.funding_strat.snapshot() if self.funding_strat else {},
             "cross_coin": self.strategies["cross_coin"].snapshot() if "cross_coin" in self.strategies else {},
+            "volume_oi": self.strategies["volume_oi"].snapshot() if "volume_oi" in self.strategies else {},
             "spreads": spreads[:60],
             "positions": positions,
             "closed_trades": self.emulator.closed_trades_snapshot()[:100],

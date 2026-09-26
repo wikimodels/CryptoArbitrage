@@ -206,7 +206,17 @@
         <tr><td>3</td><td><b>Направление:</b> Z &gt; +2.5 &rarr; Шорт актива A, Лонг актива B; Z &lt; -2.5 &rarr; Лонг актива A, Шорт актива B.</td></tr>
         <tr><td>4</td><td><b>Выход:</b> Возврат Ratio к среднему значению (|Z| &le; 0.0) либо защитный стоп-лосс.</td></tr>
       </table>
-      <p class="note">Все параметры настраиваются в config.yaml в блоках zscore, funding_arb и cross_coin.</p>
+
+      <h3>ВСПЛЕСКИ ОБЪЕМА И ОТКРЫТЫЙ ИНТЕРЕС (VOLUME &amp; OI MOMENTUM 75%+ WR)</h3>
+      <table class="rules">
+        <tr><td>1</td><td><b>Синергия объема и капитала:</b> Всплеск 1m объема (RVOL &ge; 5.0, для BTC &ge; 4.0) подтверждается резким притоком институционального капитала в открытый интерес (&Delta;OI &ge; +1.5%, для BTC &ge; +0.35%).</td></tr>
+        <tr><td>2</td><td><b>Фильтрация тренда и свечной анатомии:</b> Вход сонаправлен с 15m трендом (Close &gt; EMA50 для Long, Close &lt; EMA50 для Short). Закрытие свечи строго в верхних 30% диапазона (ClosePos &ge; 0.70) для Long и нижних 30% (ClosePos &le; 0.30) для Short.</td></tr>
+        <tr><td>3</td><td><b>Снайперский Maker вход:</b> Вместо покупки на хае выставляется лимитный ордер Post-Only на 30% откате тела свечи. Таймаут отмены неисполненного лимита — 5 минут. Комиссия мейкера экономит 0.18% на круг.</td></tr>
+        <tr><td>4</td><td><b>Сопровождение:</b> Тейк-профит +1.5% (+1.0% BTC), жесткий стоп -1.0% (-0.7% BTC), подтягивающийся трейлинг-стоп (активация при +0.8%, шаг 0.5% от пика), тайм-стоп 60 минут, кулдаун 15 минут.</td></tr>
+        <tr><td>5</td><td><b>4 Корзины ликвидности:</b> Tier 1 Heavyweight ($1,000 - $5,000, BTC до $20k), Tier 2 Midweight ($300 - $1,500), Tier 3 Scalp ($50 - $150), Blacklist (запрещено).</td></tr>
+        <tr><td>6</td><td><b>Буфер гистерезиса:</b> Включение (Admission) при WR &ge; 70% и PF &ge; 1.5; удержание (Retention) при WR &ge; 60% и PF &ge; 1.1; аварийный стоп-кран — 3 стопа подряд за 72ч блокируют инструмент на 7 дней.</td></tr>
+      </table>
+      <p class="note">Все параметры настраиваются в config.yaml в блоках zscore, funding_arb, cross_coin и volume_oi.</p>
     </div>
   </div>
 </div>
@@ -220,6 +230,7 @@
     <div class="tab" data-tab="trades" id="tab-trades">Арбитраж: История</div>
     <div class="tab" data-tab="funding" id="tab-funding">Сбор фандинга</div>
     <div class="tab" data-tab="crosscoin" id="tab-crosscoin">Межмонетный арбитраж</div>
+    <div class="tab" data-tab="volume_oi" id="tab-volume_oi">Volume &amp; OI Моментум</div>
     <div class="tab" data-tab="coins">Монеты и биржи</div>
     <div class="tab" data-tab="spreads">Спреды</div>
     <div class="tab" data-tab="exchanges">Биржи</div>
@@ -363,6 +374,68 @@
     </div>
   </div>
 
+  <!-- Volume & Open Interest Momentum Panel (Sniper Maker) -->
+  <div class="panel" id="panel-volume_oi">
+    <div class="cards" id="volumeOiCards" style="margin-bottom:18px;"></div>
+
+    <!-- Active Signals & Pending/Open Orders -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green);"></span>
+        Активные ордера и сигналы Sniper Maker (30% Pullback Maker)
+      </h3>
+      <span class="muted">Лимитный вход на откате • Трейлинг-стоп +0.8%/0.5% • Фикс. SL -1.0%</span>
+    </div>
+    <div class="table-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead><tr>
+          <th>Монета</th><th>Направление</th><th>Статус исполнения</th><th>Лимит (30% откат)</th>
+          <th>Hard SL</th><th>Take Profit</th><th>Трейлинг-стоп</th><th>Размер $</th><th>Возраст</th><th>Тариф</th>
+        </tr></thead>
+        <tbody id="volumeOiOrdersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Institutional Whitelist & Capacity Tiering -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--accent);"></span>
+        Институциональный White-List и емкость корзин ликвидности (17 активов)
+      </h3>
+      <span class="muted">Суточная Walk-Forward калибровка с гистерезисом (WR &ge; 70%, PF &ge; 1.5)</span>
+    </div>
+    <div class="toolbar" style="gap:12px;">
+      <input id="volumeOiFilter" placeholder="Поиск по монете или корзине…" oninput="renderVolumeOI(window.currentSnapshot)">
+    </div>
+    <div class="table-wrap" style="margin-bottom:24px;">
+      <table>
+        <thead><tr>
+          <th>Актив</th><th>Корзина емкости</th><th>Лимит позиции</th><th>Win Rate (30d)</th>
+          <th>Profit Factor</th><th>Сделок</th><th>Порог RVOL</th><th>Порог &Delta;OI</th><th>24ч Оборот</th><th>Статус</th>
+        </tr></thead>
+        <tbody id="volumeOiWhitelistBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Recent Closed Trades -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 8px;">
+      <h3 style="font-size:15px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:8px;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--yellow);"></span>
+        История закрытых сделок Sniper Maker
+      </h3>
+      <span class="muted">Позиции $10 notional ($1 маржи с 10x) • Честный учет комиссий мейкера</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Монета</th><th>Направление</th><th>Вход</th><th>Выход</th><th>Причина закрытия</th>
+          <th>Gross PnL %</th><th>Net PnL ($)</th><th>Нотионал</th><th>Время закрытия</th>
+        </tr></thead>
+        <tbody id="volumeOiTradesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Positions Panel (Arbitrage Only) -->
   <div class="panel" id="panel-positions">
     <div class="toolbar" style="justify-content: space-between;">
@@ -465,6 +538,7 @@
 <script src="/static/js/strategies/zscore.js"></script>
 <script src="/static/js/strategies/funding.js"></script>
 <script src="/static/js/strategies/cross_coin.js"></script>
+<script src="/static/js/strategies/volume_oi.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>

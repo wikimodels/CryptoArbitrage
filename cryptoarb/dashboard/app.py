@@ -37,6 +37,12 @@ def create_app(engine) -> FastAPI:
     async def health():
         return {"ok": True, "running": engine is not None}
 
+    @app.get("/api/state")
+    async def get_state():
+        if engine:
+            return engine.snapshot()
+        return {"error": "engine not ready"}
+
     try:
         from cryptoarb.backtest.api import mount as mount_backtest
         mount_backtest(app)

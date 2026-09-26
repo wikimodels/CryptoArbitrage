@@ -10,6 +10,7 @@ from .base import BaseStrategy
 from .cross_coin import CrossCoinStrategy
 from .funding import FundingArbitrageStrategy
 from .spread_arb import SpreadArbitrageStrategy
+from .volume_oi import VolumeOIStrategy
 from .zscore import ZScoreStrategy
 
 if TYPE_CHECKING:
@@ -23,6 +24,7 @@ def build_strategies(engine: Engine, cfg: dict[str, Any]) -> dict[str, BaseStrat
         "funding_arb": FundingArbitrageStrategy(engine, cfg),
         "cross_coin": CrossCoinStrategy(engine, cfg),
         "spread_arb": SpreadArbitrageStrategy(engine, cfg),
+        "volume_oi": VolumeOIStrategy(engine, cfg),
     }
     return strategies
 
@@ -33,5 +35,6 @@ __all__ = [
     "FundingArbitrageStrategy",
     "CrossCoinStrategy",
     "SpreadArbitrageStrategy",
+    "VolumeOIStrategy",
     "build_strategies",
 ]

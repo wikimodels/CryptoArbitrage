@@ -35,6 +35,8 @@ CCXT_ID_MAP = {
     "htx": "htx",
     "bingx": "bingx",
     "coinex": "coinex",
+    "hyperliquid": "hyperliquid",
+    "dydx": "dydx",
 }
 
 

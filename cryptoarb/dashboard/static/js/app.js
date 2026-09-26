@@ -21,6 +21,7 @@ tabs.forEach(t => t.onclick = () => {
   if (t.dataset.tab === 'coins') renderCoins(snapshot);
   if (t.dataset.tab === 'funding') renderFunding(snapshot);
   if (t.dataset.tab === 'crosscoin') renderCrossCoin(snapshot);
+  if (t.dataset.tab === 'volume_oi') renderVolumeOI(snapshot);
 });
 
 // Подключение к WebSocket
@@ -80,6 +81,10 @@ function renderApp() {
   const fundingPositions = (s.positions || []).filter(p => p.strategy === 'funding');
   const nArbPos = arbPositions.length;
   const nFundPos = fundingPositions.length;
+  const voi = s.volume_oi || {};
+  const nVoiPos = (voi.open_positions || []).length;
+  const voiKpi = voi.kpi || {};
+  const voiNetPnl = voiKpi.net_pnl_usd || 0;
   
   const cardsEl = document.getElementById('cards');
   if (cardsEl) {
@@ -87,6 +92,7 @@ function renderApp() {
       ${card('Арбитраж (активно)', `${nArbPos} поз.`, nArbPos > 0 ? 1 : 0, "document.querySelector('.tab[data-tab=\\'positions\\']').click()")}
       ${card('Стратегия Z-Score', `Вход ±${zCfg.entry_z || 3.5} / Выход ${zCfg.exit_z || 0.0}`, 'purple')}
       ${card('Max |Z| на рынке', maxZTxt, zCfg.max_abs_z >= (zCfg.entry_z || 3.5) ? 'pos' : (zCfg.max_abs_z >= 2.5 ? 'yellow' : ''))}
+      ${card('Volume & OI (75% WR)', `${nVoiPos} поз. (${voiNetPnl >= 0 ? '+' : ''}$${voiNetPnl.toFixed(2)})`, nVoiPos > 0 ? 'pos' : (voi.recent_signals && voi.recent_signals.length > 0 ? 'yellow' : ''), "document.querySelector('.tab[data-tab=\\'volume_oi\\']').click()")}
       ${card('Арбитраж: сделки', `${arb.closed} (WR ${arb.win_rate_pct}%)`, arb.pnl_usdt, "document.querySelector('.tab[data-tab=\\'trades\\']').click()")}
       ${card('PnL арбитража', (arb.pnl_usdt >= 0 ? '+' : '') + arb.pnl_usdt.toFixed(2), arb.pnl_usdt, "document.querySelector('.tab[data-tab=\\'trades\\']').click()")}
       ${card('Z ≥ 4.0 (гипотеза)', `${arb4.closed} сд. (${arb4.pnl_usdt >= 0 ? '+' : ''}${arb4.pnl_usdt.toFixed(2)}$)`, arb4.pnl_usdt)}
@@ -100,6 +106,7 @@ function renderApp() {
   if (typeof renderZScore === 'function') renderZScore(snapshot);
   if (typeof renderFunding === 'function') renderFunding(snapshot);
   if (typeof renderCrossCoin === 'function') renderCrossCoin(snapshot);
+  if (typeof renderVolumeOI === 'function') renderVolumeOI(snapshot);
 
   // 4. Спреды L2
   const f = (document.getElementById('filter')?.value || '').trim().toLowerCase();

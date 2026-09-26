@@ -1,0 +1,6656 @@
+{
+  "Model_A_Pure_Volume": {
+    "summary": {
+      "total": {
+        "total_trades": 16617,
+        "win_rate": 43.67,
+        "net_pnl_usd": -471.1322,
+        "profit_factor": 0.42,
+        "max_drawdown_usd": 471.3217
+      },
+      "is": {
+        "total_trades": 7585,
+        "win_rate": 43.63,
+        "net_pnl_usd": -204.5822,
+        "profit_factor": 0.43,
+        "max_drawdown_usd": 204.661
+      },
+      "oos": {
+        "total_trades": 9032,
+        "win_rate": 43.71,
+        "net_pnl_usd": -266.55,
+        "profit_factor": 0.41,
+        "max_drawdown_usd": 266.687
+      },
+      "wfe": -1.0
+    },
+    "coin_breakdown": {
+      "DOGE": {
+        "total": {
+          "total_trades": 247,
+          "win_rate": 39.27,
+          "net_pnl_usd": -5.9125,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 5.9334
+        },
+        "is": {
+          "total_trades": 130,
+          "win_rate": 38.46,
+          "net_pnl_usd": -3.2624,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 3.2833
+        },
+        "oos": {
+          "total_trades": 117,
+          "win_rate": 40.17,
+          "net_pnl_usd": -2.6501,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 2.6185
+        }
+      },
+      "ADA": {
+        "total": {
+          "total_trades": 302,
+          "win_rate": 45.03,
+          "net_pnl_usd": -7.6898,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 7.8534
+        },
+        "is": {
+          "total_trades": 131,
+          "win_rate": 44.27,
+          "net_pnl_usd": -2.973,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 3.2957
+        },
+        "oos": {
+          "total_trades": 171,
+          "win_rate": 45.61,
+          "net_pnl_usd": -4.7167,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 4.5947
+        }
+      },
+      "AVAX": {
+        "total": {
+          "total_trades": 246,
+          "win_rate": 40.24,
+          "net_pnl_usd": -7.4685,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 7.4752
+        },
+        "is": {
+          "total_trades": 92,
+          "win_rate": 42.39,
+          "net_pnl_usd": -2.1164,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 2.1861
+        },
+        "oos": {
+          "total_trades": 154,
+          "win_rate": 38.96,
+          "net_pnl_usd": -5.3521,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 5.3308
+        }
+      },
+      "APT": {
+        "total": {
+          "total_trades": 397,
+          "win_rate": 47.61,
+          "net_pnl_usd": -11.0285,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 11.1736
+        },
+        "is": {
+          "total_trades": 186,
+          "win_rate": 44.09,
+          "net_pnl_usd": -5.5708,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 5.7259
+        },
+        "oos": {
+          "total_trades": 211,
+          "win_rate": 50.71,
+          "net_pnl_usd": -5.4577,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 5.4963
+        }
+      },
+      "WIF": {
+        "total": {
+          "total_trades": 362,
+          "win_rate": 49.17,
+          "net_pnl_usd": -6.879,
+          "profit_factor": 0.57,
+          "max_drawdown_usd": 6.9738
+        },
+        "is": {
+          "total_trades": 158,
+          "win_rate": 50.63,
+          "net_pnl_usd": -2.3247,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 2.5475
+        },
+        "oos": {
+          "total_trades": 204,
+          "win_rate": 48.04,
+          "net_pnl_usd": -4.5543,
+          "profit_factor": 0.52,
+          "max_drawdown_usd": 4.528
+        }
+      },
+      "ARB": {
+        "total": {
+          "total_trades": 428,
+          "win_rate": 50.0,
+          "net_pnl_usd": -13.105,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 13.3326
+        },
+        "is": {
+          "total_trades": 218,
+          "win_rate": 52.29,
+          "net_pnl_usd": -5.0937,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 5.3049
+        },
+        "oos": {
+          "total_trades": 210,
+          "win_rate": 47.62,
+          "net_pnl_usd": -8.0113,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 8.086
+        }
+      },
+      "OP": {
+        "total": {
+          "total_trades": 380,
+          "win_rate": 43.42,
+          "net_pnl_usd": -12.1755,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 12.1915
+        },
+        "is": {
+          "total_trades": 183,
+          "win_rate": 42.62,
+          "net_pnl_usd": -6.1246,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 6.0968
+        },
+        "oos": {
+          "total_trades": 197,
+          "win_rate": 44.16,
+          "net_pnl_usd": -6.051,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 5.9727
+        }
+      },
+      "TIA": {
+        "total": {
+          "total_trades": 351,
+          "win_rate": 44.44,
+          "net_pnl_usd": -10.5616,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 10.9018
+        },
+        "is": {
+          "total_trades": 168,
+          "win_rate": 45.24,
+          "net_pnl_usd": -4.4961,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 4.8363
+        },
+        "oos": {
+          "total_trades": 183,
+          "win_rate": 43.72,
+          "net_pnl_usd": -6.0655,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 6.0166
+        }
+      },
+      "LDO": {
+        "total": {
+          "total_trades": 411,
+          "win_rate": 44.04,
+          "net_pnl_usd": -10.0944,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 9.9724
+        },
+        "is": {
+          "total_trades": 196,
+          "win_rate": 40.31,
+          "net_pnl_usd": -5.8916,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 5.7753
+        },
+        "oos": {
+          "total_trades": 215,
+          "win_rate": 47.44,
+          "net_pnl_usd": -4.2028,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 4.0894
+        }
+      },
+      "INJ": {
+        "total": {
+          "total_trades": 429,
+          "win_rate": 41.72,
+          "net_pnl_usd": -14.6928,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 14.728
+        },
+        "is": {
+          "total_trades": 186,
+          "win_rate": 36.56,
+          "net_pnl_usd": -7.0054,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 6.9065
+        },
+        "oos": {
+          "total_trades": 243,
+          "win_rate": 45.68,
+          "net_pnl_usd": -7.6874,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 7.7579
+        }
+      },
+      "FET": {
+        "total": {
+          "total_trades": 389,
+          "win_rate": 46.02,
+          "net_pnl_usd": -10.3795,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 10.3182
+        },
+        "is": {
+          "total_trades": 181,
+          "win_rate": 41.99,
+          "net_pnl_usd": -5.7816,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 5.8016
+        },
+        "oos": {
+          "total_trades": 208,
+          "win_rate": 49.52,
+          "net_pnl_usd": -4.5979,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 4.5225
+        }
+      },
+      "AAVE": {
+        "total": {
+          "total_trades": 287,
+          "win_rate": 45.3,
+          "net_pnl_usd": -7.3746,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 7.5283
+        },
+        "is": {
+          "total_trades": 121,
+          "win_rate": 38.84,
+          "net_pnl_usd": -4.3987,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 4.5853
+        },
+        "oos": {
+          "total_trades": 166,
+          "win_rate": 50.0,
+          "net_pnl_usd": -2.9759,
+          "profit_factor": 0.58,
+          "max_drawdown_usd": 2.9897
+        }
+      },
+      "ATOM": {
+        "total": {
+          "total_trades": 347,
+          "win_rate": 40.06,
+          "net_pnl_usd": -9.756,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 9.915
+        },
+        "is": {
+          "total_trades": 151,
+          "win_rate": 42.38,
+          "net_pnl_usd": -3.6176,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 3.8961
+        },
+        "oos": {
+          "total_trades": 196,
+          "win_rate": 38.27,
+          "net_pnl_usd": -6.1384,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 6.1524
+        }
+      },
+      "RENDER": {
+        "total": {
+          "total_trades": 359,
+          "win_rate": 40.95,
+          "net_pnl_usd": -10.4933,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 10.5862
+        },
+        "is": {
+          "total_trades": 149,
+          "win_rate": 38.26,
+          "net_pnl_usd": -4.862,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 4.9507
+        },
+        "oos": {
+          "total_trades": 210,
+          "win_rate": 42.86,
+          "net_pnl_usd": -5.6314,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 5.8453
+        }
+      },
+      "SEI": {
+        "total": {
+          "total_trades": 314,
+          "win_rate": 42.99,
+          "net_pnl_usd": -8.1021,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 8.1061
+        },
+        "is": {
+          "total_trades": 140,
+          "win_rate": 42.14,
+          "net_pnl_usd": -3.2696,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 3.345
+        },
+        "oos": {
+          "total_trades": 174,
+          "win_rate": 43.68,
+          "net_pnl_usd": -4.8324,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 4.9529
+        }
+      },
+      "ENA": {
+        "total": {
+          "total_trades": 364,
+          "win_rate": 47.25,
+          "net_pnl_usd": -14.1132,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 14.1788
+        },
+        "is": {
+          "total_trades": 170,
+          "win_rate": 48.82,
+          "net_pnl_usd": -6.2015,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 6.273
+        },
+        "oos": {
+          "total_trades": 194,
+          "win_rate": 45.88,
+          "net_pnl_usd": -7.9117,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 7.7897
+        }
+      },
+      "JUP": {
+        "total": {
+          "total_trades": 417,
+          "win_rate": 50.6,
+          "net_pnl_usd": -8.7371,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 8.7877
+        },
+        "is": {
+          "total_trades": 193,
+          "win_rate": 53.89,
+          "net_pnl_usd": -2.7905,
+          "profit_factor": 0.67,
+          "max_drawdown_usd": 3.0736
+        },
+        "oos": {
+          "total_trades": 224,
+          "win_rate": 47.77,
+          "net_pnl_usd": -5.9466,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 5.8896
+        }
+      },
+      "CRV": {
+        "total": {
+          "total_trades": 438,
+          "win_rate": 42.92,
+          "net_pnl_usd": -14.3581,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 14.4426
+        },
+        "is": {
+          "total_trades": 209,
+          "win_rate": 44.5,
+          "net_pnl_usd": -6.1654,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 6.2954
+        },
+        "oos": {
+          "total_trades": 229,
+          "win_rate": 41.48,
+          "net_pnl_usd": -8.1927,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 8.1825
+        }
+      },
+      "DOT": {
+        "total": {
+          "total_trades": 318,
+          "win_rate": 47.48,
+          "net_pnl_usd": -8.9397,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 9.1327
+        },
+        "is": {
+          "total_trades": 150,
+          "win_rate": 48.0,
+          "net_pnl_usd": -4.6716,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 4.9388
+        },
+        "oos": {
+          "total_trades": 168,
+          "win_rate": 47.02,
+          "net_pnl_usd": -4.2681,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 4.6938
+        }
+      },
+      "GALA": {
+        "total": {
+          "total_trades": 395,
+          "win_rate": 43.54,
+          "net_pnl_usd": -11.6538,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 11.967
+        },
+        "is": {
+          "total_trades": 199,
+          "win_rate": 47.74,
+          "net_pnl_usd": -4.3324,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 4.5709
+        },
+        "oos": {
+          "total_trades": 196,
+          "win_rate": 39.29,
+          "net_pnl_usd": -7.3214,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 7.6154
+        }
+      },
+      "UNI": {
+        "total": {
+          "total_trades": 423,
+          "win_rate": 51.54,
+          "net_pnl_usd": -10.6536,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 10.5676
+        },
+        "is": {
+          "total_trades": 204,
+          "win_rate": 50.0,
+          "net_pnl_usd": -5.838,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 5.8063
+        },
+        "oos": {
+          "total_trades": 219,
+          "win_rate": 52.97,
+          "net_pnl_usd": -4.8156,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 4.6936
+        }
+      },
+      "WLD": {
+        "total": {
+          "total_trades": 345,
+          "win_rate": 46.96,
+          "net_pnl_usd": -9.6466,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 9.5913
+        },
+        "is": {
+          "total_trades": 169,
+          "win_rate": 46.15,
+          "net_pnl_usd": -4.7271,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 4.6773
+        },
+        "oos": {
+          "total_trades": 176,
+          "win_rate": 47.73,
+          "net_pnl_usd": -4.9196,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 4.9983
+        }
+      },
+      "BNB": {
+        "total": {
+          "total_trades": 118,
+          "win_rate": 27.12,
+          "net_pnl_usd": -3.8208,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 3.7453
+        },
+        "is": {
+          "total_trades": 56,
+          "win_rate": 32.14,
+          "net_pnl_usd": -1.7534,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 1.7097
+        },
+        "oos": {
+          "total_trades": 62,
+          "win_rate": 22.58,
+          "net_pnl_usd": -2.0674,
+          "profit_factor": 0.19,
+          "max_drawdown_usd": 2.0734
+        }
+      },
+      "BCH": {
+        "total": {
+          "total_trades": 271,
+          "win_rate": 40.22,
+          "net_pnl_usd": -7.2048,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 7.2174
+        },
+        "is": {
+          "total_trades": 120,
+          "win_rate": 36.67,
+          "net_pnl_usd": -3.4269,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 3.6997
+        },
+        "oos": {
+          "total_trades": 151,
+          "win_rate": 43.05,
+          "net_pnl_usd": -3.7779,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 3.7924
+        }
+      },
+      "XLM": {
+        "total": {
+          "total_trades": 229,
+          "win_rate": 47.16,
+          "net_pnl_usd": -5.0366,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 5.4194
+        },
+        "is": {
+          "total_trades": 88,
+          "win_rate": 43.18,
+          "net_pnl_usd": -1.4539,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 1.4964
+        },
+        "oos": {
+          "total_trades": 141,
+          "win_rate": 49.65,
+          "net_pnl_usd": -3.5827,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 3.8865
+        }
+      },
+      "DASH": {
+        "total": {
+          "total_trades": 442,
+          "win_rate": 49.1,
+          "net_pnl_usd": -11.8123,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 12.1247
+        },
+        "is": {
+          "total_trades": 225,
+          "win_rate": 51.56,
+          "net_pnl_usd": -5.6795,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 5.8975
+        },
+        "oos": {
+          "total_trades": 217,
+          "win_rate": 46.54,
+          "net_pnl_usd": -6.1328,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 6.321
+        }
+      },
+      "HBAR": {
+        "total": {
+          "total_trades": 258,
+          "win_rate": 36.43,
+          "net_pnl_usd": -8.0235,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 8.1478
+        },
+        "is": {
+          "total_trades": 102,
+          "win_rate": 39.22,
+          "net_pnl_usd": -2.3535,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 2.4778
+        },
+        "oos": {
+          "total_trades": 156,
+          "win_rate": 34.62,
+          "net_pnl_usd": -5.67,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 5.645
+        }
+      },
+      "ETHFI": {
+        "total": {
+          "total_trades": 434,
+          "win_rate": 49.08,
+          "net_pnl_usd": -11.7479,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 11.6408
+        },
+        "is": {
+          "total_trades": 218,
+          "win_rate": 48.17,
+          "net_pnl_usd": -6.3331,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 6.3016
+        },
+        "oos": {
+          "total_trades": 216,
+          "win_rate": 50.0,
+          "net_pnl_usd": -5.4148,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 5.2928
+        }
+      },
+      "VIRTUAL": {
+        "total": {
+          "total_trades": 353,
+          "win_rate": 42.49,
+          "net_pnl_usd": -11.2077,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 11.2185
+        },
+        "is": {
+          "total_trades": 166,
+          "win_rate": 45.78,
+          "net_pnl_usd": -4.5581,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 4.5689
+        },
+        "oos": {
+          "total_trades": 187,
+          "win_rate": 39.57,
+          "net_pnl_usd": -6.6496,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 6.6986
+        }
+      },
+      "COMP": {
+        "total": {
+          "total_trades": 338,
+          "win_rate": 37.28,
+          "net_pnl_usd": -9.7554,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 9.6783
+        },
+        "is": {
+          "total_trades": 153,
+          "win_rate": 38.56,
+          "net_pnl_usd": -3.6601,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 3.5381
+        },
+        "oos": {
+          "total_trades": 185,
+          "win_rate": 36.22,
+          "net_pnl_usd": -6.0953,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 6.0182
+        }
+      },
+      "FIL": {
+        "total": {
+          "total_trades": 396,
+          "win_rate": 48.48,
+          "net_pnl_usd": -10.2706,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 10.6351
+        },
+        "is": {
+          "total_trades": 165,
+          "win_rate": 43.64,
+          "net_pnl_usd": -5.121,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 5.3571
+        },
+        "oos": {
+          "total_trades": 231,
+          "win_rate": 51.95,
+          "net_pnl_usd": -5.1497,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 5.3955
+        }
+      },
+      "ALGO": {
+        "total": {
+          "total_trades": 362,
+          "win_rate": 40.61,
+          "net_pnl_usd": -11.2246,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 11.4489
+        },
+        "is": {
+          "total_trades": 163,
+          "win_rate": 39.88,
+          "net_pnl_usd": -4.6635,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 4.8081
+        },
+        "oos": {
+          "total_trades": 199,
+          "win_rate": 41.21,
+          "net_pnl_usd": -6.5611,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 6.7357
+        }
+      },
+      "SAND": {
+        "total": {
+          "total_trades": 283,
+          "win_rate": 41.34,
+          "net_pnl_usd": -7.5568,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 7.8526
+        },
+        "is": {
+          "total_trades": 136,
+          "win_rate": 38.24,
+          "net_pnl_usd": -3.3962,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 3.709
+        },
+        "oos": {
+          "total_trades": 147,
+          "win_rate": 44.22,
+          "net_pnl_usd": -4.1607,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 4.3183
+        }
+      },
+      "MANA": {
+        "total": {
+          "total_trades": 315,
+          "win_rate": 42.22,
+          "net_pnl_usd": -7.5507,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 7.8508
+        },
+        "is": {
+          "total_trades": 148,
+          "win_rate": 35.81,
+          "net_pnl_usd": -4.188,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 4.4889
+        },
+        "oos": {
+          "total_trades": 167,
+          "win_rate": 47.9,
+          "net_pnl_usd": -3.3627,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 3.668
+        }
+      },
+      "AXS": {
+        "total": {
+          "total_trades": 331,
+          "win_rate": 31.42,
+          "net_pnl_usd": -11.1671,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 11.2268
+        },
+        "is": {
+          "total_trades": 146,
+          "win_rate": 30.14,
+          "net_pnl_usd": -4.5132,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 4.5646
+        },
+        "oos": {
+          "total_trades": 185,
+          "win_rate": 32.43,
+          "net_pnl_usd": -6.6539,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 6.6179
+        }
+      },
+      "DYDX": {
+        "total": {
+          "total_trades": 415,
+          "win_rate": 42.41,
+          "net_pnl_usd": -12.6569,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 12.7141
+        },
+        "is": {
+          "total_trades": 187,
+          "win_rate": 44.39,
+          "net_pnl_usd": -4.6894,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 4.9231
+        },
+        "oos": {
+          "total_trades": 228,
+          "win_rate": 40.79,
+          "net_pnl_usd": -7.9675,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 7.8455
+        }
+      },
+      "1000BONK": {
+        "total": {
+          "total_trades": 401,
+          "win_rate": 45.39,
+          "net_pnl_usd": -12.0827,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 12.644
+        },
+        "is": {
+          "total_trades": 184,
+          "win_rate": 49.46,
+          "net_pnl_usd": -4.9318,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 5.1501
+        },
+        "oos": {
+          "total_trades": 217,
+          "win_rate": 41.94,
+          "net_pnl_usd": -7.151,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 7.5201
+        }
+      },
+      "1INCH": {
+        "total": {
+          "total_trades": 300,
+          "win_rate": 29.0,
+          "net_pnl_usd": -9.9172,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 9.9292
+        },
+        "is": {
+          "total_trades": 126,
+          "win_rate": 30.95,
+          "net_pnl_usd": -3.3636,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 3.3756
+        },
+        "oos": {
+          "total_trades": 174,
+          "win_rate": 27.59,
+          "net_pnl_usd": -6.5536,
+          "profit_factor": 0.22,
+          "max_drawdown_usd": 6.571
+        }
+      },
+      "PYTH": {
+        "total": {
+          "total_trades": 425,
+          "win_rate": 49.65,
+          "net_pnl_usd": -10.3599,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 10.3742
+        },
+        "is": {
+          "total_trades": 194,
+          "win_rate": 52.06,
+          "net_pnl_usd": -3.5442,
+          "profit_factor": 0.6,
+          "max_drawdown_usd": 3.7813
+        },
+        "oos": {
+          "total_trades": 231,
+          "win_rate": 47.62,
+          "net_pnl_usd": -6.8156,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 6.9942
+        }
+      },
+      "PENDLE": {
+        "total": {
+          "total_trades": 448,
+          "win_rate": 46.65,
+          "net_pnl_usd": -11.6427,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 11.6377
+        },
+        "is": {
+          "total_trades": 189,
+          "win_rate": 47.62,
+          "net_pnl_usd": -4.4849,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 4.5817
+        },
+        "oos": {
+          "total_trades": 259,
+          "win_rate": 45.95,
+          "net_pnl_usd": -7.1578,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 7.1528
+        }
+      },
+      "GRT": {
+        "total": {
+          "total_trades": 379,
+          "win_rate": 37.99,
+          "net_pnl_usd": -12.8222,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 12.9013
+        },
+        "is": {
+          "total_trades": 162,
+          "win_rate": 34.57,
+          "net_pnl_usd": -5.9578,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 6.0161
+        },
+        "oos": {
+          "total_trades": 217,
+          "win_rate": 40.55,
+          "net_pnl_usd": -6.8644,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 6.834
+        }
+      },
+      "STX": {
+        "total": {
+          "total_trades": 398,
+          "win_rate": 46.23,
+          "net_pnl_usd": -11.9731,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 12.3083
+        },
+        "is": {
+          "total_trades": 187,
+          "win_rate": 53.48,
+          "net_pnl_usd": -3.6745,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 4.0338
+        },
+        "oos": {
+          "total_trades": 211,
+          "win_rate": 39.81,
+          "net_pnl_usd": -8.2986,
+          "profit_factor": 0.29,
+          "max_drawdown_usd": 8.3429
+        }
+      },
+      "CHZ": {
+        "total": {
+          "total_trades": 317,
+          "win_rate": 39.43,
+          "net_pnl_usd": -8.1595,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 8.4074
+        },
+        "is": {
+          "total_trades": 130,
+          "win_rate": 40.77,
+          "net_pnl_usd": -3.1685,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 3.3757
+        },
+        "oos": {
+          "total_trades": 187,
+          "win_rate": 38.5,
+          "net_pnl_usd": -4.9911,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 4.9669
+        }
+      },
+      "ARKM": {
+        "total": {
+          "total_trades": 383,
+          "win_rate": 39.69,
+          "net_pnl_usd": -11.059,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 11.4653
+        },
+        "is": {
+          "total_trades": 174,
+          "win_rate": 36.78,
+          "net_pnl_usd": -5.4184,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 5.8544
+        },
+        "oos": {
+          "total_trades": 209,
+          "win_rate": 42.11,
+          "net_pnl_usd": -5.6406,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 5.6186
+        }
+      },
+      "SNX": {
+        "total": {
+          "total_trades": 349,
+          "win_rate": 38.68,
+          "net_pnl_usd": -10.2679,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 10.3959
+        },
+        "is": {
+          "total_trades": 148,
+          "win_rate": 38.51,
+          "net_pnl_usd": -3.6135,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 3.8018
+        },
+        "oos": {
+          "total_trades": 201,
+          "win_rate": 38.81,
+          "net_pnl_usd": -6.6544,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 6.6227
+        }
+      },
+      "MAGIC": {
+        "total": {
+          "total_trades": 280,
+          "win_rate": 39.64,
+          "net_pnl_usd": -6.5575,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 6.7616
+        },
+        "is": {
+          "total_trades": 140,
+          "win_rate": 37.14,
+          "net_pnl_usd": -3.7836,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 3.9625
+        },
+        "oos": {
+          "total_trades": 140,
+          "win_rate": 42.14,
+          "net_pnl_usd": -2.7739,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 2.8111
+        }
+      },
+      "EIGEN": {
+        "total": {
+          "total_trades": 443,
+          "win_rate": 45.37,
+          "net_pnl_usd": -13.4394,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 13.5861
+        },
+        "is": {
+          "total_trades": 194,
+          "win_rate": 44.85,
+          "net_pnl_usd": -5.3371,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 5.3729
+        },
+        "oos": {
+          "total_trades": 249,
+          "win_rate": 45.78,
+          "net_pnl_usd": -8.1023,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 8.3446
+        }
+      }
+    }
+  },
+  "Model_B_Cross_Exchange": {
+    "summary": {
+      "total": {
+        "total_trades": 12565,
+        "win_rate": 44.17,
+        "net_pnl_usd": -367.5004,
+        "profit_factor": 0.41,
+        "max_drawdown_usd": 367.5213
+      },
+      "is": {
+        "total_trades": 5815,
+        "win_rate": 44.51,
+        "net_pnl_usd": -157.26,
+        "profit_factor": 0.43,
+        "max_drawdown_usd": 157.4541
+      },
+      "oos": {
+        "total_trades": 6750,
+        "win_rate": 43.88,
+        "net_pnl_usd": -210.2404,
+        "profit_factor": 0.4,
+        "max_drawdown_usd": 210.2148
+      },
+      "wfe": -1.0
+    },
+    "coin_breakdown": {
+      "DOGE": {
+        "total": {
+          "total_trades": 225,
+          "win_rate": 40.89,
+          "net_pnl_usd": -5.3866,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 5.4075
+        },
+        "is": {
+          "total_trades": 119,
+          "win_rate": 40.34,
+          "net_pnl_usd": -3.2788,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 3.3625
+        },
+        "oos": {
+          "total_trades": 106,
+          "win_rate": 41.51,
+          "net_pnl_usd": -2.1078,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 2.0822
+        }
+      },
+      "ADA": {
+        "total": {
+          "total_trades": 257,
+          "win_rate": 49.03,
+          "net_pnl_usd": -5.2397,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 5.4034
+        },
+        "is": {
+          "total_trades": 117,
+          "win_rate": 49.57,
+          "net_pnl_usd": -2.1332,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 2.4297
+        },
+        "oos": {
+          "total_trades": 140,
+          "win_rate": 48.57,
+          "net_pnl_usd": -3.1065,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 2.9845
+        }
+      },
+      "AVAX": {
+        "total": {
+          "total_trades": 206,
+          "win_rate": 40.29,
+          "net_pnl_usd": -5.8888,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 5.8955
+        },
+        "is": {
+          "total_trades": 81,
+          "win_rate": 39.51,
+          "net_pnl_usd": -1.6658,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 1.8888
+        },
+        "oos": {
+          "total_trades": 125,
+          "win_rate": 40.8,
+          "net_pnl_usd": -4.223,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 4.3442
+        }
+      },
+      "APT": {
+        "total": {
+          "total_trades": 291,
+          "win_rate": 43.3,
+          "net_pnl_usd": -10.3222,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 10.4562
+        },
+        "is": {
+          "total_trades": 139,
+          "win_rate": 41.73,
+          "net_pnl_usd": -4.8224,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 4.9868
+        },
+        "oos": {
+          "total_trades": 152,
+          "win_rate": 44.74,
+          "net_pnl_usd": -5.4998,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 5.3955
+        }
+      },
+      "WIF": {
+        "total": {
+          "total_trades": 297,
+          "win_rate": 47.47,
+          "net_pnl_usd": -6.9431,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 7.0378
+        },
+        "is": {
+          "total_trades": 131,
+          "win_rate": 48.85,
+          "net_pnl_usd": -2.3332,
+          "profit_factor": 0.59,
+          "max_drawdown_usd": 2.428
+        },
+        "oos": {
+          "total_trades": 166,
+          "win_rate": 46.39,
+          "net_pnl_usd": -4.6098,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 4.7056
+        }
+      },
+      "ARB": {
+        "total": {
+          "total_trades": 366,
+          "win_rate": 49.45,
+          "net_pnl_usd": -12.144,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 12.4133
+        },
+        "is": {
+          "total_trades": 185,
+          "win_rate": 55.14,
+          "net_pnl_usd": -3.6049,
+          "profit_factor": 0.6,
+          "max_drawdown_usd": 3.8578
+        },
+        "oos": {
+          "total_trades": 181,
+          "win_rate": 43.65,
+          "net_pnl_usd": -8.5391,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 8.574
+        }
+      },
+      "OP": {
+        "total": {
+          "total_trades": 281,
+          "win_rate": 46.98,
+          "net_pnl_usd": -8.1451,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 8.0516
+        },
+        "is": {
+          "total_trades": 140,
+          "win_rate": 42.86,
+          "net_pnl_usd": -4.6827,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 4.5892
+        },
+        "oos": {
+          "total_trades": 141,
+          "win_rate": 51.06,
+          "net_pnl_usd": -3.4625,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 3.3405
+        }
+      },
+      "TIA": {
+        "total": {
+          "total_trades": 302,
+          "win_rate": 42.72,
+          "net_pnl_usd": -9.948,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 10.2882
+        },
+        "is": {
+          "total_trades": 150,
+          "win_rate": 45.33,
+          "net_pnl_usd": -4.3335,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 4.6737
+        },
+        "oos": {
+          "total_trades": 152,
+          "win_rate": 40.13,
+          "net_pnl_usd": -5.6145,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 5.579
+        }
+      },
+      "LDO": {
+        "total": {
+          "total_trades": 316,
+          "win_rate": 44.94,
+          "net_pnl_usd": -8.3194,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 8.4997
+        },
+        "is": {
+          "total_trades": 153,
+          "win_rate": 42.48,
+          "net_pnl_usd": -4.6072,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 4.4852
+        },
+        "oos": {
+          "total_trades": 163,
+          "win_rate": 47.24,
+          "net_pnl_usd": -3.7122,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 3.9011
+        }
+      },
+      "INJ": {
+        "total": {
+          "total_trades": 327,
+          "win_rate": 44.95,
+          "net_pnl_usd": -10.2692,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 10.1532
+        },
+        "is": {
+          "total_trades": 151,
+          "win_rate": 41.06,
+          "net_pnl_usd": -4.7361,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 4.6201
+        },
+        "oos": {
+          "total_trades": 176,
+          "win_rate": 48.3,
+          "net_pnl_usd": -5.5331,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 5.4944
+        }
+      },
+      "FET": {
+        "total": {
+          "total_trades": 255,
+          "win_rate": 49.41,
+          "net_pnl_usd": -6.4812,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 6.5377
+        },
+        "is": {
+          "total_trades": 100,
+          "win_rate": 45.0,
+          "net_pnl_usd": -3.0318,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 3.0504
+        },
+        "oos": {
+          "total_trades": 155,
+          "win_rate": 52.26,
+          "net_pnl_usd": -3.4493,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 3.5556
+        }
+      },
+      "AAVE": {
+        "total": {
+          "total_trades": 220,
+          "win_rate": 44.09,
+          "net_pnl_usd": -6.2907,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 6.3391
+        },
+        "is": {
+          "total_trades": 100,
+          "win_rate": 33.0,
+          "net_pnl_usd": -4.5922,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 4.6017
+        },
+        "oos": {
+          "total_trades": 120,
+          "win_rate": 53.33,
+          "net_pnl_usd": -1.6985,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 1.6481
+        }
+      },
+      "ATOM": {
+        "total": {
+          "total_trades": 245,
+          "win_rate": 41.63,
+          "net_pnl_usd": -7.1747,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 7.2085
+        },
+        "is": {
+          "total_trades": 104,
+          "win_rate": 44.23,
+          "net_pnl_usd": -2.4286,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 2.4837
+        },
+        "oos": {
+          "total_trades": 141,
+          "win_rate": 39.72,
+          "net_pnl_usd": -4.746,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 4.7601
+        }
+      },
+      "RENDER": {
+        "total": {
+          "total_trades": 268,
+          "win_rate": 38.81,
+          "net_pnl_usd": -9.8915,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 9.7939
+        },
+        "is": {
+          "total_trades": 115,
+          "win_rate": 32.17,
+          "net_pnl_usd": -5.1292,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 5.3023
+        },
+        "oos": {
+          "total_trades": 153,
+          "win_rate": 43.79,
+          "net_pnl_usd": -4.7623,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 4.9155
+        }
+      },
+      "SEI": {
+        "total": {
+          "total_trades": 237,
+          "win_rate": 40.51,
+          "net_pnl_usd": -7.2061,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 7.1528
+        },
+        "is": {
+          "total_trades": 105,
+          "win_rate": 40.0,
+          "net_pnl_usd": -2.8313,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 2.8494
+        },
+        "oos": {
+          "total_trades": 132,
+          "win_rate": 40.91,
+          "net_pnl_usd": -4.3748,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 4.3283
+        }
+      },
+      "ENA": {
+        "total": {
+          "total_trades": 294,
+          "win_rate": 46.94,
+          "net_pnl_usd": -11.5829,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 11.6485
+        },
+        "is": {
+          "total_trades": 139,
+          "win_rate": 48.2,
+          "net_pnl_usd": -4.9916,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 5.0572
+        },
+        "oos": {
+          "total_trades": 155,
+          "win_rate": 45.81,
+          "net_pnl_usd": -6.5913,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 6.4693
+        }
+      },
+      "JUP": {
+        "total": {
+          "total_trades": 324,
+          "win_rate": 50.0,
+          "net_pnl_usd": -8.1459,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 8.1977
+        },
+        "is": {
+          "total_trades": 153,
+          "win_rate": 49.67,
+          "net_pnl_usd": -3.4842,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 3.7027
+        },
+        "oos": {
+          "total_trades": 171,
+          "win_rate": 50.29,
+          "net_pnl_usd": -4.6617,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 4.9641
+        }
+      },
+      "CRV": {
+        "total": {
+          "total_trades": 345,
+          "win_rate": 44.93,
+          "net_pnl_usd": -10.9627,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 11.0053
+        },
+        "is": {
+          "total_trades": 175,
+          "win_rate": 49.14,
+          "net_pnl_usd": -4.2079,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 4.1792
+        },
+        "oos": {
+          "total_trades": 170,
+          "win_rate": 40.59,
+          "net_pnl_usd": -6.7547,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 6.8613
+        }
+      },
+      "DOT": {
+        "total": {
+          "total_trades": 249,
+          "win_rate": 44.18,
+          "net_pnl_usd": -8.4698,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 8.8192
+        },
+        "is": {
+          "total_trades": 120,
+          "win_rate": 47.5,
+          "net_pnl_usd": -3.662,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 3.9662
+        },
+        "oos": {
+          "total_trades": 129,
+          "win_rate": 41.09,
+          "net_pnl_usd": -4.8078,
+          "profit_factor": 0.29,
+          "max_drawdown_usd": 5.0689
+        }
+      },
+      "GALA": {
+        "total": {
+          "total_trades": 302,
+          "win_rate": 45.7,
+          "net_pnl_usd": -8.8935,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 8.9917
+        },
+        "is": {
+          "total_trades": 153,
+          "win_rate": 50.98,
+          "net_pnl_usd": -3.1254,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 3.1855
+        },
+        "oos": {
+          "total_trades": 149,
+          "win_rate": 40.27,
+          "net_pnl_usd": -5.7681,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 6.2633
+        }
+      },
+      "UNI": {
+        "total": {
+          "total_trades": 341,
+          "win_rate": 52.79,
+          "net_pnl_usd": -8.4807,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 8.5862
+        },
+        "is": {
+          "total_trades": 168,
+          "win_rate": 51.79,
+          "net_pnl_usd": -4.5684,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 4.6869
+        },
+        "oos": {
+          "total_trades": 173,
+          "win_rate": 53.76,
+          "net_pnl_usd": -3.9123,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 3.7903
+        }
+      },
+      "WLD": {
+        "total": {
+          "total_trades": 285,
+          "win_rate": 46.32,
+          "net_pnl_usd": -7.9516,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 7.9178
+        },
+        "is": {
+          "total_trades": 142,
+          "win_rate": 49.3,
+          "net_pnl_usd": -3.4203,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 3.3441
+        },
+        "oos": {
+          "total_trades": 143,
+          "win_rate": 43.36,
+          "net_pnl_usd": -4.5314,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 4.5263
+        }
+      },
+      "BNB": {
+        "total": {
+          "total_trades": 108,
+          "win_rate": 30.56,
+          "net_pnl_usd": -3.1623,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 3.0868
+        },
+        "is": {
+          "total_trades": 51,
+          "win_rate": 35.29,
+          "net_pnl_usd": -1.3089,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 1.349
+        },
+        "oos": {
+          "total_trades": 57,
+          "win_rate": 26.32,
+          "net_pnl_usd": -1.8534,
+          "profit_factor": 0.21,
+          "max_drawdown_usd": 1.8594
+        }
+      },
+      "BCH": {
+        "total": {
+          "total_trades": 229,
+          "win_rate": 41.92,
+          "net_pnl_usd": -6.0767,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 6.059
+        },
+        "is": {
+          "total_trades": 99,
+          "win_rate": 39.39,
+          "net_pnl_usd": -2.8112,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 3.0537
+        },
+        "oos": {
+          "total_trades": 130,
+          "win_rate": 43.85,
+          "net_pnl_usd": -3.2655,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 3.2532
+        }
+      },
+      "XLM": {
+        "total": {
+          "total_trades": 186,
+          "win_rate": 47.31,
+          "net_pnl_usd": -3.7151,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 4.2436
+        },
+        "is": {
+          "total_trades": 73,
+          "win_rate": 43.84,
+          "net_pnl_usd": -1.1475,
+          "profit_factor": 0.59,
+          "max_drawdown_usd": 1.1901
+        },
+        "oos": {
+          "total_trades": 113,
+          "win_rate": 49.56,
+          "net_pnl_usd": -2.5676,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 3.017
+        }
+      },
+      "DASH": {
+        "total": {
+          "total_trades": 340,
+          "win_rate": 50.29,
+          "net_pnl_usd": -9.5113,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 9.8241
+        },
+        "is": {
+          "total_trades": 188,
+          "win_rate": 52.66,
+          "net_pnl_usd": -4.6576,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 4.9536
+        },
+        "oos": {
+          "total_trades": 152,
+          "win_rate": 47.37,
+          "net_pnl_usd": -4.8537,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 5.0344
+        }
+      },
+      "HBAR": {
+        "total": {
+          "total_trades": 201,
+          "win_rate": 39.3,
+          "net_pnl_usd": -5.3374,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 5.4617
+        },
+        "is": {
+          "total_trades": 84,
+          "win_rate": 40.48,
+          "net_pnl_usd": -1.9626,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 2.1451
+        },
+        "oos": {
+          "total_trades": 117,
+          "win_rate": 38.46,
+          "net_pnl_usd": -3.3748,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 3.4674
+        }
+      },
+      "ETHFI": {
+        "total": {
+          "total_trades": 352,
+          "win_rate": 52.27,
+          "net_pnl_usd": -8.581,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 8.4739
+        },
+        "is": {
+          "total_trades": 176,
+          "win_rate": 50.57,
+          "net_pnl_usd": -4.855,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 4.8235
+        },
+        "oos": {
+          "total_trades": 176,
+          "win_rate": 53.98,
+          "net_pnl_usd": -3.726,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 3.604
+        }
+      },
+      "VIRTUAL": {
+        "total": {
+          "total_trades": 274,
+          "win_rate": 44.53,
+          "net_pnl_usd": -8.3204,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 8.3443
+        },
+        "is": {
+          "total_trades": 131,
+          "win_rate": 45.04,
+          "net_pnl_usd": -4.0635,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 4.0743
+        },
+        "oos": {
+          "total_trades": 143,
+          "win_rate": 44.06,
+          "net_pnl_usd": -4.257,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 4.319
+        }
+      },
+      "COMP": {
+        "total": {
+          "total_trades": 250,
+          "win_rate": 40.4,
+          "net_pnl_usd": -7.2768,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 7.6721
+        },
+        "is": {
+          "total_trades": 111,
+          "win_rate": 42.34,
+          "net_pnl_usd": -2.4722,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 2.7307
+        },
+        "oos": {
+          "total_trades": 139,
+          "win_rate": 38.85,
+          "net_pnl_usd": -4.8046,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 4.9972
+        }
+      },
+      "FIL": {
+        "total": {
+          "total_trades": 270,
+          "win_rate": 46.3,
+          "net_pnl_usd": -7.1951,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 7.6163
+        },
+        "is": {
+          "total_trades": 113,
+          "win_rate": 42.48,
+          "net_pnl_usd": -3.2629,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 3.5558
+        },
+        "oos": {
+          "total_trades": 157,
+          "win_rate": 49.04,
+          "net_pnl_usd": -3.9322,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 4.1714
+        }
+      },
+      "ALGO": {
+        "total": {
+          "total_trades": 257,
+          "win_rate": 39.3,
+          "net_pnl_usd": -9.4189,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 9.2969
+        },
+        "is": {
+          "total_trades": 111,
+          "win_rate": 40.54,
+          "net_pnl_usd": -3.5553,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 3.4333
+        },
+        "oos": {
+          "total_trades": 146,
+          "win_rate": 38.36,
+          "net_pnl_usd": -5.8636,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 5.8416
+        }
+      },
+      "SAND": {
+        "total": {
+          "total_trades": 209,
+          "win_rate": 40.67,
+          "net_pnl_usd": -6.7551,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 6.816
+        },
+        "is": {
+          "total_trades": 99,
+          "win_rate": 41.41,
+          "net_pnl_usd": -2.6873,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 2.9138
+        },
+        "oos": {
+          "total_trades": 110,
+          "win_rate": 40.0,
+          "net_pnl_usd": -4.0678,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 4.1127
+        }
+      },
+      "MANA": {
+        "total": {
+          "total_trades": 234,
+          "win_rate": 36.32,
+          "net_pnl_usd": -7.7147,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 7.7583
+        },
+        "is": {
+          "total_trades": 105,
+          "win_rate": 33.33,
+          "net_pnl_usd": -3.7496,
+          "profit_factor": 0.27,
+          "max_drawdown_usd": 3.7766
+        },
+        "oos": {
+          "total_trades": 129,
+          "win_rate": 38.76,
+          "net_pnl_usd": -3.9651,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 3.9817
+        }
+      },
+      "AXS": {
+        "total": {
+          "total_trades": 211,
+          "win_rate": 36.49,
+          "net_pnl_usd": -5.9324,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 5.8515
+        },
+        "is": {
+          "total_trades": 86,
+          "win_rate": 31.4,
+          "net_pnl_usd": -2.0984,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 2.0854
+        },
+        "oos": {
+          "total_trades": 125,
+          "win_rate": 40.0,
+          "net_pnl_usd": -3.834,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 3.712
+        }
+      },
+      "DYDX": {
+        "total": {
+          "total_trades": 290,
+          "win_rate": 44.48,
+          "net_pnl_usd": -8.221,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 8.5439
+        },
+        "is": {
+          "total_trades": 123,
+          "win_rate": 47.97,
+          "net_pnl_usd": -2.0724,
+          "profit_factor": 0.57,
+          "max_drawdown_usd": 2.617
+        },
+        "oos": {
+          "total_trades": 167,
+          "win_rate": 41.92,
+          "net_pnl_usd": -6.1485,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 6.153
+        }
+      },
+      "1000BONK": {
+        "total": {
+          "total_trades": 186,
+          "win_rate": 44.62,
+          "net_pnl_usd": -5.5634,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 5.8847
+        },
+        "is": {
+          "total_trades": 89,
+          "win_rate": 51.69,
+          "net_pnl_usd": -2.066,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 2.703
+        },
+        "oos": {
+          "total_trades": 97,
+          "win_rate": 38.14,
+          "net_pnl_usd": -3.4974,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 3.5378
+        }
+      },
+      "1INCH": {
+        "total": {
+          "total_trades": 226,
+          "win_rate": 30.53,
+          "net_pnl_usd": -7.9427,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 7.867
+        },
+        "is": {
+          "total_trades": 97,
+          "win_rate": 34.02,
+          "net_pnl_usd": -2.7099,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 2.7687
+        },
+        "oos": {
+          "total_trades": 129,
+          "win_rate": 27.91,
+          "net_pnl_usd": -5.2328,
+          "profit_factor": 0.2,
+          "max_drawdown_usd": 5.2502
+        }
+      },
+      "PYTH": {
+        "total": {
+          "total_trades": 311,
+          "win_rate": 50.8,
+          "net_pnl_usd": -7.109,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 7.1954
+        },
+        "is": {
+          "total_trades": 141,
+          "win_rate": 49.65,
+          "net_pnl_usd": -2.9903,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 2.9366
+        },
+        "oos": {
+          "total_trades": 170,
+          "win_rate": 51.76,
+          "net_pnl_usd": -4.1187,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 4.3694
+        }
+      },
+      "PENDLE": {
+        "total": {
+          "total_trades": 334,
+          "win_rate": 49.1,
+          "net_pnl_usd": -7.9482,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 7.9828
+        },
+        "is": {
+          "total_trades": 153,
+          "win_rate": 50.33,
+          "net_pnl_usd": -3.2638,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 3.3158
+        },
+        "oos": {
+          "total_trades": 181,
+          "win_rate": 48.07,
+          "net_pnl_usd": -4.6843,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 4.7655
+        }
+      },
+      "GRT": {
+        "total": {
+          "total_trades": 268,
+          "win_rate": 39.93,
+          "net_pnl_usd": -8.4105,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 8.5822
+        },
+        "is": {
+          "total_trades": 112,
+          "win_rate": 34.82,
+          "net_pnl_usd": -3.8875,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 4.0756
+        },
+        "oos": {
+          "total_trades": 156,
+          "win_rate": 43.59,
+          "net_pnl_usd": -4.5229,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 4.6121
+        }
+      },
+      "STX": {
+        "total": {
+          "total_trades": 286,
+          "win_rate": 46.15,
+          "net_pnl_usd": -7.9752,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 8.3103
+        },
+        "is": {
+          "total_trades": 135,
+          "win_rate": 53.33,
+          "net_pnl_usd": -2.1138,
+          "profit_factor": 0.63,
+          "max_drawdown_usd": 2.5416
+        },
+        "oos": {
+          "total_trades": 151,
+          "win_rate": 39.74,
+          "net_pnl_usd": -5.8613,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 5.8473
+        }
+      },
+      "CHZ": {
+        "total": {
+          "total_trades": 234,
+          "win_rate": 38.89,
+          "net_pnl_usd": -6.7617,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 6.9177
+        },
+        "is": {
+          "total_trades": 103,
+          "win_rate": 40.78,
+          "net_pnl_usd": -2.6213,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 2.8197
+        },
+        "oos": {
+          "total_trades": 131,
+          "win_rate": 37.4,
+          "net_pnl_usd": -4.1403,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 4.1463
+        }
+      },
+      "ARKM": {
+        "total": {
+          "total_trades": 290,
+          "win_rate": 36.55,
+          "net_pnl_usd": -10.9498,
+          "profit_factor": 0.29,
+          "max_drawdown_usd": 11.2681
+        },
+        "is": {
+          "total_trades": 128,
+          "win_rate": 35.94,
+          "net_pnl_usd": -5.1236,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 5.4419
+        },
+        "oos": {
+          "total_trades": 162,
+          "win_rate": 37.04,
+          "net_pnl_usd": -5.8262,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 5.8042
+        }
+      },
+      "SNX": {
+        "total": {
+          "total_trades": 259,
+          "win_rate": 36.68,
+          "net_pnl_usd": -9.5419,
+          "profit_factor": 0.29,
+          "max_drawdown_usd": 9.6699
+        },
+        "is": {
+          "total_trades": 118,
+          "win_rate": 37.29,
+          "net_pnl_usd": -3.9005,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 4.0793
+        },
+        "oos": {
+          "total_trades": 141,
+          "win_rate": 36.17,
+          "net_pnl_usd": -5.6414,
+          "profit_factor": 0.27,
+          "max_drawdown_usd": 5.6096
+        }
+      },
+      "MAGIC": {
+        "total": {
+          "total_trades": 215,
+          "win_rate": 43.72,
+          "net_pnl_usd": -4.255,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 4.4338
+        },
+        "is": {
+          "total_trades": 110,
+          "win_rate": 43.64,
+          "net_pnl_usd": -2.3534,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 2.5322
+        },
+        "oos": {
+          "total_trades": 105,
+          "win_rate": 43.81,
+          "net_pnl_usd": -1.9016,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 1.9136
+        }
+      },
+      "EIGEN": {
+        "total": {
+          "total_trades": 312,
+          "win_rate": 43.59,
+          "net_pnl_usd": -9.6875,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 9.6655
+        },
+        "is": {
+          "total_trades": 139,
+          "win_rate": 41.73,
+          "net_pnl_usd": -3.8545,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 4.0057
+        },
+        "oos": {
+          "total_trades": 173,
+          "win_rate": 45.09,
+          "net_pnl_usd": -5.833,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 6.176
+        }
+      }
+    }
+  },
+  "Model_C_Volume_Plus_OI": {
+    "summary": {
+      "total": {
+        "total_trades": 616,
+        "win_rate": 57.63,
+        "net_pnl_usd": -12.2758,
+        "profit_factor": 0.59,
+        "max_drawdown_usd": 12.659
+      },
+      "is": {
+        "total_trades": 238,
+        "win_rate": 59.24,
+        "net_pnl_usd": -4.7006,
+        "profit_factor": 0.58,
+        "max_drawdown_usd": 4.7692
+      },
+      "oos": {
+        "total_trades": 378,
+        "win_rate": 56.61,
+        "net_pnl_usd": -7.5752,
+        "profit_factor": 0.59,
+        "max_drawdown_usd": 8.1324
+      },
+      "wfe": -1.0
+    },
+    "coin_breakdown": {
+      "DOGE": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 71.43,
+          "net_pnl_usd": -0.1026,
+          "profit_factor": 0.58,
+          "max_drawdown_usd": 0.1715
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0489,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1514,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.1715
+        }
+      },
+      "ADA": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.2087,
+          "profit_factor": 32.03,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0067,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.2154,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "AVAX": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.2049,
+          "profit_factor": 1.84,
+          "max_drawdown_usd": 0.1555
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 10,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.2049,
+          "profit_factor": 1.84,
+          "max_drawdown_usd": 0.1555
+        }
+      },
+      "APT": {
+        "total": {
+          "total_trades": 17,
+          "win_rate": 64.71,
+          "net_pnl_usd": -0.2464,
+          "profit_factor": 0.62,
+          "max_drawdown_usd": 0.3469
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0559,
+          "profit_factor": 0.66,
+          "max_drawdown_usd": 0.0434
+        },
+        "oos": {
+          "total_trades": 11,
+          "win_rate": 63.64,
+          "net_pnl_usd": -0.1905,
+          "profit_factor": 0.61,
+          "max_drawdown_usd": 0.3469
+        }
+      },
+      "WIF": {
+        "total": {
+          "total_trades": 15,
+          "win_rate": 46.67,
+          "net_pnl_usd": -0.67,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.5681
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.366,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 12,
+          "win_rate": 58.33,
+          "net_pnl_usd": -0.304,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 0.3782
+        }
+      },
+      "ARB": {
+        "total": {
+          "total_trades": 48,
+          "win_rate": 64.58,
+          "net_pnl_usd": -0.3487,
+          "profit_factor": 0.83,
+          "max_drawdown_usd": 0.9462
+        },
+        "is": {
+          "total_trades": 29,
+          "win_rate": 55.17,
+          "net_pnl_usd": -0.7457,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.9462
+        },
+        "oos": {
+          "total_trades": 19,
+          "win_rate": 78.95,
+          "net_pnl_usd": 0.397,
+          "profit_factor": 1.81,
+          "max_drawdown_usd": 0.3952
+        }
+      },
+      "OP": {
+        "total": {
+          "total_trades": 23,
+          "win_rate": 65.22,
+          "net_pnl_usd": -0.0272,
+          "profit_factor": 0.97,
+          "max_drawdown_usd": 0.34
+        },
+        "is": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0729,
+          "profit_factor": 0.8,
+          "max_drawdown_usd": 0.2175
+        },
+        "oos": {
+          "total_trades": 14,
+          "win_rate": 64.29,
+          "net_pnl_usd": 0.0457,
+          "profit_factor": 1.08,
+          "max_drawdown_usd": 0.34
+        }
+      },
+      "TIA": {
+        "total": {
+          "total_trades": 20,
+          "win_rate": 55.0,
+          "net_pnl_usd": -0.5952,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 0.7645
+        },
+        "is": {
+          "total_trades": 9,
+          "win_rate": 55.56,
+          "net_pnl_usd": -0.2366,
+          "profit_factor": 0.52,
+          "max_drawdown_usd": 0.4058
+        },
+        "oos": {
+          "total_trades": 11,
+          "win_rate": 54.55,
+          "net_pnl_usd": -0.3587,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 0.322
+        }
+      },
+      "LDO": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 83.33,
+          "net_pnl_usd": 0.186,
+          "profit_factor": 1.76,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1186,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 77.78,
+          "net_pnl_usd": 0.0674,
+          "profit_factor": 1.28,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "INJ": {
+        "total": {
+          "total_trades": 23,
+          "win_rate": 69.57,
+          "net_pnl_usd": -0.1502,
+          "profit_factor": 0.82,
+          "max_drawdown_usd": 0.5371
+        },
+        "is": {
+          "total_trades": 8,
+          "win_rate": 87.5,
+          "net_pnl_usd": 0.1097,
+          "profit_factor": 1.9,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 15,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.2599,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 0.5371
+        }
+      },
+      "FET": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.1348,
+          "profit_factor": 0.72,
+          "max_drawdown_usd": 0.251
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0516,
+          "profit_factor": 1.42,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": -0.1864,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 0.251
+        }
+      },
+      "AAVE": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 77.78,
+          "net_pnl_usd": 0.1182,
+          "profit_factor": 1.53,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1504,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 71.43,
+          "net_pnl_usd": -0.0321,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "ATOM": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.2746,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.2633
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.1526,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.1413
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.122,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "RENDER": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.4424,
+          "profit_factor": 0.09,
+          "max_drawdown_usd": 0.488
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.1984,
+          "profit_factor": 0.19,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.244,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "SEI": {
+        "total": {
+          "total_trades": 18,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.1782,
+          "profit_factor": 0.76,
+          "max_drawdown_usd": 0.4224
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0938,
+          "profit_factor": 1.77,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 14,
+          "win_rate": 64.29,
+          "net_pnl_usd": -0.272,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 0.4224
+        }
+      },
+      "ENA": {
+        "total": {
+          "total_trades": 22,
+          "win_rate": 63.64,
+          "net_pnl_usd": -0.4471,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 0.5547
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.3037,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 16,
+          "win_rate": 68.75,
+          "net_pnl_usd": -0.1433,
+          "profit_factor": 0.77,
+          "max_drawdown_usd": 0.4948
+        }
+      },
+      "JUP": {
+        "total": {
+          "total_trades": 30,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0566,
+          "profit_factor": 1.05,
+          "max_drawdown_usd": 0.4741
+        },
+        "is": {
+          "total_trades": 16,
+          "win_rate": 68.75,
+          "net_pnl_usd": 0.1495,
+          "profit_factor": 1.35,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 14,
+          "win_rate": 64.29,
+          "net_pnl_usd": -0.0929,
+          "profit_factor": 0.85,
+          "max_drawdown_usd": 0.4741
+        }
+      },
+      "CRV": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 36.36,
+          "net_pnl_usd": -0.7292,
+          "profit_factor": 0.15,
+          "max_drawdown_usd": 0.8274
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2834,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 0.3394
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.4459,
+          "profit_factor": 0.09,
+          "max_drawdown_usd": 0.366
+        }
+      },
+      "DOT": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0986,
+          "profit_factor": 0.76,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1837,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0851,
+          "profit_factor": 2.98,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "GALA": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2863,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 0.366
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0276,
+          "profit_factor": 1.27,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.3138,
+          "profit_factor": 0.14,
+          "max_drawdown_usd": 0.366
+        }
+      },
+      "UNI": {
+        "total": {
+          "total_trades": 34,
+          "win_rate": 55.88,
+          "net_pnl_usd": -1.1862,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 1.1253
+        },
+        "is": {
+          "total_trades": 13,
+          "win_rate": 46.15,
+          "net_pnl_usd": -0.6917,
+          "profit_factor": 0.19,
+          "max_drawdown_usd": 0.6534
+        },
+        "oos": {
+          "total_trades": 21,
+          "win_rate": 61.9,
+          "net_pnl_usd": -0.4945,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 0.6813
+        }
+      },
+      "WLD": {
+        "total": {
+          "total_trades": 13,
+          "win_rate": 61.54,
+          "net_pnl_usd": -0.2291,
+          "profit_factor": 0.62,
+          "max_drawdown_usd": 0.366
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1565,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.2099
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": -0.0727,
+          "profit_factor": 0.8,
+          "max_drawdown_usd": 0.366
+        }
+      },
+      "BNB": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0087,
+          "profit_factor": 7.58,
+          "max_drawdown_usd": 0.0013
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.01,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0013,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "BCH": {
+        "total": {
+          "total_trades": 18,
+          "win_rate": 27.78,
+          "net_pnl_usd": -0.8838,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 0.9294
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0155,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 17,
+          "win_rate": 23.53,
+          "net_pnl_usd": -0.8993,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 0.9294
+        }
+      },
+      "XLM": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.3304,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 0.3518
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0037,
+          "profit_factor": 1.11,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.3341,
+          "profit_factor": 0.09,
+          "max_drawdown_usd": 0.3518
+        }
+      },
+      "DASH": {
+        "total": {
+          "total_trades": 39,
+          "win_rate": 53.85,
+          "net_pnl_usd": -1.0601,
+          "profit_factor": 0.5,
+          "max_drawdown_usd": 1.2164
+        },
+        "is": {
+          "total_trades": 25,
+          "win_rate": 56.0,
+          "net_pnl_usd": -0.6237,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 0.8461
+        },
+        "oos": {
+          "total_trades": 14,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.4364,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 0.6355
+        }
+      },
+      "HBAR": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.1809,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.1809,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "ETHFI": {
+        "total": {
+          "total_trades": 17,
+          "win_rate": 58.82,
+          "net_pnl_usd": -0.4269,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 0.5188
+        },
+        "is": {
+          "total_trades": 11,
+          "win_rate": 63.64,
+          "net_pnl_usd": -0.2261,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 0.3409
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2008,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.2352
+        }
+      },
+      "VIRTUAL": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 27.27,
+          "net_pnl_usd": -0.9291,
+          "profit_factor": 0.05,
+          "max_drawdown_usd": 0.8157
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.4794,
+          "profit_factor": 0.02,
+          "max_drawdown_usd": 0.366
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.4497,
+          "profit_factor": 0.08,
+          "max_drawdown_usd": 0.3277
+        }
+      },
+      "COMP": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 55.56,
+          "net_pnl_usd": -0.1773,
+          "profit_factor": 0.57,
+          "max_drawdown_usd": 0.2504
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.176,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0014,
+          "profit_factor": 0.99,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "FIL": {
+        "total": {
+          "total_trades": 22,
+          "win_rate": 54.55,
+          "net_pnl_usd": -0.6915,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 0.7056
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.4568,
+          "profit_factor": 0.06,
+          "max_drawdown_usd": 0.488
+        },
+        "oos": {
+          "total_trades": 16,
+          "win_rate": 62.5,
+          "net_pnl_usd": -0.2347,
+          "profit_factor": 0.66,
+          "max_drawdown_usd": 0.2777
+        }
+      },
+      "ALGO": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 70.0,
+          "net_pnl_usd": 0.0223,
+          "profit_factor": 1.06,
+          "max_drawdown_usd": 0.3259
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1487,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.1264,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 0.3259
+        }
+      },
+      "SAND": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0839,
+          "profit_factor": 1.69,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0839,
+          "profit_factor": 1.69,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "MANA": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2692,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 0.3233
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0679,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.2013,
+          "profit_factor": 0.18,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "AXS": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 70.0,
+          "net_pnl_usd": 0.0543,
+          "profit_factor": 1.21,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0233,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.031,
+          "profit_factor": 1.12,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "DYDX": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 22.22,
+          "net_pnl_usd": -0.5835,
+          "profit_factor": 0.16,
+          "max_drawdown_usd": 0.5071
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0764,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 14.29,
+          "net_pnl_usd": -0.5071,
+          "profit_factor": 0.11,
+          "max_drawdown_usd": 0.439
+        }
+      },
+      "1000BONK": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 77.78,
+          "net_pnl_usd": 0.0573,
+          "profit_factor": 1.23,
+          "max_drawdown_usd": 0.2006
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0781,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0208,
+          "profit_factor": 0.91,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "1INCH": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1685,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0577,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1108,
+          "profit_factor": 0.09,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "PYTH": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 88.89,
+          "net_pnl_usd": 0.39,
+          "profit_factor": 4.2,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 7,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.4783,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0884,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "PENDLE": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 27.27,
+          "net_pnl_usd": -0.8661,
+          "profit_factor": 0.11,
+          "max_drawdown_usd": 0.8125
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.366,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 37.5,
+          "net_pnl_usd": -0.5001,
+          "profit_factor": 0.18,
+          "max_drawdown_usd": 0.4465
+        }
+      },
+      "GRT": {
+        "total": {
+          "total_trades": 15,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0906,
+          "profit_factor": 1.15,
+          "max_drawdown_usd": 0.3303
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0543,
+          "profit_factor": 0.78,
+          "max_drawdown_usd": 0.2328
+        },
+        "oos": {
+          "total_trades": 10,
+          "win_rate": 70.0,
+          "net_pnl_usd": 0.1449,
+          "profit_factor": 1.42,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "STX": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0638,
+          "profit_factor": 1.26,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0856,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.1495,
+          "profit_factor": 2.23,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "CHZ": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.4024,
+          "profit_factor": 0.1,
+          "max_drawdown_usd": 0.2804
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.4024,
+          "profit_factor": 0.1,
+          "max_drawdown_usd": 0.2804
+        }
+      },
+      "ARKM": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 71.43,
+          "net_pnl_usd": 0.2102,
+          "profit_factor": 1.86,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.128,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0822,
+          "profit_factor": 1.34,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "SNX": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 16.67,
+          "net_pnl_usd": -0.4816,
+          "profit_factor": 0.02,
+          "max_drawdown_usd": 0.3713
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.2323,
+          "profit_factor": 0.05,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.2493,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.1273
+        }
+      },
+      "MAGIC": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.1857,
+          "profit_factor": 1.48,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.104,
+          "profit_factor": 1.85,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": 0.0817,
+          "profit_factor": 1.31,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "EIGEN": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.619,
+          "profit_factor": 0.15,
+          "max_drawdown_usd": 0.6567
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0843,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 28.57,
+          "net_pnl_usd": -0.5347,
+          "profit_factor": 0.12,
+          "max_drawdown_usd": 0.4791
+        }
+      }
+    }
+  },
+  "Model_D_Squeeze_Fade": {
+    "summary": {
+      "total": {
+        "total_trades": 634,
+        "win_rate": 49.05,
+        "net_pnl_usd": -22.262,
+        "profit_factor": 0.39,
+        "max_drawdown_usd": 22.14
+      },
+      "is": {
+        "total_trades": 248,
+        "win_rate": 53.63,
+        "net_pnl_usd": -7.0393,
+        "profit_factor": 0.44,
+        "max_drawdown_usd": 6.9859
+      },
+      "oos": {
+        "total_trades": 386,
+        "win_rate": 46.11,
+        "net_pnl_usd": -15.2227,
+        "profit_factor": 0.37,
+        "max_drawdown_usd": 15.2667
+      },
+      "wfe": -1.0
+    },
+    "coin_breakdown": {
+      "DOGE": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.2751,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.197
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.197,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.075
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0781,
+          "profit_factor": 0.68,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "ADA": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 45.45,
+          "net_pnl_usd": -0.3862,
+          "profit_factor": 0.41,
+          "max_drawdown_usd": 0.4186
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.4117,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.2897
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 71.43,
+          "net_pnl_usd": 0.0255,
+          "profit_factor": 1.1,
+          "max_drawdown_usd": 0.1434
+        }
+      },
+      "AVAX": {
+        "total": {
+          "total_trades": 13,
+          "win_rate": 38.46,
+          "net_pnl_usd": -0.6601,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.6154
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2799,
+          "profit_factor": 0.24,
+          "max_drawdown_usd": 0.2292
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 28.57,
+          "net_pnl_usd": -0.3802,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 0.3285
+        }
+      },
+      "APT": {
+        "total": {
+          "total_trades": 21,
+          "win_rate": 52.38,
+          "net_pnl_usd": -0.7958,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 0.6798
+        },
+        "is": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.1475,
+          "profit_factor": 0.6,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 14,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.6483,
+          "profit_factor": 0.24,
+          "max_drawdown_usd": 0.6667
+        }
+      },
+      "WIF": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 41.67,
+          "net_pnl_usd": -0.6414,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.6688
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0236,
+          "profit_factor": 0.81,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.6179,
+          "profit_factor": 0.16,
+          "max_drawdown_usd": 0.4959
+        }
+      },
+      "ARB": {
+        "total": {
+          "total_trades": 47,
+          "win_rate": 46.81,
+          "net_pnl_usd": -1.965,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 2.1383
+        },
+        "is": {
+          "total_trades": 26,
+          "win_rate": 42.31,
+          "net_pnl_usd": -1.3919,
+          "profit_factor": 0.24,
+          "max_drawdown_usd": 1.6673
+        },
+        "oos": {
+          "total_trades": 21,
+          "win_rate": 52.38,
+          "net_pnl_usd": -0.5731,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.726
+        }
+      },
+      "OP": {
+        "total": {
+          "total_trades": 18,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.5306,
+          "profit_factor": 0.52,
+          "max_drawdown_usd": 0.7257
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.1638,
+          "profit_factor": 2.34,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 13,
+          "win_rate": 38.46,
+          "net_pnl_usd": -0.6943,
+          "profit_factor": 0.29,
+          "max_drawdown_usd": 0.7257
+        }
+      },
+      "TIA": {
+        "total": {
+          "total_trades": 26,
+          "win_rate": 61.54,
+          "net_pnl_usd": -0.5802,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 0.6371
+        },
+        "is": {
+          "total_trades": 11,
+          "win_rate": 72.73,
+          "net_pnl_usd": -0.0556,
+          "profit_factor": 0.78,
+          "max_drawdown_usd": 0.1915
+        },
+        "oos": {
+          "total_trades": 15,
+          "win_rate": 53.33,
+          "net_pnl_usd": -0.5246,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 0.5557
+        }
+      },
+      "LDO": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 45.45,
+          "net_pnl_usd": -0.5666,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 0.6153
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2232,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 0.2638
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.3434,
+          "profit_factor": 0.06,
+          "max_drawdown_usd": 0.2295
+        }
+      },
+      "INJ": {
+        "total": {
+          "total_trades": 17,
+          "win_rate": 58.82,
+          "net_pnl_usd": -0.2522,
+          "profit_factor": 0.7,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0901,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 15,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1621,
+          "profit_factor": 0.78,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "FET": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 16.67,
+          "net_pnl_usd": -0.589,
+          "profit_factor": 0.03,
+          "max_drawdown_usd": 0.467
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.122,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.467,
+          "profit_factor": 0.04,
+          "max_drawdown_usd": 0.345
+        }
+      },
+      "AAVE": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.3652,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.352
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0133,
+          "profit_factor": 0.89,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.352,
+          "profit_factor": 0.04,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "ATOM": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.269,
+          "profit_factor": 0.15,
+          "max_drawdown_usd": 0.3163
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0374,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.3064,
+          "profit_factor": 0.03,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "RENDER": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 77.78,
+          "net_pnl_usd": 0.249,
+          "profit_factor": 2.46,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.0857,
+          "profit_factor": 2.75,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.1633,
+          "profit_factor": 2.34,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "SEI": {
+        "total": {
+          "total_trades": 17,
+          "win_rate": 35.29,
+          "net_pnl_usd": -1.1178,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 1.1574
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0861,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 12,
+          "win_rate": 25.0,
+          "net_pnl_usd": -1.0317,
+          "profit_factor": 0.06,
+          "max_drawdown_usd": 1.0852
+        }
+      },
+      "ENA": {
+        "total": {
+          "total_trades": 22,
+          "win_rate": 59.09,
+          "net_pnl_usd": -0.6241,
+          "profit_factor": 0.43,
+          "max_drawdown_usd": 0.6565
+        },
+        "is": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.152,
+          "profit_factor": 0.58,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 13,
+          "win_rate": 53.85,
+          "net_pnl_usd": -0.4721,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.5782
+        }
+      },
+      "JUP": {
+        "total": {
+          "total_trades": 19,
+          "win_rate": 68.42,
+          "net_pnl_usd": -0.017,
+          "profit_factor": 0.98,
+          "max_drawdown_usd": 0.2634
+        },
+        "is": {
+          "total_trades": 10,
+          "win_rate": 70.0,
+          "net_pnl_usd": -0.018,
+          "profit_factor": 0.95,
+          "max_drawdown_usd": 0.2634
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0011,
+          "profit_factor": 1.0,
+          "max_drawdown_usd": 0.2355
+        }
+      },
+      "CRV": {
+        "total": {
+          "total_trades": 15,
+          "win_rate": 46.67,
+          "net_pnl_usd": -0.539,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 0.732
+        },
+        "is": {
+          "total_trades": 7,
+          "win_rate": 71.43,
+          "net_pnl_usd": 0.0382,
+          "profit_factor": 1.32,
+          "max_drawdown_usd": 0.0756
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.5771,
+          "profit_factor": 0.21,
+          "max_drawdown_usd": 0.732
+        }
+      },
+      "DOT": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.5637,
+          "profit_factor": 0.12,
+          "max_drawdown_usd": 0.4417
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.207,
+          "profit_factor": 0.15,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.3567,
+          "profit_factor": 0.1,
+          "max_drawdown_usd": 0.2749
+        }
+      },
+      "GALA": {
+        "total": {
+          "total_trades": 13,
+          "win_rate": 30.77,
+          "net_pnl_usd": -0.6725,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.7207
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0738,
+          "profit_factor": 0.4,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 10,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.5987,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 0.4767
+        }
+      },
+      "UNI": {
+        "total": {
+          "total_trades": 24,
+          "win_rate": 45.83,
+          "net_pnl_usd": -1.2044,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 1.2435
+        },
+        "is": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.4916,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 0.5307
+        },
+        "oos": {
+          "total_trades": 15,
+          "win_rate": 46.67,
+          "net_pnl_usd": -0.7128,
+          "profit_factor": 0.27,
+          "max_drawdown_usd": 0.7859
+        }
+      },
+      "WLD": {
+        "total": {
+          "total_trades": 13,
+          "win_rate": 61.54,
+          "net_pnl_usd": -0.1016,
+          "profit_factor": 0.83,
+          "max_drawdown_usd": 0.4855
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": 0.0639,
+          "profit_factor": 1.26,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": -0.1655,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.1624
+        }
+      },
+      "BNB": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0417,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 0.0621
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0204,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0621,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "BCH": {
+        "total": {
+          "total_trades": 21,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.977,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 1.003
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2302,
+          "profit_factor": 0.08,
+          "max_drawdown_usd": 0.1288
+        },
+        "oos": {
+          "total_trades": 16,
+          "win_rate": 43.75,
+          "net_pnl_usd": -0.7468,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 1.003
+        }
+      },
+      "XLM": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.3395,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 0.5844
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.2008,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.5403,
+          "profit_factor": 0.11,
+          "max_drawdown_usd": 0.5844
+        }
+      },
+      "DASH": {
+        "total": {
+          "total_trades": 33,
+          "win_rate": 63.64,
+          "net_pnl_usd": -0.3659,
+          "profit_factor": 0.72,
+          "max_drawdown_usd": 0.6119
+        },
+        "is": {
+          "total_trades": 22,
+          "win_rate": 59.09,
+          "net_pnl_usd": -0.437,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 0.6119
+        },
+        "oos": {
+          "total_trades": 11,
+          "win_rate": 72.73,
+          "net_pnl_usd": 0.0711,
+          "profit_factor": 1.25,
+          "max_drawdown_usd": 0.1421
+        }
+      },
+      "HBAR": {
+        "total": {
+          "total_trades": 13,
+          "win_rate": 53.85,
+          "net_pnl_usd": -0.3928,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 0.3891
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 13,
+          "win_rate": 53.85,
+          "net_pnl_usd": -0.3928,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 0.3891
+        }
+      },
+      "ETHFI": {
+        "total": {
+          "total_trades": 15,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.2648,
+          "profit_factor": 0.64,
+          "max_drawdown_usd": 0.2604
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1787,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.086,
+          "profit_factor": 0.76,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "VIRTUAL": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 58.33,
+          "net_pnl_usd": -0.3142,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 0.2386
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0909,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.0722
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2233,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 0.2386
+        }
+      },
+      "COMP": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 30.0,
+          "net_pnl_usd": -0.5692,
+          "profit_factor": 0.24,
+          "max_drawdown_usd": 0.7395
+        },
+        "is": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.308,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 0.4782
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.2613,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "FIL": {
+        "total": {
+          "total_trades": 28,
+          "win_rate": 64.29,
+          "net_pnl_usd": -0.3462,
+          "profit_factor": 0.68,
+          "max_drawdown_usd": 0.5696
+        },
+        "is": {
+          "total_trades": 10,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1639,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.282
+        },
+        "oos": {
+          "total_trades": 18,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.1823,
+          "profit_factor": 0.75,
+          "max_drawdown_usd": 0.4081
+        }
+      },
+      "ALGO": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.5464,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 0.5556
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0092,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.5556,
+          "profit_factor": 0.22,
+          "max_drawdown_usd": 0.4574
+        }
+      },
+      "SAND": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 36.36,
+          "net_pnl_usd": -0.1833,
+          "profit_factor": 0.63,
+          "max_drawdown_usd": 0.3545
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.0206,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.1486
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.1627,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.2643
+        }
+      },
+      "MANA": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.0705,
+          "profit_factor": 0.78,
+          "max_drawdown_usd": 0.1987
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0251,
+          "profit_factor": 0.87,
+          "max_drawdown_usd": 0.1987
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0455,
+          "profit_factor": 0.63,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "AXS": {
+        "total": {
+          "total_trades": 14,
+          "win_rate": 64.29,
+          "net_pnl_usd": 0.0773,
+          "profit_factor": 1.15,
+          "max_drawdown_usd": 0.2385
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": 0.0013,
+          "profit_factor": 1.01,
+          "max_drawdown_usd": 0.0553
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.076,
+          "profit_factor": 1.22,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "DYDX": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 12.5,
+          "net_pnl_usd": -0.4832,
+          "profit_factor": 0.2,
+          "max_drawdown_usd": 0.3612
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.2203,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 0.171
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.2629,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.1632
+        }
+      },
+      "1000BONK": {
+        "total": {
+          "total_trades": 17,
+          "win_rate": 47.06,
+          "net_pnl_usd": -0.7351,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 0.8163
+        },
+        "is": {
+          "total_trades": 8,
+          "win_rate": 37.5,
+          "net_pnl_usd": -0.4971,
+          "profit_factor": 0.19,
+          "max_drawdown_usd": 0.4659
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 55.56,
+          "net_pnl_usd": -0.2381,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.2441
+        }
+      },
+      "1INCH": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1023,
+          "profit_factor": 0.16,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.122,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0197,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "PYTH": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.4148,
+          "profit_factor": 0.32,
+          "max_drawdown_usd": 0.2928
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.244,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.1708,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.1802
+        }
+      },
+      "PENDLE": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0183,
+          "profit_factor": 0.54,
+          "max_drawdown_usd": 0.0399
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0215,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0399,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "GRT": {
+        "total": {
+          "total_trades": 14,
+          "win_rate": 14.29,
+          "net_pnl_usd": -1.42,
+          "profit_factor": 0.03,
+          "max_drawdown_usd": 1.298
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.2335,
+          "profit_factor": 0.04,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 11,
+          "win_rate": 9.09,
+          "net_pnl_usd": -1.1865,
+          "profit_factor": 0.03,
+          "max_drawdown_usd": 1.0645
+        }
+      },
+      "STX": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.311,
+          "profit_factor": 0.15,
+          "max_drawdown_usd": 0.366
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.2331,
+          "profit_factor": 0.04,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0779,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "CHZ": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 28.57,
+          "net_pnl_usd": -0.4707,
+          "profit_factor": 0.15,
+          "max_drawdown_usd": 0.5523
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0413,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 16.67,
+          "net_pnl_usd": -0.512,
+          "profit_factor": 0.07,
+          "max_drawdown_usd": 0.4303
+        }
+      },
+      "ARKM": {
+        "total": {
+          "total_trades": 14,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.5164,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 0.488
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1837,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 10,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.3327,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 0.488
+        }
+      },
+      "SNX": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.6301,
+          "profit_factor": 0.09,
+          "max_drawdown_usd": 0.5176
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.4717,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.3497
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1584,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "MAGIC": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 55.56,
+          "net_pnl_usd": -0.1956,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 0.2578
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1471,
+          "profit_factor": 0.13,
+          "max_drawdown_usd": 0.0467
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0484,
+          "profit_factor": 0.77,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "EIGEN": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 70.0,
+          "net_pnl_usd": -0.1629,
+          "profit_factor": 0.55,
+          "max_drawdown_usd": 0.2512
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0686,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.2315,
+          "profit_factor": 0.37,
+          "max_drawdown_usd": 0.2512
+        }
+      }
+    }
+  },
+  "Model_E_Trend_Sniper": {
+    "summary": {
+      "total": {
+        "total_trades": 342,
+        "win_rate": 57.31,
+        "net_pnl_usd": -7.3723,
+        "profit_factor": 0.56,
+        "max_drawdown_usd": 7.4314
+      },
+      "is": {
+        "total_trades": 137,
+        "win_rate": 58.39,
+        "net_pnl_usd": -3.299,
+        "profit_factor": 0.5,
+        "max_drawdown_usd": 3.3275
+      },
+      "oos": {
+        "total_trades": 205,
+        "win_rate": 56.59,
+        "net_pnl_usd": -4.0733,
+        "profit_factor": 0.6,
+        "max_drawdown_usd": 4.2347
+      },
+      "wfe": -1.0
+    },
+    "coin_breakdown": {
+      "DOGE": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": -0.0629,
+          "profit_factor": 0.48,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0285,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0914,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "ADA": {
+        "total": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0191,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0191,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "AVAX": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.302,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.3555
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.302,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.3555
+        }
+      },
+      "APT": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 63.64,
+          "net_pnl_usd": -0.2355,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 0.2669
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.255,
+          "profit_factor": 0.11,
+          "max_drawdown_usd": 0.1654
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 83.33,
+          "net_pnl_usd": 0.0195,
+          "profit_factor": 1.16,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "WIF": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.4723,
+          "profit_factor": 0.23,
+          "max_drawdown_usd": 0.3601
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1122,
+          "profit_factor": 0.08,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.3601,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "ARB": {
+        "total": {
+          "total_trades": 29,
+          "win_rate": 65.52,
+          "net_pnl_usd": -0.3477,
+          "profit_factor": 0.72,
+          "max_drawdown_usd": 0.6612
+        },
+        "is": {
+          "total_trades": 15,
+          "win_rate": 46.67,
+          "net_pnl_usd": -0.637,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 0.6612
+        },
+        "oos": {
+          "total_trades": 14,
+          "win_rate": 85.71,
+          "net_pnl_usd": 0.2893,
+          "profit_factor": 2.19,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "OP": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.1611,
+          "profit_factor": 1.33,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0842,
+          "profit_factor": 1.69,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": 0.077,
+          "profit_factor": 1.21,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "TIA": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.4347,
+          "profit_factor": 0.29,
+          "max_drawdown_usd": 0.4874
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.162,
+          "profit_factor": 0.34,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2727,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.2265
+        }
+      },
+      "LDO": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 83.33,
+          "net_pnl_usd": 0.0591,
+          "profit_factor": 1.48,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0499,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.0092,
+          "profit_factor": 1.08,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "INJ": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 83.33,
+          "net_pnl_usd": 0.2171,
+          "profit_factor": 1.89,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": -0.054,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 87.5,
+          "net_pnl_usd": 0.2711,
+          "profit_factor": 3.22,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "FET": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.1571,
+          "profit_factor": 2.29,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.1571,
+          "profit_factor": 2.29,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "AAVE": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0776,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0776,
+          "profit_factor": 0.65,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "ATOM": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0306,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0193
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0306,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0193
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "RENDER": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.366,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.122,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.244,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "SEI": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0664,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.2527
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0938,
+          "profit_factor": 1.77,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": -0.1602,
+          "profit_factor": 0.56,
+          "max_drawdown_usd": 0.2527
+        }
+      },
+      "ENA": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 72.73,
+          "net_pnl_usd": -0.0279,
+          "profit_factor": 0.92,
+          "max_drawdown_usd": 0.1772
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.2314,
+          "profit_factor": 0.05,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 87.5,
+          "net_pnl_usd": 0.2035,
+          "profit_factor": 2.67,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "JUP": {
+        "total": {
+          "total_trades": 19,
+          "win_rate": 57.89,
+          "net_pnl_usd": -0.2437,
+          "profit_factor": 0.73,
+          "max_drawdown_usd": 0.4921
+        },
+        "is": {
+          "total_trades": 10,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0488,
+          "profit_factor": 0.88,
+          "max_drawdown_usd": 0.1692
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 55.56,
+          "net_pnl_usd": -0.1948,
+          "profit_factor": 0.6,
+          "max_drawdown_usd": 0.488
+        }
+      },
+      "CRV": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.4337,
+          "profit_factor": 0.11,
+          "max_drawdown_usd": 0.479
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0677,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.366,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "DOT": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2271,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2271,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "GALA": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.3021,
+          "profit_factor": 0.12,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.1004,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2016,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "UNI": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0732,
+          "profit_factor": 1.2,
+          "max_drawdown_usd": 0.2056
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": -0.0594,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.1326,
+          "profit_factor": 1.54,
+          "max_drawdown_usd": 0.2056
+        }
+      },
+      "WLD": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 71.43,
+          "net_pnl_usd": -0.022,
+          "profit_factor": 0.91,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": -0.062,
+          "profit_factor": 0.49,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0401,
+          "profit_factor": 1.33,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "BNB": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0087,
+          "profit_factor": 7.58,
+          "max_drawdown_usd": 0.0013
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.01,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0013,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "BCH": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 55.56,
+          "net_pnl_usd": -0.0044,
+          "profit_factor": 0.99,
+          "max_drawdown_usd": 0.366
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0155,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.02,
+          "profit_factor": 0.95,
+          "max_drawdown_usd": 0.366
+        }
+      },
+      "XLM": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0901,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0901,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "DASH": {
+        "total": {
+          "total_trades": 24,
+          "win_rate": 45.83,
+          "net_pnl_usd": -1.2164,
+          "profit_factor": 0.18,
+          "max_drawdown_usd": 1.2447
+        },
+        "is": {
+          "total_trades": 15,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.5082,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.5365
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 22.22,
+          "net_pnl_usd": -0.7082,
+          "profit_factor": 0.07,
+          "max_drawdown_usd": 0.6008
+        }
+      },
+      "HBAR": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0815,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0815,
+          "profit_factor": 0.33,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "ETHFI": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.3598,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 0.4285
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2034,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 0.366
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.1565,
+          "profit_factor": 0.18,
+          "max_drawdown_usd": 0.1909
+        }
+      },
+      "VIRTUAL": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 28.57,
+          "net_pnl_usd": -0.5717,
+          "profit_factor": 0.06,
+          "max_drawdown_usd": 0.4497
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.366,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2057,
+          "profit_factor": 0.16,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "COMP": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": -0.0181,
+          "profit_factor": 0.85,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.056,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0741,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "FIL": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.1064,
+          "profit_factor": 0.76,
+          "max_drawdown_usd": 0.1611
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0849,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0214,
+          "profit_factor": 0.93,
+          "max_drawdown_usd": 0.1611
+        }
+      },
+      "ALGO": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1585,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 0.23
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.1585,
+          "profit_factor": 0.35,
+          "max_drawdown_usd": 0.23
+        }
+      },
+      "SAND": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0776,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0776,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "MANA": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1899,
+          "profit_factor": 0.22,
+          "max_drawdown_usd": 0.244
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0679,
+          "profit_factor": 0.44,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.122,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "AXS": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 16.67,
+          "net_pnl_usd": -0.4746,
+          "profit_factor": 0.05,
+          "max_drawdown_usd": 0.4993
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 16.67,
+          "net_pnl_usd": -0.4746,
+          "profit_factor": 0.05,
+          "max_drawdown_usd": 0.4993
+        }
+      },
+      "DYDX": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 20.0,
+          "net_pnl_usd": -0.2807,
+          "profit_factor": 0.14,
+          "max_drawdown_usd": 0.3263
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0456,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.3263,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.2582
+        }
+      },
+      "1000BONK": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": -0.0052,
+          "profit_factor": 0.96,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0865,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0917,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "1INCH": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.2504,
+          "profit_factor": 0.16,
+          "max_drawdown_usd": 0.1765
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0739,
+          "profit_factor": 0.39,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.1765,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "PYTH": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.4676,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 6,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.4676,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "PENDLE": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.6637,
+          "profit_factor": 0.09,
+          "max_drawdown_usd": 0.61
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.366,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.244
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2977,
+          "profit_factor": 0.19,
+          "max_drawdown_usd": 0.244
+        }
+      },
+      "GRT": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.425,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1617,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.2633,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "STX": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0424,
+          "profit_factor": 1.35,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0856,
+          "profit_factor": 0.3,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.128,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "CHZ": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.3246,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.2026
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.3246,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.2026
+        }
+      },
+      "ARKM": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.012,
+          "profit_factor": 1.05,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.012,
+          "profit_factor": 1.05,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "SNX": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0882,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.122
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0882,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "MAGIC": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.2032,
+          "profit_factor": 0.58,
+          "max_drawdown_usd": 0.178
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.3,
+          "profit_factor": 0.18,
+          "max_drawdown_usd": 0.178
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0968,
+          "profit_factor": 1.79,
+          "max_drawdown_usd": 0.122
+        }
+      },
+      "EIGEN": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1974,
+          "profit_factor": 0.19,
+          "max_drawdown_usd": 0.2351
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0843,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.122
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1131,
+          "profit_factor": 0.07,
+          "max_drawdown_usd": 0.122
+        }
+      }
+    }
+  },
+  "Model_G_Sniper_Maker": {
+    "summary": {
+      "total": {
+        "total_trades": 294,
+        "win_rate": 56.46,
+        "net_pnl_usd": -1.5666,
+        "profit_factor": 0.88,
+        "max_drawdown_usd": 2.7004
+      },
+      "is": {
+        "total_trades": 121,
+        "win_rate": 56.2,
+        "net_pnl_usd": -0.3939,
+        "profit_factor": 0.92,
+        "max_drawdown_usd": 0.5964
+      },
+      "oos": {
+        "total_trades": 173,
+        "win_rate": 56.65,
+        "net_pnl_usd": -1.1727,
+        "profit_factor": 0.84,
+        "max_drawdown_usd": 2.2228
+      },
+      "wfe": -1.0
+    },
+    "coin_breakdown": {
+      "DOGE": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0667,
+          "profit_factor": 0.68,
+          "max_drawdown_usd": 0.156
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0892,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.156,
+          "profit_factor": 0.25,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "ADA": {
+        "total": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0444,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0444,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "AVAX": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.0449,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.1264
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": -0.0449,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.1264
+        }
+      },
+      "APT": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 37.5,
+          "net_pnl_usd": -0.269,
+          "profit_factor": 0.38,
+          "max_drawdown_usd": 0.1794
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.1794,
+          "profit_factor": 0.2,
+          "max_drawdown_usd": 0.1193
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0895,
+          "profit_factor": 0.57,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "WIF": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.3731,
+          "profit_factor": 0.28,
+          "max_drawdown_usd": 0.3071
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0661,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 42.86,
+          "net_pnl_usd": -0.3071,
+          "profit_factor": 0.26,
+          "max_drawdown_usd": 0.208
+        }
+      },
+      "ARB": {
+        "total": {
+          "total_trades": 25,
+          "win_rate": 56.0,
+          "net_pnl_usd": -0.1886,
+          "profit_factor": 0.84,
+          "max_drawdown_usd": 0.4764
+        },
+        "is": {
+          "total_trades": 14,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1956,
+          "profit_factor": 0.73,
+          "max_drawdown_usd": 0.312
+        },
+        "oos": {
+          "total_trades": 11,
+          "win_rate": 63.64,
+          "net_pnl_usd": 0.007,
+          "profit_factor": 1.02,
+          "max_drawdown_usd": 0.2735
+        }
+      },
+      "OP": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.3796,
+          "profit_factor": 2.83,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.173,
+          "profit_factor": 2.66,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 6,
+          "win_rate": 83.33,
+          "net_pnl_usd": 0.2066,
+          "profit_factor": 2.99,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "TIA": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0785,
+          "profit_factor": 1.25,
+          "max_drawdown_usd": 0.144
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0674,
+          "profit_factor": 1.65,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": 0.0112,
+          "profit_factor": 1.05,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "LDO": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0582,
+          "profit_factor": 1.56,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0582,
+          "profit_factor": 1.56,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "INJ": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 81.82,
+          "net_pnl_usd": 0.2479,
+          "profit_factor": 2.19,
+          "max_drawdown_usd": 0.1693
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1024,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.1693
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.3503,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "FET": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0039,
+          "profit_factor": 1.04,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0039,
+          "profit_factor": 1.04,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "AAVE": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0327,
+          "profit_factor": 1.31,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0327,
+          "profit_factor": 1.31,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "ATOM": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0129,
+          "profit_factor": 1.66,
+          "max_drawdown_usd": 0.0196
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.0129,
+          "profit_factor": 1.66,
+          "max_drawdown_usd": 0.0196
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "RENDER": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.1525,
+          "profit_factor": 0.27,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.104,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0485,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "SEI": {
+        "total": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": 0.0489,
+          "profit_factor": 1.16,
+          "max_drawdown_usd": 0.208
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0864,
+          "profit_factor": 1.83,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 60.0,
+          "net_pnl_usd": -0.0375,
+          "profit_factor": 0.82,
+          "max_drawdown_usd": 0.208
+        }
+      },
+      "ENA": {
+        "total": {
+          "total_trades": 10,
+          "win_rate": 70.0,
+          "net_pnl_usd": 0.1579,
+          "profit_factor": 1.51,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.062,
+          "profit_factor": 0.7,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 7,
+          "win_rate": 85.71,
+          "net_pnl_usd": 0.2199,
+          "profit_factor": 3.11,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "JUP": {
+        "total": {
+          "total_trades": 15,
+          "win_rate": 53.33,
+          "net_pnl_usd": 0.152,
+          "profit_factor": 1.24,
+          "max_drawdown_usd": 0.312
+        },
+        "is": {
+          "total_trades": 10,
+          "win_rate": 60.0,
+          "net_pnl_usd": 0.2474,
+          "profit_factor": 1.8,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.0954,
+          "profit_factor": 0.69,
+          "max_drawdown_usd": 0.312
+        }
+      },
+      "CRV": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1663,
+          "profit_factor": 0.47,
+          "max_drawdown_usd": 0.2736
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0142,
+          "profit_factor": 1.14,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.1805,
+          "profit_factor": 0.13,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "DOT": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0286,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.208
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0286,
+          "profit_factor": 0.86,
+          "max_drawdown_usd": 0.208
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "GALA": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.1134,
+          "profit_factor": 0.64,
+          "max_drawdown_usd": 0.208
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.104,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0094,
+          "profit_factor": 0.95,
+          "max_drawdown_usd": 0.208
+        }
+      },
+      "UNI": {
+        "total": {
+          "total_trades": 12,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0275,
+          "profit_factor": 1.07,
+          "max_drawdown_usd": 0.1948
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.037,
+          "profit_factor": 1.36,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": -0.0095,
+          "profit_factor": 0.97,
+          "max_drawdown_usd": 0.1948
+        }
+      },
+      "WLD": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.4173,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 4,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1438,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.2735,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "BNB": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0774,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0511,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0263,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "BCH": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.3222,
+          "profit_factor": 2.32,
+          "max_drawdown_usd": 0.1547
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0404,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 62.5,
+          "net_pnl_usd": 0.2818,
+          "profit_factor": 2.16,
+          "max_drawdown_usd": 0.1547
+        }
+      },
+      "XLM": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0506,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0506,
+          "profit_factor": 0.51,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "DASH": {
+        "total": {
+          "total_trades": 21,
+          "win_rate": 47.62,
+          "net_pnl_usd": -0.5401,
+          "profit_factor": 0.53,
+          "max_drawdown_usd": 0.5237
+        },
+        "is": {
+          "total_trades": 12,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1824,
+          "profit_factor": 0.71,
+          "max_drawdown_usd": 0.208
+        },
+        "oos": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.3577,
+          "profit_factor": 0.31,
+          "max_drawdown_usd": 0.3044
+        }
+      },
+      "HBAR": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0662,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0662,
+          "profit_factor": 0.36,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "ETHFI": {
+        "total": {
+          "total_trades": 9,
+          "win_rate": 44.44,
+          "net_pnl_usd": -0.1405,
+          "profit_factor": 0.7,
+          "max_drawdown_usd": 0.312
+        },
+        "is": {
+          "total_trades": 7,
+          "win_rate": 57.14,
+          "net_pnl_usd": 0.0084,
+          "profit_factor": 1.03,
+          "max_drawdown_usd": 0.312
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.1489,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0449
+        }
+      },
+      "VIRTUAL": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 14.29,
+          "net_pnl_usd": -0.5752,
+          "profit_factor": 0.06,
+          "max_drawdown_usd": 0.5047
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.2967,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.1927
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 25.0,
+          "net_pnl_usd": -0.2785,
+          "profit_factor": 0.11,
+          "max_drawdown_usd": 0.208
+        }
+      },
+      "COMP": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 80.0,
+          "net_pnl_usd": 0.1209,
+          "profit_factor": 2.16,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.149,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.028,
+          "profit_factor": 0.73,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "FIL": {
+        "total": {
+          "total_trades": 11,
+          "win_rate": 63.64,
+          "net_pnl_usd": -0.0575,
+          "profit_factor": 0.82,
+          "max_drawdown_usd": 0.2621
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.114,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 8,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.1716,
+          "profit_factor": 0.46,
+          "max_drawdown_usd": 0.2621
+        }
+      },
+      "ALGO": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.1262,
+          "profit_factor": 0.6,
+          "max_drawdown_usd": 0.1682
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.1262,
+          "profit_factor": 0.6,
+          "max_drawdown_usd": 0.1682
+        }
+      },
+      "SAND": {
+        "total": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.104,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.104,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "MANA": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.062,
+          "profit_factor": 0.7,
+          "max_drawdown_usd": 0.208
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.042,
+          "profit_factor": 1.4,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.104,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "AXS": {
+        "total": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2589,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 0.2721
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 5,
+          "win_rate": 40.0,
+          "net_pnl_usd": -0.2589,
+          "profit_factor": 0.17,
+          "max_drawdown_usd": 0.2721
+        }
+      },
+      "DYDX": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 75.0,
+          "net_pnl_usd": 0.0131,
+          "profit_factor": 1.13,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0731,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": -0.0601,
+          "profit_factor": 0.42,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "1000BONK": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1716,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0518,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 2,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.1198,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "1INCH": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.0418,
+          "profit_factor": 0.66,
+          "max_drawdown_usd": 0.0173
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0245,
+          "profit_factor": 0.76,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.0173,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "PYTH": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0037,
+          "profit_factor": 1.04,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0037,
+          "profit_factor": 1.04,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "PENDLE": {
+        "total": {
+          "total_trades": 7,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.728,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.624
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.312,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.208
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.416,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.312
+        }
+      },
+      "GRT": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.2932,
+          "profit_factor": 2.41,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 33.33,
+          "net_pnl_usd": -0.062,
+          "profit_factor": 0.7,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.3552,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "STX": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.042,
+          "profit_factor": 1.4,
+          "max_drawdown_usd": 0.0
+        },
+        "is": {
+          "total_trades": 1,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.104,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.146,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "CHZ": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.27,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.166
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 0.0,
+          "net_pnl_usd": -0.27,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.166
+        }
+      },
+      "ARKM": {
+        "total": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0313,
+          "profit_factor": 0.85,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        },
+        "oos": {
+          "total_trades": 4,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0313,
+          "profit_factor": 0.85,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "SNX": {
+        "total": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0568,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": -0.0568,
+          "profit_factor": 0.45,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 0,
+          "win_rate": 0.0,
+          "net_pnl_usd": 0.0,
+          "profit_factor": 0.0,
+          "max_drawdown_usd": 0.0
+        }
+      },
+      "MAGIC": {
+        "total": {
+          "total_trades": 6,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.1813,
+          "profit_factor": 1.87,
+          "max_drawdown_usd": 0.104
+        },
+        "is": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0786,
+          "profit_factor": 1.76,
+          "max_drawdown_usd": 0.104
+        },
+        "oos": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.1027,
+          "profit_factor": 1.99,
+          "max_drawdown_usd": 0.104
+        }
+      },
+      "EIGEN": {
+        "total": {
+          "total_trades": 3,
+          "win_rate": 66.67,
+          "net_pnl_usd": 0.0585,
+          "profit_factor": 1.97,
+          "max_drawdown_usd": 0.0603
+        },
+        "is": {
+          "total_trades": 2,
+          "win_rate": 50.0,
+          "net_pnl_usd": 0.003,
+          "profit_factor": 1.05,
+          "max_drawdown_usd": 0.0603
+        },
+        "oos": {
+          "total_trades": 1,
+          "win_rate": 100.0,
+          "net_pnl_usd": 0.0555,
+          "profit_factor": 99.0,
+          "max_drawdown_usd": 0.0
+        }
+      }
+    }
+  }
+}
